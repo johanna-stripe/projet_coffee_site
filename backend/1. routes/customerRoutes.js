@@ -1,0 +1,27 @@
+//==============IMPORTS==================
+import express from "express";
+
+import {
+    getCustomerProfile,
+    getCustomerAddresses,
+} from "../2. controllers/customerController.js";
+
+const router = express.Router();
+// on utiliser .Router pour pouvoir passer d'un fichier à l'autre en MVC
+// on aurait utilisé juste app = express() si on était en monolitique
+export default router
+
+
+// ==================CRUD OPERATIONS===================
+
+//=====================================================
+//===================🔵 GET 🔵========================
+//=====================================================
+
+//Profil d'un client
+router.get('/:id', getCustomerProfile)
+
+//Toutes les adresses d'un client
+router.get('/:id/addresses', getCustomerAddresses)
+
+
