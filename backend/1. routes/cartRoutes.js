@@ -2,7 +2,10 @@
 import express from "express";
 
 import {
-    getCart
+    //GET
+    getCart,
+    //DELETE
+    deleteCustomerCart,
 } from "../2. controllers/cartController.js";
 
 
@@ -20,7 +23,14 @@ export default router
 //Voir le panier d'un client
 router.get('/:customer_id', getCart)
 
+//===================POST========================
 
+//===================PUT=========================
+
+//===================PATCH=======================
+
+//===================DELETE=======================
+router.delete('/:cart_id/customer/:customer_id',deleteCustomerCart)
 
 
 

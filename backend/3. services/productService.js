@@ -209,7 +209,7 @@ export const createNewProduct = async (productData) => {
     const newProductId = productResult.insertId
 
     // Étape B : maintenant qu'on a le product_id, on insère dans la bonne sous-table
-    if (product_type === 'coffee_tea_infusion') {
+    if (product_type === 'coffee/tea/infusion') {
         await createCoffeeTeaInfusionDetails(newProductId, {origin, roast, intensity, weight})
     } else if (product_type === 'machine') {
         await createMachineDetails(newProductId, {pressure_power, tank_capacity, grinder})

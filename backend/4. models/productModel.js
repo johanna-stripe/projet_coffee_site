@@ -67,20 +67,24 @@ export const createBrand = async (brandName) => {
     return results.insertId
 }
 
-export const createCoffeeTeaInfusionDetails = async(newProductId)=>{
-    const [results] = await db.query(CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION,[newProductId])
+export const createCoffeeTeaInfusionDetails = async (productId, details) => {
+    const {origin, roast, intensity, weight} = details
+    const values = [productId, origin, roast, intensity, weight]
+    const [results] = await db.query(CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION, values)
     return results
 }
 
 export const createMachineDetails = async (productId, details) => {
-    const { pressure_power, tank_capacity, grinder } = details
+    const {pressure_power, tank_capacity, grinder} = details
     const values = [productId, pressure_power, tank_capacity, grinder]
     const [results] = await db.query(CREATE_NEW_MACHINE, values)
     return results
 }
 
-export const createAccessoryDetails = async(newProductId)=> {
-    const [results] = await db.query(CREATE_NEW_ACCESSORY, [newProductId])
+export const createAccessoryDetails = async (productId, details) => {
+    const {material, capacity, color} = details
+    const values = [productId, material, capacity, color]
+    const [results] = await db.query(CREATE_NEW_ACCESSORY, values)
     return results
 }
 

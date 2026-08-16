@@ -15,3 +15,16 @@ export const FIND_CUSTOMER_ADDRESSES_BY_ID = `
              JOIN customer c ON c.customer_id = ca.customer_id
     WHERE c.customer_id = ?
 `
+
+
+export const DELETE_CUSTOMER_BY_ID = `
+    DELETE
+    FROM customer
+    WHERE customer_id = ?`
+
+
+export const DELETE_CUSTOMER_ADDRESS_BY_ID = `
+    DELETE
+    FROM customer_address
+    WHERE (customer_id, address_id) = (?, ?)
+`

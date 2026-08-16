@@ -54,7 +54,7 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({error: 'Product data is required'})
         }
 
-        const allowedTypes = ['coffee_tea_infusion', 'machine', 'accessory']
+        const allowedTypes = ['coffee/tea/infusion', 'machine', 'accessory']
         if (!allowedTypes.includes(req.body.product_type)) {
             return res.status(400).json({error: 'Invalid or missing product_type'})
         }
