@@ -4,7 +4,7 @@ import {
     findBrandById,
     findProductsByBrandId,
     //DELETE
-    // deleteBrandById,
+    deleteByIdBrand,
 } from "../4. models/brandModel.js";
 
 import {createBrand, findBrandByName} from "../4. models/productModel.js";
@@ -57,7 +57,6 @@ export const getProductsByBrandId = async (brandId) => {
     if (!rows) {
         return null
     }
-
     return {
         brand_id: rows.brand_id,
         brand_name: rows.brand_name,
@@ -77,12 +76,19 @@ export const createNewBrand = async (brandData) => {
     if (existing) throw errorBuilder('Brand already exists', 400)
     // return existing.brand_id
 
-    const results = await createBrand(cleanBrandName)
-    return results
+    return await createBrand(cleanBrandName)
+
 }
 
 
-
+//==================DELETE BRAND=====================
+export const deleteBrandById = async (brandId) => {
+    const result = await deleteByIdBrand(brandId)
+    if (!result) {
+        return null
+    }
+    return result
+}
 
 
 

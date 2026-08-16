@@ -32,9 +32,8 @@ export const getBrandById = async (req, res) => {
         }
 
         const results = await getBrandInfoById(brandId)
-        if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Brand does not exist'})
-
+        if (!results) {
+            return res.status(404).json({error: 'Brand does not exist'})
         }
         return res.json({
             brandId,
@@ -54,14 +53,15 @@ export const getProductsByBrand = async (req, res) => {
     try {
         const brandId = req.params.id
         if (!brandId) {
-            res.status(400).json({error: 'Brand Id is required'})
+            return res.status(400).json({error: 'Brand Id is required'})
         }
 
         const results = await getProductsByBrandId(brandId)
-        if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Brand does not exist'})
+        if (!results) {
+            return res.status(404).json({error: 'Brand does not exist'})
         }
-
+//pas besoin de affectedRows sur des SELECT puisque ça renvoit un objet {brand_id, brand_name, product_count}
+// ça n'existe que sur les résultats bruts d'INSERT/UPDATE/DELETE
         return res.json({
             brandId,
             message: 'Products found successfully',
@@ -84,7 +84,7 @@ export const createABrand = async (req, res) => {
 
         const results = await createNewBrand(req.body)
         if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Brand could not be created'})
+            return res.status(404).json({error: 'Brand could not be created'})
         }
         return res.status(201).json({
             message: 'Brand created', data: {
@@ -108,10 +108,11 @@ export const deleteBrand = async (req, res) => {
         }
         const results = await deleteBrandById(brandId)
         if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Product does not exist'})
+            return res.status(404).json({error: 'Product does not exist'})
         }
         return res.json({
-            message: 'Brand deleted successfully :',
+            brandId,
+            message: 'Brand deleted successfully',
             results
         })
 

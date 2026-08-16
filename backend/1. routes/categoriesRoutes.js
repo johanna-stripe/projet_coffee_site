@@ -7,7 +7,9 @@ import {
     getCategoryById,
     getProductsByCategory,
     //POST
-    createACategory
+    createACategory,
+    //DELETE
+    deleteCategory,
 } from '../2. controllers/categoriesController.js'
 
 
@@ -38,4 +40,4 @@ router.post('/', createACategory)
 //===================PATCH=======================
 
 //===================DELETE=======================
-
+router.delete('/:id', deleteCategory)

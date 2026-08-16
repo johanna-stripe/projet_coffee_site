@@ -1,22 +1,41 @@
 //========================GET ALL PRODUCTS=========================
-export const FIND_ALL_PRODUCTS = `SELECT *
-                                  FROM product`
+export const FIND_ALL_PRODUCTS = `
+    SELECT
+        c.category_id,
+        c.category_name,
+        p.product_id,
+        p.product_name,
+        b.brand_id,
+        b.brand_name,
+        p.product_image_url,
+        p.price,
+        p.stock
+    FROM product p 
+    JOIN category c ON c.category_id = p.category_id
+# JOIN --> ne garde que les lignes où la correspondance existe des deux côtés. 
+# donc produit et category sont en relation 1,N --> Un produit est forcément relié à une ou plusieurs category donc JOIN classique suffit
+    LEFT JOIN brand b ON b.brand_id = p.brand_id
+#     LEFT JOIN --> garde toutes les lignes de la table de gauche (celle après FROM, donc product ici)
+# comme produit et brand sont en 0,N, la marque n'est pas obligatoire pour le produit, donc on peut avoir brand_id = null
+# donc si un produit n'a pas de marque, il disparaît silencieusement de la liste avec un simple JOIN
+# JOIN LEFT va garder tous les éléments de product
+    `
 
 //======================GET PRODUCT INFO BY ID=====================
-export const FIND_PRODUCT_FULL_INFO_BY_ID = `SELECT p.product_id,
-                                                    ca.category_name,
-                                                    br.brand_name,
-                                                    p.product_name,
-                                                    p.product_description,
-                                                    p.product_image_url,
-                                                    p.price,
-                                                    p.stock,
-                                                    p.created_at,
-                                                    p.updated_at
-                                             FROM product p
-                                                      LEFT JOIN category ca ON ca.category_id = p.category_id
-                                                      LEFT JOIN brand br ON br.brand_id = p.brand_id
-                                             WHERE p.product_id = ?
+export const FIND_PRODUCT_FULL_INFO_BY_ID = `
+    SELECT p.*,
+           ca.category_name,
+           br.brand_name,
+           ct.origin, ct.roast, ct.intensity, ct.weight,
+           ma.pressure_power, ma.tank_capacity, ma.grinder,
+           ac.material, ac.capacity, ac.color
+    FROM product p
+             LEFT JOIN category ca ON ca.category_id = p.category_id
+             LEFT JOIN brand br ON br.brand_id = p.brand_id
+             LEFT JOIN coffee_tea_infusion ct ON ct.product_id = p.product_id
+             LEFT JOIN machines ma ON ma.product_id = p.product_id
+             LEFT JOIN accessories ac ON ac.product_id = p.product_id
+    WHERE p.product_id = ?
 `
 
 
@@ -49,7 +68,20 @@ export const CREATE_BRAND = `
     VALUES (?)
 `
 
+export const CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION = `
+    INSERT INTO coffee_tea_infusion (product_id, origin, roast, intensity, weight)
+    VALUES (?, ?, ?, ?, ?)
+`
 
+export const CREATE_NEW_MACHINE = `
+    INSERT INTO machines (product_id, pressure_power, tank_capacity, grinder)
+    VALUES (?, ?, ?, ?)
+`
+
+export const CREATE_NEW_ACCESSORY = `
+    INSERT INTO accessories (product_id, material, capacity, color)
+    VALUES (?, ?, ?, ?)
+`
 
 //======================DELETE PRODUCT==============================
 export const DELETE_PRODUCT_BY_ID = `

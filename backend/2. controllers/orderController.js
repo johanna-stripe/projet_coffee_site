@@ -13,8 +13,8 @@ export const getOrderByCustomer = async (req, res) => {
             return res.status(400).json({error: 'Customer id is required'})
         }
         const results = await getOrderByCustomerId(customerId)
-        if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Customer could not be found'})
+        if (!results) {
+            return res.status(404).json({error: 'Customer could not be found'})
         }
 
         return res.json({
@@ -37,8 +37,8 @@ export const getOrderDetail = async (req, res) => {
             return res.status(400).json({error: 'Order id is required'})
         }
         const results = await getOrderDetailByOrderId(orderId)
-        if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Order could not be found'})
+        if (!results) {
+            return res.status(404).json({error: 'Order could not be found'})
         }
 
         return res.json({

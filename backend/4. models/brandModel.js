@@ -2,9 +2,12 @@
 import db from "../6. config/database.js"
 
 import {
+    //GET
     FIND_ALL_BRANDS,
     FIND_BRAND_BY_ID,
-    FIND_PRODUCTS_BY_BRAND_ID
+    FIND_PRODUCTS_BY_BRAND_ID,
+    //DELETE
+    DELETE_BRAND_BY_ID
 } from "../5. constantes/brandDBConstantes.js";
 
 
@@ -29,3 +32,11 @@ export const findProductsByBrandId = async (brandId) => {
 
 //==================CREATE NEW BRAND=====================
 //export const createBrand and findBrandByName are in productModel
+
+
+
+//==================DELETE BRAND=====================
+export const deleteByIdBrand = async (brandId)=>{
+    const [results] = await db.query(DELETE_BRAND_BY_ID,[brandId])
+    return results
+}

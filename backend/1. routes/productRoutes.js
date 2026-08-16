@@ -35,7 +35,7 @@ router.post('/', createProduct)
 
 
 //===================PATCH========================
-//Créer des caractèristiques précises d'un produit
+//Modifier des caractèristiques précises d'un produit
 
 
 

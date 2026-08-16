@@ -12,8 +12,14 @@ export const FIND_PRODUCTS_BY_CATEGORY_ID = `
            COUNT(p.product_id) AS product_count
     FROM CATEGORY c
              LEFT JOIN PRODUCT p ON p.category_id = c.category_id
+    #     LEFT JOIN car si la category existe mais n'a pas de produit elle remontera qd même, ce qui n'aurait pas été le cas avec un simple JOIN
     WHERE c.category_id = ?
+    GROUP BY c.category_id, c.category_name
 `
 
 
-
+export const DELETE_CATEGORY_BY_ID = `
+    DELETE
+    FROM category
+    WHERE category_id = ?
+`

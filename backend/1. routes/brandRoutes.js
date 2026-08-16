@@ -8,18 +8,21 @@ import {
     getProductsByBrand,
     //POST
     createABrand,
+    deleteBrand,
 } from "../2. controllers/brandController.js";
-import {deleteProduct} from "../2. controllers/productController.js";
 
 const router = express.Router();
 export default router
 
 
 //===================GET========================
+//Voir toutes les marques
 router.get('/', getAllBrands)
 
+//Voir le détail d'une marque
 router.get('/:id', getBrandById)
 
+//Voir la liste des produits d'une marque
 router.get('/:id/products', getProductsByBrand)
 
 //===================POST========================
@@ -30,6 +33,6 @@ router.post('/', createABrand)
 //===================PATCH========================
 
 //===================DELETE=======================
-router.delete('/:id', deleteProduct)
+router.delete('/:id', deleteBrand)
 
 

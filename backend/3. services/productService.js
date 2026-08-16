@@ -7,6 +7,9 @@ import {
     createANewProduct,
     findCategoryByName, createCategory,
     findBrandByName, createBrand,
+    createCoffeeTeaInfusionDetails,
+    createMachineDetails,
+    createAccessoryDetails,
     //DELETE
     deleteByIdProduct,
 } from "../4. models/productModel.js";
@@ -55,17 +58,47 @@ export const getProductInfoById = async (productId) => {
         return null
     }
 
-    return {
+    const baseProduct = {
         product_id: rows.product_id,
         category_id: rows.category_id,
         brand_id: rows.brand_id,
         product_name: rows.product_name,
         product_description: rows.product_description,
-        product_image_url: rows.product_image_url,
         price: rows.price,
         stock: rows.stock,
-        created_at: rows.created_at,
-        updated_at: rows.updated_at,
+    }
+
+    if (rows.origin !== null) {
+        //c'est un coffee/tea/infusions
+        return {
+            ...baseProduct,
+            origin: rows.origin,
+            roast: rows.roast,
+            intensity: rows.intensity,
+            weight: rows.weight
+        }
+    }
+
+    if (rows.pressure_power !== null) {
+        //c'est une machine
+        return {
+            ...baseProduct,
+            pressure_power: rows.pressure_power,
+            tank_capacity: rows.tank_capacity,
+            grinder: rows.grinder
+        }
+    }
+
+    if (rows.material !== null) {
+        //c'est un accessoire
+        return {
+            ...baseProduct,
+            material: rows.material,
+            capacity: rows.capacity,
+            color: rows.color,
+        }
+    } else {
+        throw errorBuilder(`Product ${productId} has no matching subtype in COFFEE_TEA, COFFEE_MAKER or ACCESSORIES`, 500)
     }
 }
 
@@ -79,7 +112,13 @@ export const getProductInfoById = async (productId) => {
 
 
 // **************************Etape 1 : catégorie/brand existe déjà ? sinon on la crée*************************
-const resolveCategoryId = async (categoryName) => {
+const resolveCategoryId = async (categoryId, categoryName) => {
+    // Cas 1 : le front a choisi une catégorie existante dans la liste déroulante
+    if (categoryId) {
+        return categoryId
+    }
+
+    // Cas 2 : le front veut créer une nouvelle catégorie à la volée
     const cleanCategoryName = normalizeText(categoryName)
     if (!cleanCategoryName) {
         throw errorBuilder('Product category is required', 400)
@@ -96,34 +135,46 @@ const resolveCategoryId = async (categoryName) => {
     //si elle existe pas, on la crée
 }
 
-const resolveBrandId = async (brandName) => {
-
+const resolveBrandId = async (brandId, brandName) => {
+    if (brandId) {
+        return brandId
+    }
     const clearBrandName = normalizeText(brandName)
-    if (!clearBrandName) throw errorBuilder('Product brand is required', 400)
+    if (!clearBrandName) {
+        return null
+    }
 
-    const existing = await findBrandByName(brandName)
+    const existing = await findBrandByName(clearBrandName)
     if (existing) return existing.brand_id
 
-    return await createBrand(brandName)
+    return await createBrand(clearBrandName)
 }
 
 
 // ***************************** Etape 2 : on crée le product ***************************
 export const createNewProduct = async (productData) => {
     const {
-        category_name,
-        brand_name,
         product_name,
         product_description,
         product_image_url,
         price,
-        stock
+        stock,
+        product_type,
+        origin,
+        roast,
+        intensity,
+        weight,
+        pressure_power,
+        tank_capacity,
+        grinder,
+        material,
+        capacity,
+        color
     } = productData
     //l'objet ici correspond à la requête body JSON envoyée à Postman
     //ici on a un objet destructuring : ça reviendrait à faire
     //const category_name = productData.category_name
     //const brand_name = productData.brand_name etc.....
-
 
     const cleanProductName = normalizeText(product_name)
     if (!cleanProductName) {
@@ -135,9 +186,9 @@ export const createNewProduct = async (productData) => {
         throw errorBuilder('Product description is required', 400)
     }
 
-    const category_id = await resolveCategoryId(category_name)
+    const category_id = await resolveCategoryId(productData.category_id, productData.category_name)
 
-    const brand_id = await resolveBrandId(brand_name)
+    const brand_id = await resolveBrandId(productData.brand_id, productData.brand_name)
 
     const values = [
         category_id, //match la const ci-dessous pour trouver si la category existe déjà
@@ -153,9 +204,21 @@ export const createNewProduct = async (productData) => {
     // (category_id, brand_id, product_name, product_description, poduct_image_url, price, stock)
     //ils doivent correspondre parfaitement à la requête sql
 
-    const results = await createANewProduct(values)
+    // Étape A : on insère dans PRODUCT
+    const productResult = await createANewProduct(values)
+    const newProductId = productResult.insertId
 
-    return results
+    // Étape B : maintenant qu'on a le product_id, on insère dans la bonne sous-table
+    if (product_type === 'coffee_tea_infusion') {
+        await createCoffeeTeaInfusionDetails(newProductId, {origin, roast, intensity, weight})
+    } else if (product_type === 'machine') {
+        await createMachineDetails(newProductId, {pressure_power, tank_capacity, grinder})
+    } else if (product_type === 'accessory') {
+        await createAccessoryDetails(newProductId, {material, capacity, color})
+    } else {
+        throw errorBuilder('Wrong product_type', 400)
+    }
+    return productResult
 }
 
 

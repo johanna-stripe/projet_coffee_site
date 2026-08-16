@@ -29,11 +29,11 @@ export const getFullInfoFromProducts = async (req, res) => {
         const productId = req.params.id //on stock l'id que l'user a entré dans une const (depuis le params, pas le body)
 
         if (!productId) {
-            res.status(400).json({error: 'Product Id is required'})
+            return res.status(400).json({error: 'Product Id is required'})
         }
         const results = await getProductInfoById(productId) // on passe le productId en paramètre
-        if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Product could not be found'})
+        if (!results) {
+            return res.status(404).json({error: 'Product could not be found'})
         }
         return res.json({
             productId,
@@ -51,12 +51,17 @@ export const getFullInfoFromProducts = async (req, res) => {
 export const createProduct = async (req, res) => {
     try {
         if (!req.body) {
-            return res.status(404).json({error: 'Product data is required'})
+            return res.status(400).json({error: 'Product data is required'})
+        }
+
+        const allowedTypes = ['coffee_tea_infusion', 'machine', 'accessory']
+        if (!allowedTypes.includes(req.body.product_type)) {
+            return res.status(400).json({error: 'Invalid or missing product_type'})
         }
 
         const results = await createNewProduct(req.body)
         if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Product could not be created'})
+            return res.status(404).json({error: 'Product could not be created'})
         }
 
         return res.status(201).json({
@@ -82,10 +87,11 @@ export const deleteProduct = async (req, res) => {
         }
         const results = await deleteProductById(productId)
         if (!results || results.affectedRows === 0) {
-            return res.status(400).json({error: 'Product does not exist'})
+            return res.status(404).json({error: 'Product does not exist'})
         }
         return res.json({
-            message: 'Product deleted successfully :',
+            productId,
+            message: 'Product deleted successfully',
             results
         })
 

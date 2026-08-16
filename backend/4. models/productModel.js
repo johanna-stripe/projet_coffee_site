@@ -5,9 +5,12 @@ import {
     //GET
     FIND_ALL_PRODUCTS,
     FIND_PRODUCT_FULL_INFO_BY_ID,
+    GET_CATEGORY_BY_NAME, GET_BRAND_BY_NAME,
     //POST
     CREATE_NEW_PRODUCT, CREATE_CATEGORY, CREATE_BRAND,
-    GET_CATEGORY_BY_NAME, GET_BRAND_BY_NAME,
+    CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION,
+    CREATE_NEW_MACHINE,
+    CREATE_NEW_ACCESSORY,
     //DELETE
     DELETE_PRODUCT_BY_ID,
 } from "../5. constantes/productDBConstantes.js";
@@ -64,9 +67,25 @@ export const createBrand = async (brandName) => {
     return results.insertId
 }
 
+export const createCoffeeTeaInfusionDetails = async(newProductId)=>{
+    const [results] = await db.query(CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION,[newProductId])
+    return results
+}
+
+export const createMachineDetails = async (productId, details) => {
+    const { pressure_power, tank_capacity, grinder } = details
+    const values = [productId, pressure_power, tank_capacity, grinder]
+    const [results] = await db.query(CREATE_NEW_MACHINE, values)
+    return results
+}
+
+export const createAccessoryDetails = async(newProductId)=> {
+    const [results] = await db.query(CREATE_NEW_ACCESSORY, [newProductId])
+    return results
+}
 
 //======================DELETE PRODUCT==============================
 export const deleteByIdProduct = async (productId) => {
     const [results] = await db.query(DELETE_PRODUCT_BY_ID, [productId])
-    return results[0] ?? null
+    return results
 }

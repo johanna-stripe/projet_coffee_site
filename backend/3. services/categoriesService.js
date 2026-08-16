@@ -1,8 +1,11 @@
 //========================IMPORTS========================
 import {
+    //GET
     findAllCategories,
     findCategoryById,
-    findProductsByCategoryId
+    findProductsByCategoryId,
+    //DELETE
+    deleteCategoryById,
 } from "../4. models/categoriesModel.js";
 
 import {createCategory, findCategoryByName} from "../4. models/productModel.js";
@@ -79,6 +82,17 @@ export const createNewCategory = async (categoryData) => {
     if (existing) throw errorBuilder('Category already exists', 400)
     // return existing.category_id
 
-    const results = await createCategory(cleanCategoryName)
+    return await createCategory(cleanCategoryName)
+}
+
+
+//====================DELETE CATEGORY=======================
+
+export const deleteByIdCategory = async (categoryId) => {
+    const results = await deleteCategoryById(categoryId)
+    if (!results || results.affectedRows === 0) {
+        return null
+    }
     return results
 }
+
