@@ -7,3 +7,12 @@ export const FIND_CART_BY_CUSTOMER_ID = `
              JOIN CUSTOMER c ON c.customer_id = cart.customer_id
     WHERE c.customer_id = ?
 `
+
+
+
+
+export const DELETE_CART = `
+    DELETE
+    FROM cart
+    WHERE (cart_id, customer_id) = (?, ?)
+`

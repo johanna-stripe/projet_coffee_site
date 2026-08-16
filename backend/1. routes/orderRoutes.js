@@ -17,9 +17,16 @@ export default router
 
 
 //===================GET========================
-
 //Lister toutes les commandes d'un client
 router.get('/:customer_id', getOrderByCustomer)
 
 //Lister le détail d'une commande
 router.get('/detail/:order_id',getOrderDetail)
+
+//===================POST========================
+
+//===================PUT=========================
+
+//===================PATCH=======================
+
+//===================DELETE=======================

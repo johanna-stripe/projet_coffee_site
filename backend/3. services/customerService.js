@@ -1,7 +1,11 @@
 //==============IMPORTS==================
 import {
+    //GET
     findCustomerById,
     findCustomerAddressesById,
+    //DELETE
+    deleteCustomerById,
+    deleteCustomerAddressById,
 } from "../4. models/customerModel.js";
 
 
@@ -36,4 +40,23 @@ export const getCustomerAddressesById = async (customerId) => {
         postcode: row.postcode,
         country: row.country
     }))
+}
+
+
+//==================DELETE CUSTOMER=====================
+export const deleteByIdCustomer = async (customerId) => {
+    const results = await deleteCustomerById(customerId)
+    if (!results || results.affectedRows === 0) {
+        return null
+    }
+    return results
+}
+
+//==================DELETE CUSTOMER ADDRESS=====================
+export const deleteByIdCustomerAddress = async (customerId,customerAddress) => {
+    const results = await deleteCustomerAddressById(customerId,customerAddress)
+    if (!results || results.affectedRows === 0) {
+        return null
+    }
+    return results
 }
