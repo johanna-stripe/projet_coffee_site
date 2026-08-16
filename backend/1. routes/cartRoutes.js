@@ -31,7 +31,7 @@ router.get('/:customer_id', getCart)
 
 //===================DELETE=======================
 router.delete('/:cart_id/customer/:customer_id',deleteCustomerCart)
-
+// Customer_id ici sert pour vérifier que celui qui fait la requête a le droit de la supprimer
 
 
 

@@ -1,7 +1,8 @@
 //==============IMPORTS==================
 import {
+    //GET
     getOrderByCustomerId,
-    getOrderDetailByOrderId
+    getOrderDetailByOrderId,
 } from "../3. services/orderService.js";
 
 
@@ -52,3 +53,4 @@ export const getOrderDetail = async (req, res) => {
         return res.status(500).json({message: 'You have an internal server error'})
     }
 }
+

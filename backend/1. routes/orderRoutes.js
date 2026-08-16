@@ -2,8 +2,9 @@
 import express from "express";
 
 import{
+    //GET
     getOrderByCustomer,
-    getOrderDetail
+    getOrderDetail,
 } from "../2. controllers/orderController.js";
 
 
@@ -28,5 +29,5 @@ router.get('/detail/:order_id',getOrderDetail)
 //===================PUT=========================
 
 //===================PATCH=======================
+//order_status : cancelled (pour l'admin)
 
-//===================DELETE=======================

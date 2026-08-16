@@ -16,3 +16,4 @@ export const FIND_ORDER_DETAIL_BY_ORDER_ID = `
              JOIN customer_address ca ON o.shipping_address_id = ca.address_id
     WHERE o.order_id = ?
 `
+

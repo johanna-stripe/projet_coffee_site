@@ -2,8 +2,9 @@
 import db from '../6. config/database.js'
 
 import {
+    //GET
     FIND_ORDER_BY_CUSTOMER_ID,
-    FIND_ORDER_DETAIL_BY_ORDER_ID
+    FIND_ORDER_DETAIL_BY_ORDER_ID,
 } from "../5. constantes/orderDBConstantes.js";
 
 
@@ -19,3 +20,5 @@ export const findOrderDetailByOrderId = async (orderId) => {
     const [results] = await db.query(FIND_ORDER_DETAIL_BY_ORDER_ID, [orderId])
     return results[0] ?? null
 }
+
+
