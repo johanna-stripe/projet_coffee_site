@@ -8,6 +8,8 @@ import {
     getProductsByCategory,
     //POST
     createACategory,
+    //PUT
+    putCategory,
     //DELETE
     deleteCategory,
 } from '../2. controllers/categoriesController.js'
@@ -36,6 +38,7 @@ router.get('/:id/products', getProductsByCategory)
 router.post('/', createACategory)
 
 //===================PUT=========================
+router.put('/:id',putCategory)
 
 //===================PATCH=======================
 

@@ -5,10 +5,12 @@ import {
     FIND_ALL_CATEGORIES,
     FIND_CATEGORY_BY_ID,
     FIND_PRODUCTS_BY_CATEGORY_ID,
+    //PUT
+    FIND_CATEGORY_PARENT_BY_ID,
+    PUT_CATEGORY,
     //DELETE
     DELETE_CATEGORY_BY_ID,
 } from "../5. constantes/categoriesDBConstantes.js";
-import {DELETE_PRODUCT_BY_ID} from "../5. constantes/productDBConstantes.js";
 
 
 //==================GET ALL CATEGORIES=====================
@@ -31,9 +33,21 @@ export const findProductsByCategoryId = async (categoryId) => {
     return results[0] ?? null
 }
 
+//==================MODIFY CATEGORY BY PUT=====================
+export const findCategoryParentById = async (categoryName)=>{
+    const [result] = await db.query(FIND_CATEGORY_PARENT_BY_ID,[categoryName])
+    return result
+}
+
+
+export const modifyByIdCategory = async (categoryId, changes) => {
+    const values = [changes, categoryId]
+    const [results] = await db.query(PUT_CATEGORY, values)
+    return results
+}
+
 
 //===================DELETE CATEGORY=======================
-
 export const deleteCategoryById = async (categoryId) => {
     const [results] = await db.query(DELETE_CATEGORY_BY_ID, [categoryId])
     return results

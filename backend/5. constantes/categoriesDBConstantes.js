@@ -5,7 +5,6 @@ export const FIND_CATEGORY_BY_ID = `SELECT *
                                     WHERE category_id = ?
 `
 
-
 export const FIND_PRODUCTS_BY_CATEGORY_ID = `
     SELECT c.category_id,
            c.category_name,
@@ -17,6 +16,17 @@ export const FIND_PRODUCTS_BY_CATEGORY_ID = `
     GROUP BY c.category_id, c.category_name
 `
 
+export const FIND_CATEGORY_PARENT_BY_ID = `
+    SELECT parent_id
+    FROM category
+    WHERE category_name = ?
+`
+
+export const PUT_CATEGORY = `
+    UPDATE category
+    SET category_name = ?
+    WHERE category_id = ?
+`
 
 export const DELETE_CATEGORY_BY_ID = `
     DELETE

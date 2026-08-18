@@ -8,6 +8,9 @@ import {
     getProductsByBrand,
     //POST
     createABrand,
+    //PUT
+    modifyBrand,
+    //DELETE
     deleteBrand,
 } from "../2. controllers/brandController.js";
 
@@ -29,8 +32,10 @@ router.get('/:id/products', getProductsByBrand)
 router.post('/', createABrand)
 
 //====================PUT=========================
+router.put('/:id', modifyBrand)
 
 //===================PATCH========================
+
 
 //===================DELETE=======================
 router.delete('/:id', deleteBrand)

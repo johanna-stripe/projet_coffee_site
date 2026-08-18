@@ -1,8 +1,11 @@
 //==============IMPORTS==================
 import {
+    //POST
     findAllBrands,
     findBrandById,
     findProductsByBrandId,
+    //PUT
+    modifyBrandById,
     //DELETE
     deleteByIdBrand,
 } from "../4. models/brandModel.js";
@@ -77,7 +80,22 @@ export const createNewBrand = async (brandData) => {
     // return existing.brand_id
 
     return await createBrand(cleanBrandName)
+}
 
+
+//==================MODIFY BRAND BY PUT=====================
+export const modifyByIdBrand = async (brandId, brandValues) => {
+    const brand_name = brandValues.brand_name
+
+    const cleanBrandName = normalizeText(brand_name)
+    if (!cleanBrandName) throw errorBuilder('Brand name is required', 400)
+
+    const existing = await findBrandByName(cleanBrandName)
+    if (existing && existing.brand_id != brandId) throw errorBuilder('Brand already exists', 400)
+// Cette condition est vraie seulement si un nom identique existe déjà en base et qu'il appartient à une marque différente de celle que qu'on modifie
+// — donc elle bloque le renommage uniquement en cas de vrai conflit, pas quand tu re-sauvegardes la marque avec son propre nom.
+// Exemple : brand_name: "Leclerc" - si je relance avec Leclerc écrit pareil il va pas me dire brand already exists. Par contre si Leclerc existait ailleurs, là oui.
+    return await modifyBrandById(brandId, cleanBrandName)
 }
 
 

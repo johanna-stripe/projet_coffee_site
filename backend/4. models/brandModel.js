@@ -6,6 +6,8 @@ import {
     FIND_ALL_BRANDS,
     FIND_BRAND_BY_ID,
     FIND_PRODUCTS_BY_BRAND_ID,
+    //PUT
+    PUT_BRAND,
     //DELETE
     DELETE_BRAND_BY_ID
 } from "../5. constantes/brandDBConstantes.js";
@@ -34,9 +36,16 @@ export const findProductsByBrandId = async (brandId) => {
 //export const createBrand and findBrandByName are in productModel
 
 
+//==================MODIFY BRAND BY PUT=====================
+export const modifyBrandById = async (brandId, brandName) => {
+    const values = [brandName, brandId]
+    const [results] = await db.query(PUT_BRAND, values)
+    return results
+}
+
 
 //==================DELETE BRAND=====================
-export const deleteByIdBrand = async (brandId)=>{
-    const [results] = await db.query(DELETE_BRAND_BY_ID,[brandId])
+export const deleteByIdBrand = async (brandId) => {
+    const [results] = await db.query(DELETE_BRAND_BY_ID, [brandId])
     return results
 }

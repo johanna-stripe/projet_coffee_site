@@ -1,6 +1,6 @@
-
 export const FIND_ALL_BRANDS = `
-SELECT * FROM brand
+    SELECT *
+    FROM brand
 `
 
 export const FIND_BRAND_BY_ID = `
@@ -19,6 +19,13 @@ export const FIND_PRODUCTS_BY_BRAND_ID = `
     WHERE b.brand_id = ?
     GROUP BY b.brand_id, b.brand_name
 `
+
+export const PUT_BRAND = `
+    UPDATE brand
+    SET brand_name = ?
+    WHERE brand_id = ?
+`
+
 
 export const DELETE_BRAND_BY_ID = `
     DELETE

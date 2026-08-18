@@ -103,7 +103,7 @@ export const getProductInfoById = async (productId) => {
 }
 
 
-//======================POST NEW PRODUCT==============================
+//=========================POST NEW PRODUCT==============================
 
 //PB : l'user ne va pas rentrer un category_id ni un brand_id
 //Exemple : l'user entre "café grain" il faut trouver à quel category_id ça correspond

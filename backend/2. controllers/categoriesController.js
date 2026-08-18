@@ -6,6 +6,8 @@ import {
     getProductsByCategoryId,
     //POST
     createNewCategory,
+    //PUT
+    modifyCategory,
     //DELETE
     deleteByIdCategory
 } from '../3. services/categoriesService.js'
@@ -90,6 +92,30 @@ export const createACategory = async (req, res) => {
                 id: results.insertId,
                 ...req.body
             }
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+    }
+}
+
+//==================PUT CATEGORY=====================
+export const putCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.id
+        if (!categoryId) {
+            return res.status(400).json({error: 'Category id is required'})
+        }
+
+        const results = await modifyCategory(categoryId, req.body)
+        if (!results || results.affectedRows === 0) {
+            return res.status(404).json({error: 'Category could not be modified'})
+        }
+        return res.status(201).json({
+            categoryId,
+            message: 'Category has been modified successfully',
+            results
         })
 
     } catch (error) {

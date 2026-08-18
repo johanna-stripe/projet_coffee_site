@@ -6,6 +6,8 @@ import {
     getProductsByBrandId,
     //POST
     createNewBrand,
+    //PUT
+    modifyByIdBrand,
     //DELETE
     deleteBrandById,
 } from "../3. services/brandService.js";
@@ -98,6 +100,32 @@ export const createABrand = async (req, res) => {
         res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
     }
 }
+
+
+//==================MODIFY BRAND BY PUT=====================
+export const modifyBrand = async (req, res) => {
+    try {
+        const brandId = req.params.id
+        if (!brandId) {
+            return res.status(404).json({error: 'Brand name is required'})
+        }
+
+        const results = await modifyByIdBrand(brandId, req.body)
+        if (!results || results.affectedRows === 0) {
+            return res.status(404).json({error: 'Brand could not be modified'})
+        }
+        return res.status(201).json({
+            brandId,
+            message: 'Brand has been modified successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+    }
+}
+
 
 //=========================DELETE BRAND==============================
 export const deleteBrand = async (req, res) => {
