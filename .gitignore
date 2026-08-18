@@ -1,0 +1,7 @@
+node_modules
+.env
+npm-debug.log
+
+#node_modules : dossier énorme et régénérable via npm install — ne doit jamais être versionné.
+#.env : contient tes identifiants de base de données — ne doit jamais être poussé sur GitHub.
+#npm-debug.log : fichier de log généré en cas d'erreur npm, inutile à versionner.
