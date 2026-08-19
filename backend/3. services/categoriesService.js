@@ -87,6 +87,11 @@ export const createNewCategory = async (categoryData) => {
 }
 
 //====================MODIFY CATEGORY=======================
+//quand l'admin veut modifier une category :
+//1. Il choisit la category par category_id
+//2. Il modifier category_name
+//3. Il peut modifier le parent_id
+
 const findCategoryParent = async (categoryName) => {
     const result = await findCategoryParentById(categoryName)
     if (!result) return null
@@ -94,7 +99,9 @@ const findCategoryParent = async (categoryName) => {
 
 
 export const modifyCategory = async (categoryId, categoryValues) => {
-    const {category_name} = categoryValues
+    const category_parent = await findCategoryParentById(categoryId)
+
+    const {category_name, parent_id} = categoryValues
 
     const cleanCategoryName = normalizeText(category_name)
     if (!cleanCategoryName) throw errorBuilder('Product name is required', 400)

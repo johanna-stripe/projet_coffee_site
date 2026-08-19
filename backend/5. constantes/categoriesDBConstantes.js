@@ -22,6 +22,7 @@ export const FIND_CATEGORY_PARENT_BY_ID = `
     WHERE category_name = ?
 `
 
+
 export const PUT_CATEGORY = `
     UPDATE category
     SET category_name = ?

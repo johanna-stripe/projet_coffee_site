@@ -36,6 +36,7 @@ router.get('/:id/products', getProductsByCategory)
 
 //===================POST========================
 router.post('/', createACategory)
+//ajouter le category_parent
 
 //===================PUT=========================
 router.put('/:id',putCategory)

@@ -35,7 +35,7 @@ export const findProductsByCategoryId = async (categoryId) => {
 
 //==================MODIFY CATEGORY BY PUT=====================
 export const findCategoryParentById = async (categoryName)=>{
-    const [result] = await db.query(FIND_CATEGORY_PARENT_BY_ID,[categoryName])
+    const [result] = await db.query(FIND_CATEGORY_PARENT_BY_ID,[parent_id])
     return result
 }
 
