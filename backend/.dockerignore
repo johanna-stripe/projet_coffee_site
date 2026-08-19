@@ -1,0 +1,6 @@
+node_modules
+.env
+npm-debug.log
+.git
+
+#Différence avec .gitignore : j'ajoute .git ici, pour éviter que Docker copie tout l'historique Git dans l'image (inutile et volumineux). Ce fichier sert à accélérer et sécuriser le docker build, pas à gérer ton dépôt Git.
