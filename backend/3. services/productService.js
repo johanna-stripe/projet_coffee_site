@@ -10,6 +10,8 @@ import {
     createCoffeeTeaInfusionDetails,
     createMachineDetails,
     createAccessoryDetails,
+    //PUT
+    modifyByPutProduct,
     //DELETE
     deleteByIdProduct,
 } from "../4. models/productModel.js";
@@ -219,6 +221,34 @@ export const createNewProduct = async (productData) => {
         throw errorBuilder('Wrong product_type', 400)
     }
     return productResult
+}
+
+
+//======================PUT PRODUCT=====================
+export const modifyProductByPut = async (productId, productValues) => {
+    const {category_id, brand_id, product_name, product_description, product_image, price, stock} = productValues
+
+    const cleanProductName = normalizeText(product_name)
+    if (!cleanProductName) throw errorBuilder('Product name is required', 400)
+
+    const cleanProductDescription = normalizeText(product_description)
+    if (!cleanProductDescription) throw errorBuilder('Product description is required', 400)
+
+    //Add findProductByName
+    // const existing = await findCategoryByName(cleanProductName)
+    // if (existing && existing.product_id != productId) throw errorBuilder('Product already exists',400)
+
+    const values = [
+        category_id,
+        brand_id,
+        cleanProductName,
+        cleanProductDescription,
+        product_image,
+        price,
+        stock
+    ]
+
+    return await modifyByPutProduct (productId, values)
 }
 
 

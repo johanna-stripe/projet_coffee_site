@@ -53,8 +53,8 @@ export const GET_CATEGORY_BY_NAME = `
 `
 
 export const CREATE_CATEGORY = `
-    INSERT INTO category (category_name)
-    VALUES (?)
+    INSERT INTO category (category_name, parent_id)
+    VALUES (?, ?)
 `
 
 export const GET_BRAND_BY_NAME = `
@@ -82,6 +82,21 @@ export const CREATE_NEW_ACCESSORY = `
     INSERT INTO accessories (product_id, material, capacity, color)
     VALUES (?, ?, ?, ?)
 `
+
+
+//==========================PUT PRODUCT============================
+export const PUT_PRODUCT = `
+    UPDATE product
+    SET category_id= ?,
+        brand_id= ?,
+        product_name=?,
+        product_description=?,
+        product_image_url=?,
+        price=?,
+        stock=?
+    WHERE product_id = ?
+`
+
 
 //======================DELETE PRODUCT==============================
 export const DELETE_PRODUCT_BY_ID = `

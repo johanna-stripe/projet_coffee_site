@@ -34,9 +34,6 @@ router.post('/', createABrand)
 //====================PUT=========================
 router.put('/:id', modifyBrand)
 
-//===================PATCH========================
-
-
 //===================DELETE=======================
 router.delete('/:id', deleteBrand)
 

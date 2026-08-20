@@ -11,6 +11,8 @@ import {
     CREATE_NEW_PRODUCT_COFFEE_TEA_INFUSION,
     CREATE_NEW_MACHINE,
     CREATE_NEW_ACCESSORY,
+    //PUT
+    PUT_PRODUCT,
     //DELETE
     DELETE_PRODUCT_BY_ID,
 } from "../5. constantes/productDBConstantes.js";
@@ -52,8 +54,8 @@ export const findCategoryByName = async (categoryName) => {
     return rows[0]
 }
 
-export const createCategory = async (categoryName) => {
-    const [results] = await db.query(CREATE_CATEGORY, [categoryName])
+export const createCategory = async (values) => {
+    const [results] = await db.query(CREATE_CATEGORY, values)
     return results.insertId
 }
 
@@ -87,6 +89,13 @@ export const createAccessoryDetails = async (productId, details) => {
     const [results] = await db.query(CREATE_NEW_ACCESSORY, values)
     return results
 }
+
+//======================PUT PRODUCT==============================
+export const modifyByPutProduct = async (productId, values) =>{
+    const [results] = await db.query(PUT_PRODUCT,[...values, productId])
+    return results
+}
+
 
 //======================DELETE PRODUCT==============================
 export const deleteByIdProduct = async (productId) => {

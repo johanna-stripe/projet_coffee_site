@@ -73,8 +73,14 @@ export const getProductsByCategoryId = async (categoryId) => {
 
 
 //==================CREATE NEW CATEGORY=====================
+// const findCategoryParent = async (categoryName) => {
+//     const result = await findCategoryParentById(categoryName)
+//     if (!result) return null
+// }
+
+
 export const createNewCategory = async (categoryData) => {
-    const category_name = categoryData.category_name
+    const {category_name, parent_id} = categoryData
 
     const cleanCategoryName = normalizeText(category_name)
     if (!cleanCategoryName) throw errorBuilder('Category name is required', 400)
@@ -83,7 +89,12 @@ export const createNewCategory = async (categoryData) => {
     if (existing) throw errorBuilder('Category already exists', 400)
     // return existing.category_id
 
-    return await createCategory(cleanCategoryName)
+    const values = [
+        cleanCategoryName,
+        parent_id
+    ]
+
+    return await createCategory(values)
 }
 
 //====================MODIFY CATEGORY=======================
@@ -92,14 +103,9 @@ export const createNewCategory = async (categoryData) => {
 //2. Il modifier category_name
 //3. Il peut modifier le parent_id
 
-const findCategoryParent = async (categoryName) => {
-    const result = await findCategoryParentById(categoryName)
-    if (!result) return null
-}
-
 
 export const modifyCategory = async (categoryId, categoryValues) => {
-    const category_parent = await findCategoryParentById(categoryId)
+    // const category_parent = await findCategoryParentById(categoryId)
 
     const {category_name, parent_id} = categoryValues
 
@@ -109,7 +115,12 @@ export const modifyCategory = async (categoryId, categoryValues) => {
     const existing = await findCategoryByName(cleanCategoryName)
     if (existing && existing.category_id != categoryId) throw errorBuilder('Category already exists', 400)
 
-    return await modifyByIdCategory(categoryId, cleanCategoryName)
+    const values = [
+        cleanCategoryName,
+        parent_id
+    ]
+
+    return await modifyByIdCategory(categoryId, values)
 }
 
 

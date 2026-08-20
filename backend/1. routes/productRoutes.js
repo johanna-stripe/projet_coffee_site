@@ -7,6 +7,8 @@ import {
     getFullInfoFromProducts,
     //POST
     createProduct,
+    //PUT
+    putProduct,
     //DELETE
     deleteProduct,
 } from "../2. controllers/productController.js";
@@ -26,21 +28,20 @@ router.get('/:id', getFullInfoFromProducts)
 
 
 //===================POST========================
-//Créer nouveau produit
 router.post('/', createProduct)
 
 
 //===================PUT========================
 //Modifier un produit
+router.put('/:id', putProduct)
 
 
 //===================PATCH========================
 //Modifier des caractèristiques précises d'un produit
-
+router.patch('/id',patchProduct)
 
 
 //===================DELETE========================
-//Supprimer un produit
 router.delete('/:id',deleteProduct)
 
 export default router

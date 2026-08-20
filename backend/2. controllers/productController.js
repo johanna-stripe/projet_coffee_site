@@ -5,6 +5,8 @@ import {
     getProductInfoById,
     //POST
     createNewProduct,
+    //PUT
+    modifyProductByPut,
     //DELETE
     deleteProductById
 } from "../3. services/productService.js";
@@ -77,6 +79,29 @@ export const createProduct = async (req, res) => {
         res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
     }
 }
+
+
+//=========================PUT PRODUCT==============================
+export const putProduct = async (req, res) => {
+    try {
+        const productId = req.params.id
+        if (!productId) return res.status(400).json({error: 'Product Id is required'})
+
+        const results = await modifyProductByPut(productId, req.body)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Product could not been modified'})
+
+        return res.json({
+            productId,
+            message: 'Product has been modified successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
 
 //=========================DELETE PRODUCT==============================
 export const deleteProduct = async (req, res) => {

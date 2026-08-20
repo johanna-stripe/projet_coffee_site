@@ -41,7 +41,5 @@ router.post('/', createACategory)
 //===================PUT=========================
 router.put('/:id',putCategory)
 
-//===================PATCH=======================
-
 //===================DELETE=======================
 router.delete('/:id', deleteCategory)

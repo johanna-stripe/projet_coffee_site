@@ -5,8 +5,8 @@ import {
     FIND_ALL_CATEGORIES,
     FIND_CATEGORY_BY_ID,
     FIND_PRODUCTS_BY_CATEGORY_ID,
-    //PUT
     FIND_CATEGORY_PARENT_BY_ID,
+    //PUT
     PUT_CATEGORY,
     //DELETE
     DELETE_CATEGORY_BY_ID,
@@ -34,15 +34,14 @@ export const findProductsByCategoryId = async (categoryId) => {
 }
 
 //==================MODIFY CATEGORY BY PUT=====================
-export const findCategoryParentById = async (categoryName)=>{
-    const [result] = await db.query(FIND_CATEGORY_PARENT_BY_ID,[parent_id])
+export const findCategoryParentById = async (parentId) => {
+    const [result] = await db.query(FIND_CATEGORY_PARENT_BY_ID, [parentId])
     return result
 }
 
 
-export const modifyByIdCategory = async (categoryId, changes) => {
-    const values = [changes, categoryId]
-    const [results] = await db.query(PUT_CATEGORY, values)
+export const modifyByIdCategory = async (categoryId, values) => {
+    const [results] = await db.query(PUT_CATEGORY, [...values,categoryId])
     return results
 }
 

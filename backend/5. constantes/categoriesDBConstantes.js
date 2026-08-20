@@ -17,15 +17,16 @@ export const FIND_PRODUCTS_BY_CATEGORY_ID = `
 `
 
 export const FIND_CATEGORY_PARENT_BY_ID = `
-    SELECT parent_id
+    SELECT category_name
     FROM category
-    WHERE category_name = ?
+    WHERE parent_id = ?
 `
 
 
 export const PUT_CATEGORY = `
     UPDATE category
-    SET category_name = ?
+    SET category_name = ?,
+        parent_id = ?
     WHERE category_id = ?
 `
 
