@@ -33,7 +33,6 @@ router.post('/:customer_id/',createOrder)
 //===================PATCH=======================
 router.patch('/:id', patchOrder)
 //order_status : cancelled (pour l'admin)
-
-
 //Pas de delete car on ne veut pas supprimer une commande, on va plutôt la passer en 'cancelled' dans le patch
+
 

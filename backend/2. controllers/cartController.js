@@ -38,10 +38,8 @@ export const getCart = async (req, res) => {
     }
 }
 
-
-
 //===================POST CART=======================
-export const createCart = async (req,res)=>{
+export const createCart = async (req, res) => {
     try {
         const customerId = req.params.customer_id
         if (!customerId) {
@@ -72,7 +70,7 @@ export const createCart = async (req,res)=>{
 
 
 //===================PATCH CART=======================
-export const patchOrderItem = async (req,res)=>{
+export const patchOrderItem = async (req, res) => {
     try {
         const cartId = req.params.cart_id
         if (!cartId) {
@@ -106,33 +104,26 @@ export const patchOrderItem = async (req,res)=>{
     }
 }
 
-
 //===================DELETE CART=======================
 export const deleteCustomerCart = async (req, res) => {
     try {
 
         const cartId = req.params.cart_id
-        if (!cartId) {
-            return res.status(400).json({error: 'Cart Id is required'})
-        }
+        if (!cartId) return res.status(400).json({error: 'Cart Id is required'})
 
         const customerId = req.params.customer_id
-        if (!customerId) {
-            return res.status(400).json({error: 'Customer Id is required'})
-        }
+        if (!customerId) return res.status(400).json({error: 'Customer Id is required'})
 
         const results = await deleteByIdCustomerCart(cartId, customerId)
-        if (!results) {
-            return res.status(404).json({error: 'Customer cart could not be found'})
-        }
+        if (!results) return res.status(404).json({error: 'Customer cart could not be found'})
+
         return res.json({
             cartId, customerId,
             message: 'Customer cart has been deleted',
             results
         })
 
-    } catch
-        (error) {
+    } catch (error) {
         console.log('You have a Server error')
         return res.status(500).json({message: 'Internal server error'})
     }
@@ -140,7 +131,7 @@ export const deleteCustomerCart = async (req, res) => {
 
 
 //===================DELETE ITEM FROM CART=======================
-export const deleteItemFromCart = async (req,res)=>{
+export const deleteItemFromCart = async (req, res) => {
     try {
 
         const cartId = req.params.cart_id

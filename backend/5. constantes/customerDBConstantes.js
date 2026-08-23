@@ -30,7 +30,6 @@ export const CREATE_NEW_CUSTOMER_ADDRESS =`
 `
 
 
-
 //==================PATCH CUSTOMER=====================
 export const PATCH_CUSTOMER = (fields) => {
     const setClause = fields.map(field => `${field}=?`).join(', ')

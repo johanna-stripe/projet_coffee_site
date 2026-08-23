@@ -52,6 +52,7 @@ export const getCustomerAddressesById = async (customerId) => {
         country: row.country
     }))
 }
+
 //==================POST CUSTOMER=====================
 export const createNewCustomer = async (customerData) => {
     const {password, first_name, last_name, email_address, phone_number} = customerData
@@ -164,6 +165,7 @@ export const deleteByIdCustomer = async (customerId) => {
 }
 
 //==================DELETE CUSTOMER ADDRESS=====================
+
 export const deleteByIdCustomerAddress = async (customerId, customerAddress) => {
     const results = await deleteCustomerAddressById(customerId, customerAddress)
     if (!results || results.affectedRows === 0) {

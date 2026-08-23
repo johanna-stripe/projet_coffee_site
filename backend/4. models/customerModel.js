@@ -35,7 +35,6 @@ export const createANewCustomer = async (values) => {
     return results
 }
 
-
 //==================POST CUSTOMER ADDRESS=====================
 export const createANewCustomerAddress = async (customerId, values) => {
     const [results] = await db.query(CREATE_NEW_CUSTOMER_ADDRESS, [customerId, ...values])
@@ -64,6 +63,7 @@ export const deleteCustomerById = async (customerId) => {
 }
 
 //==================DELETE CUSTOMER ADDRESS=====================
+
 export const deleteCustomerAddressById = async (customerId, customerAddress) => {
     const [results] = await db.query(DELETE_CUSTOMER_ADDRESS_BY_ID, [customerId, customerAddress])
     return results

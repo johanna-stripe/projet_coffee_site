@@ -94,7 +94,7 @@ export const createCustomerAddress = async (req, res) => {
         const customerAddressData = req.body
         if (!customerAddressData) return res.status(400).json({error: 'Address details are required'})
 
-        const results = await createNewCustomerAddress(customerId,customerAddressData)
+        const results = await createNewCustomerAddress(customerId, customerAddressData)
         if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Address could not be created'})
 
         return res.json({
@@ -157,23 +157,21 @@ export const patchCustomerAddress = async (req, res) => {
 export const deleteCustomerAccount = async (req, res) => {
     try {
         const customerId = req.params.id
-        if (!customerId) {
-            return res.status(400).json({error: 'Customer Id is required'})
-        }
+        if (!customerId) return res.status(400).json({error: 'Customer Id is required'})
+
         const results = await deleteByIdCustomer(customerId)
-        if (!results) {
-            return res.status(404).json({error: 'Customer could not be found'})
-        }
+        if (!results) return res.status(404).json({error: 'Customer could not be found'})
+
         return res.json({
             customerId,
             message: 'Customer has been deleted',
             results
         })
 
-    } catch
-        (error) {
+    } catch (error) {
         console.log(error)
         return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+
     }
 }
 
@@ -190,18 +188,17 @@ export const deleteCustomerAddress = async (req, res) => {
         }
 
         const results = await deleteByIdCustomerAddress(customerId, customerAddress)
-        if (!results) {
-            return res.status(404).json({error: 'Customer address could not be found'})
-        }
+        if (!results) return res.status(404).json({error: 'Customer address could not be found'})
+
         return res.json({
             customerId, customerAddress,
             message: 'Customer Address has been deleted',
             results
         })
 
-    } catch
-        (error) {
+    } catch (error) {
         console.log(error)
         return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+
     }
 }

@@ -25,6 +25,8 @@ export default router
 // ==================CRUD OPERATIONS===================
 
 //===================GET========================
+
+//Profil d'un client
 router.get('/:id', getCustomerProfile)
 
 router.get('/:id/addresses', getCustomerAddresses)
@@ -42,4 +44,5 @@ router.patch('/:id/address/:address_id',patchCustomerAddress)
 //===================DELETE======================
 router.delete('/:id',deleteCustomerAccount)
 
+//Adresse client
 router.delete('/:id/addresses/:address_id',deleteCustomerAddress)

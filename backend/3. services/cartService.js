@@ -32,6 +32,7 @@ export const getCartByCustomerId = async (customerId) => {
     }
 }
 
+
 //===================POST CART=======================
 export const createNewCart = async (customerId, cartData) => {
     const {
@@ -49,8 +50,6 @@ export const createNewCart = async (customerId, cartData) => {
 
     return await createANewOrderItem(newCartId, cartItemValues)
 }
-
-
 
 
 //===================PATCH CART=======================
@@ -86,6 +85,16 @@ export const deleteByIdCustomerCart = async (cartId, customerId) => {
 
 export const deleteByIdCartItem = async (cartId, productId) => {
     const results = await deleteCartItemById(cartId, productId)
+    if (!results || results.affectedRows === 0) {
+        return null
+    }
+    return results
+}
+
+
+//===================DELETE CART=======================
+export const deleteByIdCustomerCart = async (cartId, customerId) => {
+    const results = await deleteCustomerCartById(cartId, customerId)
     if (!results || results.affectedRows === 0) {
         return null
     }
