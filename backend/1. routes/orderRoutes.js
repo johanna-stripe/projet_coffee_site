@@ -1,10 +1,14 @@
-//==============IMPORTS==================
+//================IMPORTS===================
 import express from "express";
 
 import{
     //GET
     getOrderByCustomer,
     getOrderDetail,
+    //POST
+    createOrder,
+    //PATCH
+    patchOrder,
 } from "../2. controllers/orderController.js";
 
 
@@ -16,7 +20,6 @@ export default router
 
 // ==================CRUD OPERATIONS===================
 
-
 //===================GET========================
 //Lister toutes les commandes d'un client
 router.get('/:customer_id', getOrderByCustomer)
@@ -25,9 +28,12 @@ router.get('/:customer_id', getOrderByCustomer)
 router.get('/detail/:order_id',getOrderDetail)
 
 //===================POST========================
-
-//===================PUT=========================
+router.post('/:customer_id/',createOrder)
 
 //===================PATCH=======================
+router.patch('/:id', patchOrder)
 //order_status : cancelled (pour l'admin)
+
+
+//Pas de delete car on ne veut pas supprimer une commande, on va plutôt la passer en 'cancelled' dans le patch
 

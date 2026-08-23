@@ -9,6 +9,8 @@ import {
     createProduct,
     //PUT
     putProduct,
+    //PATCH
+    patchProduct,
     //DELETE
     deleteProduct,
 } from "../2. controllers/productController.js";
@@ -38,7 +40,7 @@ router.put('/:id', putProduct)
 
 //===================PATCH========================
 //Modifier des caractèristiques précises d'un produit
-router.patch('/id',patchProduct)
+router.patch('/:id',patchProduct)
 
 
 //===================DELETE========================

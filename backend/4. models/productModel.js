@@ -13,6 +13,8 @@ import {
     CREATE_NEW_ACCESSORY,
     //PUT
     PUT_PRODUCT,
+    //PATCH
+    PATCH_PRODUCT,
     //DELETE
     DELETE_PRODUCT_BY_ID,
 } from "../5. constantes/productDBConstantes.js";
@@ -93,6 +95,16 @@ export const createAccessoryDetails = async (productId, details) => {
 //======================PUT PRODUCT==============================
 export const modifyByPutProduct = async (productId, values) =>{
     const [results] = await db.query(PUT_PRODUCT,[...values, productId])
+    return results
+}
+
+//==========================PATCH PRODUCT============================
+export const modifyByPatchProduct = async (fields, values) => {
+    const query = PATCH_PRODUCT(fields)
+    //PATCH_ORDER en lui passant fields --> génère dynamiquement la chaîne de requête SQL sous forme de texte (avec des ? comme placeholders).
+    const [results] = await db.query(query, values)
+    // query est le texte SQL avec des ?
+    // values est le tableau des valeurs qui remplaceront ces ? dans l'ordre
     return results
 }
 

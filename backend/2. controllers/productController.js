@@ -7,6 +7,8 @@ import {
     createNewProduct,
     //PUT
     modifyProductByPut,
+    //PATCH
+    modifyProductByPatch,
     //DELETE
     deleteProductById
 } from "../3. services/productService.js";
@@ -19,8 +21,8 @@ export const getAllProducts = async (req, res) => {
         return res.json(products)
 
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
 
@@ -44,8 +46,8 @@ export const getFullInfoFromProducts = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
 
@@ -103,6 +105,33 @@ export const putProduct = async (req, res) => {
 }
 
 
+//==========================PATCH PRODUCT============================
+export const patchProduct = async (req,res)=>{
+    try{
+        const productId= req.params.id
+        if (!productId) return res.status(400).json({error: 'Product Id is required'})
+
+        if (!req.body) {
+            return res.status(400).json({error: 'Product modification is required'})
+        }
+
+        const results = await modifyProductByPatch(productId,req.body)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Product could not be modified'})
+
+        return res.json({
+            productId,
+            message: 'Product has been modified successfully',
+            results
+        })
+
+    } catch(error){
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
+
+
 //=========================DELETE PRODUCT==============================
 export const deleteProduct = async (req, res) => {
     try {
@@ -121,8 +150,8 @@ export const deleteProduct = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
 

@@ -83,7 +83,6 @@ export const CREATE_NEW_ACCESSORY = `
     VALUES (?, ?, ?, ?)
 `
 
-
 //==========================PUT PRODUCT============================
 export const PUT_PRODUCT = `
     UPDATE product
@@ -96,6 +95,22 @@ export const PUT_PRODUCT = `
         stock=?
     WHERE product_id = ?
 `
+
+//==========================PATCH PRODUCT============================
+export const PATCH_PRODUCT = (fields) => {
+    //Fonction exportée qui prend fields (le tableau des noms de colonnes à modifier) et retourne une chaîne de requête SQL.
+    const setClause = fields.map(field => `${field} = ?`).join(', ')
+    //On transforme le tableau fields en une chaîne SQL de type SET. Par exemple, si fields = ['order_status', 'shipping_cost'] :
+    // .map(field => \${field}=?`) transforme chaque champ en "order_status=?", "shipping_cost=?"`
+    // .join(', ') assemble ces éléments avec une virgule : "order_status=?, shipping_cost=?"
+
+    //Cela construit dynamiquement la clause SET en fonction des champs réellement fournis (SET order_status=?, shipping_cost=? etc.)
+    return `
+        UPDATE product
+        SET ${setClause}
+        WHERE product_id = ?
+    `
+}
 
 
 //======================DELETE PRODUCT==============================

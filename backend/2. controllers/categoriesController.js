@@ -75,11 +75,11 @@ export const getProductsByCategory = async (req, res) => {
 }
 
 
-//==================CREATE NEW CATEGORY=====================
+//==================POST CATEGORY=====================
 export const createACategory = async (req, res) => {
     try {
         if (!req.body) {
-            return res.status(400).json({error: 'Category name is required'})
+            return res.status(400).json({error: 'Category details are required'})
         }
 
         const results = await createNewCategory(req.body)

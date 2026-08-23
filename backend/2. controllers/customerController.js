@@ -3,10 +3,17 @@ import {
     //GET
     getCustomerById,
     getCustomerAddressesById,
+    //POST
+    createNewCustomer,
+    createNewCustomerAddress,
+    //PATCH
+    modifyCustomerByPatch,
+    modifyCustomerAddressByPatch,
     //DELETE
     deleteByIdCustomer,
     deleteByIdCustomerAddress,
 } from "../3. services/customerService.js";
+
 
 //==================GET CUSTOMER BY ID=====================
 export const getCustomerProfile = async (req, res) => {
@@ -27,8 +34,8 @@ export const getCustomerProfile = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
 
@@ -51,10 +58,100 @@ export const getCustomerAddresses = async (req, res) => {
         })
 
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
+
+
+//==================POST CUSTOMER=====================
+export const createCustomer = async (req, res) => {
+    try {
+        const customerData = req.body
+        if (!customerData) return res.status(400).json({error: 'Customer details are required'})
+
+        const results = await createNewCustomer(customerData)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Customer could not be created'})
+
+        return res.json({
+            customerData,
+            message: 'Customer has been created successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
+//==================POST CUSTOMER ADDRESS=====================
+export const createCustomerAddress = async (req, res) => {
+    try {
+        const customerId = req.params.id
+        if (!customerId) return res.status(400).json({error: 'Customer Id is required'})
+
+        const customerAddressData = req.body
+        if (!customerAddressData) return res.status(400).json({error: 'Address details are required'})
+
+        const results = await createNewCustomerAddress(customerId,customerAddressData)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Address could not be created'})
+
+        return res.json({
+            customerAddressData,
+            message: 'Address has been created successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
+
+//==================PATCH CUSTOMER=====================
+export const patchCustomer = async (req, res) => {
+    try {
+        const customerId = req.params.id
+        if (!customerId) return res.status(400).json({error: 'Customer Id is required'})
+
+        const results = await modifyCustomerByPatch(customerId, req.body)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Customer could not be modified'})
+
+        return res.json({
+            customerId,
+            message: 'Customer has been modified successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
+//==================PATCH CUSTOMER ADDRESS=====================
+export const patchCustomerAddress = async (req, res) => {
+    try {
+        const addressId = req.params.address_id
+        if (!addressId) return res.status(400).json({error: 'Address Id is required'})
+
+        const results = await modifyCustomerAddressByPatch(addressId, req.body)
+        if (!results || results.affectedRows === 0) return res.status(404).json({error: 'Customer address could not be modified'})
+
+        return res.json({
+            addressId,
+            message: 'Customer address has been modified successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
 
 //==================DELETE CUSTOMER BY ID=====================
 export const deleteCustomerAccount = async (req, res) => {
@@ -64,7 +161,7 @@ export const deleteCustomerAccount = async (req, res) => {
             return res.status(400).json({error: 'Customer Id is required'})
         }
         const results = await deleteByIdCustomer(customerId)
-        if(!results){
+        if (!results) {
             return res.status(404).json({error: 'Customer could not be found'})
         }
         return res.json({
@@ -75,8 +172,8 @@ export const deleteCustomerAccount = async (req, res) => {
 
     } catch
         (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }
 
@@ -92,8 +189,8 @@ export const deleteCustomerAddress = async (req, res) => {
             return res.status(400).json({error: 'Address Id is required'})
         }
 
-        const results = await deleteByIdCustomerAddress(customerId,customerAddress)
-        if(!results){
+        const results = await deleteByIdCustomerAddress(customerId, customerAddress)
+        if (!results) {
             return res.status(404).json({error: 'Customer address could not be found'})
         }
         return res.json({
@@ -104,7 +201,7 @@ export const deleteCustomerAddress = async (req, res) => {
 
     } catch
         (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
     }
 }

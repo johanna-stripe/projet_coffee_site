@@ -5,6 +5,12 @@ import {
     //GET
     getCustomerProfile,
     getCustomerAddresses,
+    //POST
+    createCustomer,
+    createCustomerAddress,
+    //PATCH
+    patchCustomer,
+    patchCustomerAddress,
     //DELETE
     deleteCustomerAccount,
     deleteCustomerAddress,
@@ -19,21 +25,21 @@ export default router
 // ==================CRUD OPERATIONS===================
 
 //===================GET========================
-//Profil d'un client
 router.get('/:id', getCustomerProfile)
 
-//Toutes les adresses d'un client
 router.get('/:id/addresses', getCustomerAddresses)
 
 //===================POST========================
+router.post('/',createCustomer)
 
-//===================PUT=========================
+router.post('/:id/address',createCustomerAddress)
 
 //===================PATCH=======================
+router.patch('/:id',patchCustomer)
 
-//===================DELETE=======================
-//Compte client
+router.patch('/:id/address/:address_id',patchCustomerAddress)
+
+//===================DELETE======================
 router.delete('/:id',deleteCustomerAccount)
 
-//Adresse client
 router.delete('/:id/addresses/:address_id',deleteCustomerAddress)

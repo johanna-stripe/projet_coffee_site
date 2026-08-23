@@ -4,8 +4,13 @@ import express from "express";
 import {
     //GET
     getCart,
+    //POST
+    createCart,
+    //PATCH
+    patchOrderItem,
     //DELETE
     deleteCustomerCart,
+    deleteItemFromCart,
 } from "../2. controllers/cartController.js";
 
 
@@ -24,14 +29,18 @@ export default router
 router.get('/:customer_id', getCart)
 
 //===================POST========================
-
-//===================PUT=========================
+//Create Cart
+router.post('/:customer_id', createCart)
 
 //===================PATCH=======================
+//Modifier la quantité d'un cart_item
+router.patch('/:cart_id/product/:product_id', patchOrderItem)
 
 //===================DELETE=======================
+//delete cart
 router.delete('/:cart_id/customer/:customer_id',deleteCustomerCart)
 // Customer_id ici sert pour vérifier que celui qui fait la requête a le droit de la supprimer
 
-
+//delete cart_item
+router.delete('/:cart_id/product/:product_id', deleteItemFromCart)
 

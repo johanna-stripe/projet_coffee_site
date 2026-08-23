@@ -5,7 +5,6 @@ import {
     findCategoryById,
     findProductsByCategoryId,
     //PUT
-    findCategoryParentById,
     modifyByIdCategory,
     //DELETE
     deleteCategoryById,
@@ -13,22 +12,10 @@ import {
 
 import {createCategory, findCategoryByName} from "../4. models/productModel.js";
 
-//======================PRIVATE METHODS============================
-const normalizeText = (text) => {
-    if (typeof text !== "string") {
-        return ""
-    }
-    return text.trim().toLowerCase()
-}
-
-//Générer des erreurs personnalisées
-const errorBuilder = (message, statusCode = 400) => {
-    //message : le message personnalisé
-    //statusCode = 400 : par défaut
-    const error = new Error(message)
-    error.statusCode = statusCode
-    return error
-}
+import{
+    normalizeText,
+    errorBuilder
+} from "../7. private methods/privateMethods.js";
 
 //==================GET ALL CATEGORIES=====================
 export const getCategories = async () => {

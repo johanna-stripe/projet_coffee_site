@@ -12,33 +12,16 @@ import {
     createAccessoryDetails,
     //PUT
     modifyByPutProduct,
+    //PATCH
+    modifyByPatchProduct,
     //DELETE
     deleteByIdProduct,
 } from "../4. models/productModel.js";
 
-
-//======================PRIVATE METHODS============================
-
-const normalizeText = (text) => {
-    if (typeof text !== "string") {
-        return ""
-    }
-    return text.trim().toLowerCase()
-}
-
-//Générer des erreurs personnalisées
-const errorBuilder = (message, statusCode = 400) => {
-    //message : le message personnalisé
-    //statusCode = 400 : par défaut
-    const error = new Error(message)
-    error.statusCode = statusCode
-    return error
-}
-
-
-//=================================================================
-//=================================================================
-//=================================================================
+import{
+    normalizeText,
+    errorBuilder
+} from "../7. private methods/privateMethods.js";
 
 
 //========================GET ALL PRODUCTS=========================
@@ -106,12 +89,10 @@ export const getProductInfoById = async (productId) => {
 
 
 //=========================POST NEW PRODUCT==============================
-
 //PB : l'user ne va pas rentrer un category_id ni un brand_id
 //Exemple : l'user entre "café grain" il faut trouver à quel category_id ça correspond
 //Solution --> lier category_id à category_name et brand_id à brand_name
 //En mm temps : si category_name ou brand_name n'existe pas, on les crée
-
 
 // **************************Etape 1 : catégorie/brand existe déjà ? sinon on la crée*************************
 const resolveCategoryId = async (categoryId, categoryName) => {
@@ -248,7 +229,30 @@ export const modifyProductByPut = async (productId, productValues) => {
         stock
     ]
 
-    return await modifyByPutProduct (productId, values)
+    return await modifyByPutProduct(productId, values)
+}
+
+//==========================PATCH PRODUCT============================
+export const modifyProductByPatch = async (productId, changes) => { //changes : les champs à mettre à jour
+    const allowed_updates = ['category_id', 'brand_id', 'product_name', 'product_description', 'price', 'stock']
+    const fields_to_update = [] //noms de colonnes à modifier
+    const values_to_update = [] //valeurs correspondantes
+
+    allowed_updates.forEach((field) => { //on parcours chaque champ authorisé
+        if (changes[field] !== undefined) { //si ce champ (field) est bien présent dans 'changes'
+            //Si une première valeur a été entré, donc pas undefined
+            fields_to_update.push(field);
+            // ajoute le nom du champ à modifier
+            values_to_update.push(changes[field])
+            //ajoute sa nouvelle valeur
+        }
+    })
+    if (fields_to_update.length === 0) throw errorBuilder('No field to update', 400)
+
+    values_to_update.push(productId) //On ajoute productId à la fin du tableau des valeurs pour l'utiliser dans la clause WHERE id = ?
+
+    return await modifyByPatchProduct(fields_to_update, values_to_update)
+
 }
 
 
