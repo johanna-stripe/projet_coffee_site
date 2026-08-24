@@ -90,13 +90,3 @@ export const deleteByIdCartItem = async (cartId, productId) => {
     }
     return results
 }
-
-
-//===================DELETE CART=======================
-export const deleteByIdCustomerCart = async (cartId, customerId) => {
-    const results = await deleteCustomerCartById(cartId, customerId)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
-    return results
-}

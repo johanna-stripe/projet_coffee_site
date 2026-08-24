@@ -25,7 +25,6 @@ export default router
 // ==================CRUD OPERATIONS===================
 
 //===================GET========================
-
 //Profil d'un client
 router.get('/:id', getCustomerProfile)
 

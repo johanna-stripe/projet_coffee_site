@@ -28,20 +28,16 @@ router.get('/', getAllProducts)
 //Détail d'un produit — GET /products/:id
 router.get('/:id', getFullInfoFromProducts)
 
-
 //===================POST========================
 router.post('/', createProduct)
-
 
 //===================PUT========================
 //Modifier un produit
 router.put('/:id', putProduct)
 
-
 //===================PATCH========================
 //Modifier des caractèristiques précises d'un produit
 router.patch('/:id',patchProduct)
-
 
 //===================DELETE========================
 router.delete('/:id',deleteProduct)
