@@ -4,12 +4,14 @@ import express from 'express'
 import cors from 'cors'
 //cors → permet à d'autres applications (ex: un frontend React) d'appeler ce serveur sans être bloquées par le navigateur
 
-import productRoutes from "./1. routes/productRoutes.js";
-import categoriesRoutes from "./1. routes/categoriesRoutes.js";
-import cartRoutes from "./1. routes/cartRoutes.js";
-import customerRoutes from "./1. routes/customerRoutes.js";
-import orderRoutes from "./1. routes/orderRoutes.js";
-import brandRoutes from "./1. routes/brandRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
+import categoriesRoutes from "./routes/categoriesRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js";
+import customerRoutes from "./routes/customerRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import brandRoutes from "./routes/brandRoutes.js";
+import authRoutes from "./security/authRoutes.js";
+import userRoutes from "./security/userRoutes.js";
 
 //=============DEMARRAGE DU SERVEUR===============
 const app = express();
@@ -32,6 +34,9 @@ app.use('/api/v1/cart', cartRoutes)
 app.use('/api/v1/customer', customerRoutes)
 app.use('/api/v1/order', orderRoutes)
 app.use('/api/v1/brand', brandRoutes)
+
+app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/users', userRoutes)
 
 export default app;
 

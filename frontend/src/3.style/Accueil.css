@@ -1,0 +1,125 @@
+/*********************Slider_images*********************/
+/* --- Texte superposé --- */
+.slider-text {
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    max-width: 500px;
+    color: white;
+    z-index: 2;
+
+}
+
+.slider-text h2 {
+    font-size: 2.8rem;
+    line-height: 1.1;
+}
+
+.slider-text p {
+    margin-bottom: 1em;
+}
+
+/* --- Fondu sombre pour lisibilité du texte --- */
+.slider-images::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 80%);
+    z-index: 1;
+}
+
+/* --- Flèche de navigation --- */
+.slider-arrow {
+    position: absolute;
+    top: 50%;
+    right: 30px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+    font-size: 1.2rem;
+}
+.slider-arrow-prev {
+    left: 30px;
+}
+
+.slider-arrow-next {
+    right: 30px;
+}
+
+/* --- Points de pagination --- */
+.slider-dots {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 2;
+}
+
+.dot {
+    width: 30px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.dot.active {
+    background: white;
+}
+
+
+/*********************Explore_section*********************/
+.image-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 50%; /* couvre la moitié basse */
+    background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0) 100%
+    );
+    pointer-events: none; /* pour ne pas bloquer les clics */
+}
+
+.image-container img:hover {
+    transition: transform 0.75s ease;
+    cursor: pointer;
+    transform: scale(1.05);
+    /* 0.9 = 90% de la taille originale */
+    /*1.1 = 110% (plus grand)*/
+}
+
+.image-container p {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.image-container:hover p {
+    color: var(--color-primary);
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/*******************History*****************/
+.foundedIn{
+    bottom: 30px;
+    right: 30px;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255,255,255,0.6);
+}
+
+.b-bottom-2px-c-secondary { border-bottom: 2px solid var(--color-secondary); }
+.b-bottom-2px-c-primary { border-bottom: 2px solid var(--color-primary); }
+.b-top-1px { border-top: 1px solid var(--color-secondary); }
+.b-right-1px {border-right: 1px solid var(--color-primary)}

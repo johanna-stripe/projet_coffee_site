@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+    --color-primary: #f3ebd9;
+    --color-secondary: rgb(51, 27, 10);
+    --color-tertiary: #905b27;
+    --color-quaternary: #305847;
+}
+
+html {
+    scroll-behavior: smooth;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    scroll-timeline-name: --page-scroll;
+    scroll-timeline-axis: block;
+    font-size: 12px !important;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    padding-top: 100px;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif, SansSerif;
+    background: var(--color-primary);
+    height: fit-content;
+    overflow-x: clip;
+    max-width: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+h1 {font-size: 4em}
+h2 {font-size: 3em}
+h3 {font-size: 1.25em}
+h4 {font-size: 1em}
+h5 {font-size: 0.75em}
+h6 {font-size: 0.5em}
