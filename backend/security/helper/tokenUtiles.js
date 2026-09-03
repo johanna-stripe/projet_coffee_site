@@ -3,13 +3,13 @@ import jwt from "jsonwebtoken";
 export const generateToken = (user) => {
     return jwt.sign(
         {
-            id: user.user_id,
+            id: user.id,
             email: user.email,
             role: user.role
         },
         process.env.JWT_SECRET,
         {
-            expiresIn: process.env.JWT_EXPIRES_IN || "1d"
+            expiresIn: process.env.JWT_EXPIRES_IN || '1d'
         }
     )
 }

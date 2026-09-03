@@ -4,10 +4,8 @@ import {
 } from "./userModel.js";
 
 import {errorBuilder} from "../private methods/privateMethods.js";
-import {hashPassword} from "./helper/passwordUtiles.js";
+import {comparePassword, hashPassword} from "./helper/passwordUtiles.js";
 import {generateToken} from "./helper/tokenUtiles.js";
-import {compare} from "bcrypt";
-
 
 //=================REGISTER===================
 export const registerUser = async (userData) => {
@@ -32,7 +30,7 @@ export const registerUser = async (userData) => {
 
     return {
         user: {
-            id: user.user_id,
+            id: user.id,
             username: user.username,
             email: user.email,
             role: user.role
@@ -54,7 +52,7 @@ export const loginUser = async ({email, password})=>{
         throw errorBuilder('The account is disable', 403)
     }
 
-    const passwordIsValid = await compare(password, existingUser.password)
+    const passwordIsValid = await comparePassword(password, existingUser.password)
     if(!passwordIsValid) throw errorBuilder('Invalid identifiers',401)
 
     const token = generateToken(existingUser)
@@ -64,7 +62,7 @@ export const loginUser = async ({email, password})=>{
             id: existingUser.user_id,
             username: existingUser.username,
             email: existingUser.email,
-            roel: existingUser.role
+            role: existingUser.role
         },
         token
     }

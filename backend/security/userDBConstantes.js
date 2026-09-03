@@ -2,20 +2,13 @@
 export const FIND_USER_BY_EMAIL = `
     SELECT *
     FROM users
-    WHERE email = ?
+    WHERE user_email = ?
     LIMIT 1
 `
 
-//===========CREATE USER===============
-export const CREATE_USER = `
-    INSERT INTO users (user_name, email, password, role)
-    VALUES (?, ?, ?, ?)
-`
-
-
 //===========GET ALL USERS===============
 export const FIND_ALL_USERS = `
-    SELECT user_id, user_name, email, password, role, is_active, created_at
+    SELECT user_id, user_name, user_email, password, role, is_active, created_at
     FROM users
 `
 
@@ -23,7 +16,15 @@ export const FIND_USER_BY_ID = `
     SELECT *
     FROM users
     WHERE user_id = ?
+    LIMIT 1
 `
+
+//===========CREATE USER===============
+export const CREATE_USER = `
+    INSERT INTO users (user_name, user_email, password, role)
+    VALUES (?, ?, ?, ?)
+`
+
 
 //===========UPDATE USER BY ID===============
 export const UPDATE_USER_BY_ID = (fields) => {
@@ -34,3 +35,17 @@ export const UPDATE_USER_BY_ID = (fields) => {
         WHERE user_id = ?
     `
 }
+
+//===========UPDATE USER ROLE===============
+export const UPDATE_ROLE = `
+    UPDATE users
+    SET role = ?
+    WHERE user_id = ?
+`
+
+//===========ACTIVATE USER===============
+export const UPDATE_IS_ACTIVE = `
+    UPDATE users
+    SET is_active = FALSE
+    WHERE user_id = ?
+`

@@ -1,14 +1,28 @@
 import express from "express";
+import {
+    getAllUsers,
+    getUserById,
+    postUser,
+    updateUser,
+    patchUserRole,
+    patchUserActivate
+} from "./userController.js";
 
 const router = express.Router();
 export default router
 
-// router.get('/', getAllUsers)
-// router.get('/:id', getUserById)
-// router.post('/', createUser)
-// router.patch('/role', modifyUserRole)
-// router.patch('/deactivate-account', deactivateUser)
+//===========GET===============
+router.get('/', getAllUsers)
 
+router.get('/:id', getUserById)
 
+//===========POST===============
+router.post('/', postUser)
 
+//===========PATCH===============
+router.patch('/:id', updateUser)
+
+router.patch('/:id/change-role', patchUserRole)
+
+router.patch('/:id/activate', patchUserActivate)
 

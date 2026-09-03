@@ -1,8 +1,10 @@
 //====================IMPORTS====================
+import 'dotenv/config.js' //doit se placer en premier
 import express from 'express'
 //express → le framework qui va créer le serveur web
 import cors from 'cors'
 //cors → permet à d'autres applications (ex: un frontend React) d'appeler ce serveur sans être bloquées par le navigateur
+import helmet from "helmet";
 
 import productRoutes from "./routes/productRoutes.js";
 import categoriesRoutes from "./routes/categoriesRoutes.js";
@@ -20,6 +22,7 @@ app.use(express.json());
 //express.json() → dit à Express de lire automatiquement le JSON envoyé dans les requêtes (le req.body)
 app.use(cors(0))
 //cors(0) → autorise toutes les origines à appeler l'API
+app.use(helmet())
 
 
 //Test pour vérifier si tout est bien paramétré

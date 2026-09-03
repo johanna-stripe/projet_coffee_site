@@ -46,3 +46,11 @@ export const login = async (req,res)=>{
 }
 
 
+//===================SECURED ENDPOINT=====================
+export const securedEnPoint = async (req, res) => {
+    return res.json({
+        message: "Welcome to secured endpoint",
+        user: req.user,
+    })
+}
+
