@@ -3,8 +3,9 @@ import {
     getUser,
     createNewUser,
     modifyUser,
-    updateRoleByUserId,
-    updateActivateByUserId
+    updateRole,
+    enableUser,
+    disableUser
 } from "./userService.js";
 
 import {errorBuilder} from "../private methods/privateMethods.js";
@@ -24,7 +25,7 @@ export const getAllUsers = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal Server Error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -46,12 +47,12 @@ export const getUserById = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal Server Error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
 
-//===========POST===============
+//==================CREATE USER=====================
 export const postUser = async (req, res) => {
     try {
         if (!req.body) throw errorBuilder('User data is required')
@@ -69,10 +70,9 @@ export const postUser = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
-
 
 
 //===================PATCH=======================
@@ -88,10 +88,9 @@ export const updateUser = async(req,res)=>{
             results
         })
 
-
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal Server Error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -101,25 +100,21 @@ export const patchUserRole = async (req, res) => {
         const userId = req.params.id
         if (!userId) throw errorBuilder('User Id is required')
 
-        const isAuthorized = await authorizeRole()
-        if(!isAuthorized) throw errorBuilder('Access denied')
+        const role = req.body.role
+        if (!req.body) throw errorBuilder('User role is required')
 
-        if (!req.body) throw errorBuilder('User data is required')
-
-        const results = await updateRoleByUserId(userId, req.body)
+        const results = await updateRole(userId, role)
         if(!results || results.affectedRows===0) throw errorBuilder('User role could not be updated')
 
         return res.json({
             userId,
-            message: 'User role updated',
-            data: {
-                ...req.body
-            }
+            message: 'User role updated successfully',
+            results
         })
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -129,27 +124,39 @@ export const patchUserActivate = async (req, res) => {
         const userId = req.params.id
         if (!userId) throw errorBuilder('User Id is required')
 
-        const isAuthorized = await authorizeRole()
-        if(!isAuthorized) throw errorBuilder('Access denied')
-
-        if (!req.body) throw errorBuilder('User data is required')
-
-        const results = await updateActivateByUserId(userId, req.body)
+        const results = await enableUser(userId)
         if(!results || results.affectedRows===0) throw errorBuilder('User could not be deactivated')
 
         return res.json({
             userId,
-            message: 'User has been deactivated',
-            data: {
-                ...req.body
-            }
+            message: 'User activated successfully',
+            results
         })
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
+export const patchUserDeactivate = async (req, res) => {
+    try {
+        const userId = req.params.id
+        if (!userId) throw errorBuilder('User Id is required')
+
+        const results = await disableUser(userId)
+        if(!results || results.affectedRows===0) throw errorBuilder('User could not be deactivated')
+
+        return res.json({
+            userId,
+            message: 'User deactivated successfully',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
+    }
+}
 
 

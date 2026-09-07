@@ -21,7 +21,7 @@ export const getAllBrands = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -45,7 +45,7 @@ export const getBrandById = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -72,7 +72,7 @@ export const getProductsByBrand = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -97,7 +97,7 @@ export const createABrand = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -122,7 +122,7 @@ export const modifyBrand = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -146,6 +146,6 @@ export const deleteBrand = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }

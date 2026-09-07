@@ -13,6 +13,8 @@ import {
     //DELETE
     deleteCategory,
 } from '../controllers/categoriesController.js'
+import {authenticate} from "../security/midddleware/authMiddleware.js";
+import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
 
 
 const router = express.Router();
@@ -21,7 +23,7 @@ const router = express.Router();
 export default router
 
 
-// ==================CRUD OPERATIONS===================
+// ================CRUD OPERATIONS=================
 
 //===================GET========================
 //Lister toutes les catégories
@@ -34,11 +36,12 @@ router.get('/:id', getCategoryById)
 router.get('/:id/products', getProductsByCategory)
 
 //===================POST========================
-router.post('/', createACategory)
+router.post('/', authenticate, authorizeRole('ADMIN'), createACategory)
 //ajouter le category_parent
 
 //===================PUT=========================
-router.put('/:id',putCategory)
+router.put('/:id',authenticate, authorizeRole('ADMIN'), putCategory)
 
 //===================DELETE=======================
-router.delete('/:id', deleteCategory)
+router.delete('/:id', authenticate, authorizeRole('ADMIN'), deleteCategory)
+

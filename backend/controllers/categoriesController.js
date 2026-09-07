@@ -20,7 +20,7 @@ export const getAllCategories = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -45,7 +45,7 @@ export const getCategoryById = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -70,7 +70,7 @@ export const getProductsByCategory = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -96,7 +96,7 @@ export const createACategory = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -120,7 +120,7 @@ export const putCategory = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -143,8 +143,8 @@ export const deleteCategory = async (req, res) => {
             results
         })
     } catch (error) {
-        console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        console.log(error)
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 

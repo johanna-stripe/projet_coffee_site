@@ -20,18 +20,14 @@ import {
 
 //==================GET CART BY CUSTOMER ID=====================
 export const getCartByCustomerId = async (customerId) => {
-    const rows = await findCartByCustomerId(customerId)
-
-    if (!rows) {
-        return null
-    }
+    const cart = await findCartByCustomerId(customerId)
+    if (!cart) throw errorBuilder('Not found', 404)
     return {
-        cart_id: rows.cart_id,
-        cart_creation_date: rows.cart_creation_date,
-        customer_id: rows.customer_id,
+        cart_id: cart.cart_id,
+        cart_creation_date: cart.cart_creation_date,
+        customer_id: cart.customer_id,
     }
 }
-
 
 //===================POST CART=======================
 export const createNewCart = async (customerId, cartData) => {
@@ -70,23 +66,19 @@ export const modifyCartByPatch = async (cartId, productId, changes) => {
     values_to_update.push(cartId, productId)
 
     return await modifyByPatchCart(fields_to_update, values_to_update)
-
 }
 
 
 //===================DELETE CART=======================
 export const deleteByIdCustomerCart = async (cartId, customerId) => {
     const results = await deleteCustomerCartById(cartId, customerId)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
+    if (!results || results.affectedRows === 0) throw errorBuilder('Not found', 404)
     return results
 }
 
 export const deleteByIdCartItem = async (cartId, productId) => {
     const results = await deleteCartItemById(cartId, productId)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
+    if (!results || results.affectedRows === 0) throw errorBuilder('Not found', 404)
     return results
 }
+

@@ -15,6 +15,8 @@ import {
     deleteCustomerAccount,
     deleteCustomerAddress,
 } from "../controllers/customerController.js";
+import {authenticate} from "../security/midddleware/authMiddleware.js";
+import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
 
 const router = express.Router();
 // on utiliser .Router pour pouvoir passer d'un fichier à l'autre en MVC
@@ -26,22 +28,22 @@ export default router
 
 //===================GET========================
 //Profil d'un client
-router.get('/:id', getCustomerProfile)
+router.get('/:id', authenticate, getCustomerProfile)
 
-router.get('/:id/addresses', getCustomerAddresses)
+router.get('/:id/addresses', authenticate, getCustomerAddresses)
 
 //===================POST========================
-router.post('/',createCustomer)
+router.post('/', authenticate, authorizeRole('ADMIN'), createCustomer)
 
-router.post('/:id/address',createCustomerAddress)
+router.post('/:id/address', authenticate, createCustomerAddress)
 
 //===================PATCH=======================
-router.patch('/:id',patchCustomer)
+router.patch('/:id', authenticate, patchCustomer)
 
-router.patch('/:id/address/:address_id',patchCustomerAddress)
+router.patch('/:id/address/:address_id', authenticate, patchCustomerAddress)
 
 //===================DELETE======================
-router.delete('/:id',deleteCustomerAccount)
+router.delete('/:id', authenticate, deleteCustomerAccount)
 
 //Adresse client
-router.delete('/:id/addresses/:address_id',deleteCustomerAddress)
+router.delete('/:id/addresses/:address_id', authenticate, deleteCustomerAddress)

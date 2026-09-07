@@ -12,6 +12,7 @@ export const register = async (req, res) => {
         }
 
         const result = await registerUser(req.body)
+
         return res.status(201).json({
             message: 'User registered successfully',
             user: result.user,
@@ -33,6 +34,14 @@ export const login = async (req,res)=>{
         }
 
         const result = await loginUser(req.body)
+
+        res.cookie('token', result.token, { //on récupère le token qu'on vient de générer dans loginUser qui est dans const result
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 360000
+            }
+        )
         return res.status(201).json({
             message: 'User logged in successfully',
             user: result.user,

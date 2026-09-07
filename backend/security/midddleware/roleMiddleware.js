@@ -7,10 +7,10 @@ export const authorizeRole = (...allowedRoles) => {
 
     return (req, res, next) => {
         //verification que l'user est bien authentifié
-        if (!req.user) return errorBuilder('User not authenticated', 401)
+        if (!req.user) throw errorBuilder('User not authenticated', 401)
 
         //vérification du role de l'user
-        if(!allowedRoles.includes(req.user.role)) return errorBuilder('Access Denied',403)
+        if(!allowedRoles.includes(req.user.role)) throw errorBuilder('Access Denied',403)
 
         next();
     };

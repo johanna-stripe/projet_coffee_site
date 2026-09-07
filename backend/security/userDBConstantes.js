@@ -8,7 +8,7 @@ export const FIND_USER_BY_EMAIL = `
 
 //===========GET ALL USERS===============
 export const FIND_ALL_USERS = `
-    SELECT user_id, user_name, user_email, password, role, is_active, created_at
+    SELECT user_id AS id, user_name AS username, user_email AS email, password, role, is_active, created_at
     FROM users
 `
 
@@ -44,8 +44,16 @@ export const UPDATE_ROLE = `
 `
 
 //===========ACTIVATE USER===============
-export const UPDATE_IS_ACTIVE = `
+export const UPDATE_ACTIVATE_USER = `
+    UPDATE users
+    SET is_active = TRUE
+    WHERE user_id = ?
+`
+
+//===========DEACTIVATE USER===============
+export const UPDATE_DEACTIVATE_USER = `
     UPDATE users
     SET is_active = FALSE
     WHERE user_id = ?
 `
+

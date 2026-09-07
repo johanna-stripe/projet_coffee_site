@@ -34,7 +34,7 @@ export const getCart = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+       return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -64,7 +64,7 @@ export const createCart = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -100,7 +100,7 @@ export const patchOrderItem = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -125,7 +125,7 @@ export const deleteCustomerCart = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -157,6 +157,6 @@ export const deleteItemFromCart = async (req, res) => {
     } catch
         (error) {
         console.log('You have a Server error')
-        return res.status(500).json({message: 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }

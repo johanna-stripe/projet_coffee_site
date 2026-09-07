@@ -5,6 +5,8 @@ import express from 'express'
 import cors from 'cors'
 //cors → permet à d'autres applications (ex: un frontend React) d'appeler ce serveur sans être bloquées par le navigateur
 import helmet from "helmet";
+import rateLimit from 'express-rate-limit'
+import cookieParser from 'cookie-parser'
 
 import productRoutes from "./routes/productRoutes.js";
 import categoriesRoutes from "./routes/categoriesRoutes.js";
@@ -22,7 +24,19 @@ app.use(express.json());
 //express.json() → dit à Express de lire automatiquement le JSON envoyé dans les requêtes (le req.body)
 app.use(cors(0))
 //cors(0) → autorise toutes les origines à appeler l'API
-app.use(helmet())
+app.use(helmet()) //pas besoin de le configurer comme limiter
+//voir ce que fait postman sans helmet (on double les vérifications de sécurité, donc mon appli est bien secure)
+
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 5,
+    message:{
+        message: 'Too many connection attempts. Retry later'
+    },
+})
+app.use(limiter);
+
+app.use(cookieParser())
 
 
 //Test pour vérifier si tout est bien paramétré

@@ -22,26 +22,21 @@ import {
 
 //==================GET CUSTOMER BY ID=====================
 export const getCustomerById = async (customerId) => {
-    const rows = await findCustomerById(customerId)
-    if (!rows) {
-        return null
-    }
+    const customer = await findCustomerById(customerId)
+    if (!customer) throw errorBuilder('Not found', 404)
     return {
-        customer_id: rows.customer_id,
-        password_hash: rows.password_hash,
-        first_name: rows.first_name,
-        last_name: rows.last_name,
-        phone_number: rows.phone_number
+        customer_id: customer.customer_id,
+        password_hash: customer.password_hash,
+        first_name: customer.first_name,
+        last_name: customer.last_name,
+        phone_number: customer.phone_number
     }
 }
-
 
 //==================GET CUSTOMER ADDRESSES=====================
 export const getCustomerAddressesById = async (customerId) => {
     const rows = await findCustomerAddressesById(customerId)
-    if (rows.length === 0) {
-        return null
-    }
+    if (!rows || rows.length === 0) throw errorBuilder('Not found', 404)
     return rows.map(row => ({
 //map : rows est le tableau de [results] donc si un client a plusieurs addresses, il faut transformer chaque ligne du tableau en un nouvel objet
         address_id: row.address_id,
@@ -127,7 +122,7 @@ export const modifyCustomerByPatch = async (customerId, changes) => {
         }
     })
 
-    if (fields_to_update.length === 0) throw errorBuilder('No field to update', 400)
+    if (fields_to_update.length === 0) throw errorBuilder('No field to update')
 
     values_to_update.push(customerId)
 
@@ -147,7 +142,7 @@ export const modifyCustomerAddressByPatch = async (addressId, changes) => {
         }
     })
 
-    if (fields_to_update.length === 0) throw errorBuilder('No field to update', 400)
+    if (fields_to_update.length === 0) throw errorBuilder('No field to update')
 
     values_to_update.push(addressId)
 
@@ -158,18 +153,13 @@ export const modifyCustomerAddressByPatch = async (addressId, changes) => {
 //==================DELETE CUSTOMER=====================
 export const deleteByIdCustomer = async (customerId) => {
     const results = await deleteCustomerById(customerId)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
+    if (!results || results.affectedRows === 0) throw errorBuilder('Not found',404)
     return results
 }
 
 //==================DELETE CUSTOMER ADDRESS=====================
-
 export const deleteByIdCustomerAddress = async (customerId, customerAddress) => {
     const results = await deleteCustomerAddressById(customerId, customerAddress)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
+    if (!results || results.affectedRows === 0) throw errorBuilder('Not found',404)
     return results
 }

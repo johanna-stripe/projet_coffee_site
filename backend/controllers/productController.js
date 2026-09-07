@@ -22,7 +22,7 @@ export const getAllProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -47,7 +47,7 @@ export const getFullInfoFromProducts = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -78,7 +78,7 @@ export const createProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -100,7 +100,7 @@ export const putProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -126,7 +126,7 @@ export const patchProduct = async (req,res)=>{
 
     } catch(error){
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -151,7 +151,7 @@ export const deleteProduct = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 

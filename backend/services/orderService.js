@@ -17,9 +17,7 @@ import {
 //==================GET CUSTOMER ORDER BY CUSTOMER ID=====================
 export const getOrderByCustomerId = async (customerId) => {
     const rows = await findOrderByCustomerId(customerId)
-    if (rows.length === 0) {
-        return null
-    }
+    if (!rows || rows.length === 0) throw errorBuilder('Not found', 404)
     return rows.map(row => ({
 //map : rows est le tableau de [results] donc si un client a plusieurs commandes, il faut transformer chaque ligne du tableau en un nouvel objet
         customer_id: row.customer_id,
@@ -33,9 +31,7 @@ export const getOrderByCustomerId = async (customerId) => {
 //==================GET ORDER DETAIL BY ORDER ID=====================
 export const getOrderDetailByOrderId = async (orderId) => {
     const rows = await findOrderDetailByOrderId(orderId)
-    if (rows.length === 0) {
-        return null
-    }
+    if (!rows || rows.length === 0) throw errorBuilder('Not found', 404)
     return {
         order_id: rows[0].order_id,
         customer_id: rows[0].customer_id,
@@ -48,7 +44,6 @@ export const getOrderDetailByOrderId = async (orderId) => {
         shipping_cost: rows[0].shipping_cost
     }
 }
-
 
 //==================POST ORDER=====================
 export const createNewOrder = async (customerId, orderData) => {

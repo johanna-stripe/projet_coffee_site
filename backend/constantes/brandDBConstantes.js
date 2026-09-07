@@ -9,7 +9,7 @@ export const FIND_BRAND_BY_ID = `
     WHERE brand_id = ?
 `
 
-export const FIND_PRODUCTS_BY_BRAND_ID = `
+export const GET_BRAND_PRODUCTS_COUNT = `
     SELECT b.brand_id,
            b.brand_name,
            COUNT(p.product_id) AS product_count

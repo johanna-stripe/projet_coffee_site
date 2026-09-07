@@ -12,29 +12,22 @@ import {
 
 import {createCategory, findCategoryByName} from "../models/productModel.js";
 
-import{
+import {
     normalizeText,
     errorBuilder
 } from "../private methods/privateMethods.js";
 
 //==================GET ALL CATEGORIES=====================
 export const getCategories = async () => {
-    const result = await findAllCategories()
-    if (!result) {
-        return null
-    }
-    return result
+    const results = await findAllCategories()
+    if (!results) throw errorBuilder('Not found', 404)
+    return results
 }
-
 
 //==================GET CATEGORY BY ID=====================
 export const getCategoryInfoById = async (categoryId) => {
     const rows = await findCategoryById(categoryId)
-
-    if (!rows) {
-        return null
-    }
-
+    if (!rows) throw errorBuilder('Not found', 404)
     return {
         category_id: rows.category_id,
         category_name: rows.category_name,
@@ -42,14 +35,10 @@ export const getCategoryInfoById = async (categoryId) => {
     }
 }
 
-
 //==================GET PRODUCTS BY CATEGORY ID=====================
 export const getProductsByCategoryId = async (categoryId) => {
     const rows = await findProductsByCategoryId(categoryId)
-
-    if (!rows) {
-        return null
-    }
+    if (!rows) throw errorBuilder('Not found', 404)
     return {
         category_id: rows.category_id,
         category_name: rows.category_name,
@@ -60,12 +49,6 @@ export const getProductsByCategoryId = async (categoryId) => {
 
 
 //==================CREATE NEW CATEGORY=====================
-// const findCategoryParent = async (categoryName) => {
-//     const result = await findCategoryParentById(categoryName)
-//     if (!result) return null
-// }
-
-
 export const createNewCategory = async (categoryData) => {
     const {category_name, parent_id} = categoryData
 
@@ -80,16 +63,16 @@ export const createNewCategory = async (categoryData) => {
         cleanCategoryName,
         parent_id
     ]
-
     return await createCategory(values)
 }
 
 //====================MODIFY CATEGORY=======================
-//quand l'admin veut modifier une category :
-//1. Il choisit la category par category_id
-//2. Il modifier category_name
-//3. Il peut modifier le parent_id
-
+/*
+quand l'admin veut modifier une category :
+1. Il choisit la category par category_id
+2. Il modifier category_name
+3. Il peut modifier le parent_id
+ */
 
 export const modifyCategory = async (categoryId, categoryValues) => {
     // const category_parent = await findCategoryParentById(categoryId)
@@ -113,10 +96,8 @@ export const modifyCategory = async (categoryId, categoryValues) => {
 
 //=====================DELETE CATEGORY=======================
 export const deleteByIdCategory = async (categoryId) => {
-    const results = await deleteCategoryById(categoryId)
-    if (!results || results.affectedRows === 0) {
-        return null
-    }
-    return results
+    const result = await deleteCategoryById(categoryId)
+    if (!result || result.affectedRows === 0) throw errorBuilder('Not found', 404)
+    return result
 }
 

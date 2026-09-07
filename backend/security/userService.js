@@ -5,48 +5,48 @@ import {
     createUser,
     updateUserById,
     updateUserRole,
-    deactivate
+    deactivate, activate
 } from "./userModel.js";
 import {errorBuilder} from "../private methods/privateMethods.js";
+import {hashPassword} from "./helper/passwordUtiles.js";
 
 
 //===========GET ALL USERS===============
 export const getUsers = async () => {
     const results = await findAllUsers()
-
-    if (!results) {
-        return null
-    }
+    if (!results) throw errorBuilder('Not found',404)
     return results
 }
 
 //===========GET USER BY ID===============
 export const getUser = async (userId) => {
-    const rows = await getByIdUser(userId)
-    if (!rows) {
-        return null
-    }
+    const user = await getByIdUser(userId)
+    if (!user) throw errorBuilder('Not found',404)
     return {
-        user_name: rows.user_name,
-        email: rows.email,
-        role: rows.role,
+        user_name: user.user_name,
+        email: user.email,
+        role: user.role,
     }
 }
 
-
 //===========POST USER===============
 export const createNewUser = async (userData) => {
-    const {user_name, email, password, role} = userData
+    const {username, email, password, role} = userData
+    if (!username || !email || !password) throw errorBuilder('All fields are mandatory')
+    if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
 
     const existingUser = await findUserByEmail(email)
     if (existingUser) throw errorBuilder('User already exists')
 
+    const hashedPassword = await hashPassword(password)
+
     const userValues = [
-        user_name,
+        username,
         email,
-        password,
+        hashedPassword,
         role
     ]
+
     return await createUser(userValues)
 }
 
@@ -71,47 +71,25 @@ export const modifyUser = async (userId, updates) => {
 }
 
 
-export const updateRoleByUserId = async (userId, updates) => {
-    const allowedUpdate = ['role']
-    const fieldsToUpdate = []
-    const valuesToUpdate = []
+export const updateRole = async (userId, role) => {
+    const allowedRoles = ['USER', 'ADMIN']
+    if (!allowedRoles.includes(role)) throw errorBuilder('Invalid Role')
 
-    const existingUser = await getByIdUser(userId)
-    if (!existingUser) throw errorBuilder('User does not exist')
+    const updateUser = await updateUserRole(userId, role)
+    if (!updateUser) throw errorBuilder(`User Id with ${userId} not found`, 404)
 
-    allowedUpdate.forEach((field) => {
-        if (updates[field] !== undefined) {
-            fieldsToUpdate.push(field)
-            valuesToUpdate.push(updates[field])
-        }
-    })
-
-    if (fieldsToUpdate.length === 0) {
-        throw errorBuilder('No valid fields to update')
-    }
-
-    return await updateUserRole (userId,valuesToUpdate)
+    return updateUser
 }
 
 
-export const updateActivateByUserId = async (userId, updates) => {
-    const allowedUpdate = ['is_active']
-    const fieldsToUpdate = []
-    const valuesToUpdate = []
+export const enableUser = async (userId) => {
+    const updatedUser = await activate(userId)
+    if(!updatedUser) throw errorBuilder(`User Id with ${userId} not found`, 404)
+    return updatedUser
+}
 
-    const existingUser = await getByIdUser(userId)
-    if (!existingUser) throw errorBuilder('User does not exist')
-
-    allowedUpdate.forEach((field) => {
-        if (updates[field] !== undefined) {
-            fieldsToUpdate.push(field)
-            valuesToUpdate.push(updates[field])
-        }
-    })
-
-    if (fieldsToUpdate.length === 0) {
-        throw errorBuilder('No valid fields to update')
-    }
-
-    return await deactivate(userId,valuesToUpdate)
+export const disableUser = async (userId) => {
+    const updatedUser = await deactivate(userId)
+    if(!updatedUser) throw errorBuilder(`User Id with ${userId} not found`, 404)
+    return updatedUser
 }

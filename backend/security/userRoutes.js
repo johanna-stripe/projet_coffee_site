@@ -5,24 +5,29 @@ import {
     postUser,
     updateUser,
     patchUserRole,
-    patchUserActivate
+    patchUserActivate,
+    patchUserDeactivate
 } from "./userController.js";
+import {authenticate} from "./midddleware/authMiddleware.js";
+import {authorizeRole} from "./midddleware/roleMiddleware.js";
 
 const router = express.Router();
 export default router
 
 //===========GET===============
-router.get('/', getAllUsers)
+router.get('/', authenticate, authorizeRole('ADMIN'), getAllUsers)
 
-router.get('/:id', getUserById)
+router.get('/:id', authenticate, authorizeRole('ADMIN'), getUserById)
 
 //===========POST===============
-router.post('/', postUser)
+router.post('/newUser/', authenticate, authorizeRole('ADMIN'), postUser)
 
 //===========PATCH===============
-router.patch('/:id', updateUser)
+router.patch('/updateUser/:id', authenticate, authorizeRole('ADMIN'), updateUser)
 
-router.patch('/:id/change-role', patchUserRole)
+router.patch('/change-role/:id', authenticate, authorizeRole('ADMIN'), patchUserRole)
 
-router.patch('/:id/activate', patchUserActivate)
+router.patch('/activate-user/:id', authenticate, authorizeRole('ADMIN'), patchUserActivate)
+
+router.patch('/deactivate-user/:id', authenticate, authorizeRole('ADMIN'), patchUserDeactivate)
 

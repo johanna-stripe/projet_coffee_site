@@ -14,6 +14,8 @@ import {
     //DELETE
     deleteProduct,
 } from "../controllers/productController.js";
+import {authenticate} from "../security/midddleware/authMiddleware.js";
+import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
 
 
 const router = express.Router();
@@ -29,17 +31,17 @@ router.get('/', getAllProducts)
 router.get('/:id', getFullInfoFromProducts)
 
 //===================POST========================
-router.post('/', createProduct)
+router.post('/', authenticate, authorizeRole('ADMIN'), createProduct)
 
 //===================PUT========================
 //Modifier un produit
-router.put('/:id', putProduct)
+router.put('/:id',authenticate, authorizeRole('ADMIN'), putProduct)
 
 //===================PATCH========================
 //Modifier des caractèristiques précises d'un produit
-router.patch('/:id',patchProduct)
+router.patch('/:id', authenticate, authorizeRole('ADMIN'), patchProduct)
 
 //===================DELETE========================
-router.delete('/:id',deleteProduct)
+router.delete('/:id', authenticate, authorizeRole('ADMIN'), deleteProduct)
 
 export default router

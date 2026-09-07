@@ -13,6 +13,8 @@ import {
     //DELETE
     deleteBrand,
 } from "../controllers/brandController.js";
+import {authenticate} from "../security/midddleware/authMiddleware.js";
+import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
 
 const router = express.Router();
 export default router
@@ -29,12 +31,12 @@ router.get('/:id', getBrandById)
 router.get('/:id/products', getProductsByBrand)
 
 //===================POST========================
-router.post('/', createABrand)
+router.post('/', authenticate, authorizeRole('ADMIN'), createABrand)
 
 //====================PUT=========================
-router.put('/:id', modifyBrand)
+router.put('/:id', authenticate, authorizeRole('ADMIN'), modifyBrand)
 
 //===================DELETE=======================
-router.delete('/:id', deleteBrand)
+router.delete('/:id', authenticate, authorizeRole('ADMIN'), deleteBrand)
 
 

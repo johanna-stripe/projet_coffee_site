@@ -127,7 +127,7 @@ export const patchCustomer = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -148,7 +148,7 @@ export const patchCustomerAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -170,8 +170,7 @@ export const deleteCustomerAccount = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
-
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
@@ -198,7 +197,7 @@ export const deleteCustomerAddress = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
 
     }
 }
