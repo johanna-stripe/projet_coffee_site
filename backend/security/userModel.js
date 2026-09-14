@@ -18,11 +18,12 @@ export const findUserByEmail = async (email) => {
 }
 
 //===========SAVE USER===============
-export const saveUser = async ({username, email, password, role = "USER"}) => {
-    const [results] = await db.query(CREATE_USER, [username, email, password, role])
+export const saveUser = async ({firstName, lastName, email, password, role = "USER"}) => {
+    const [results] = await db.query(CREATE_USER, [firstName, lastName, email, password, role])
     return {
         id: results.insertId,
-        username,
+        firstName,
+        lastName,
         email,
         role
     }

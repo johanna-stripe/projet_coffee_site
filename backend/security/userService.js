@@ -18,7 +18,7 @@ export const getUsers = async () => {
     return results
 }
 
-//===========GET USER BY ID===============
+//===============GET USER BY ID=================
 export const getUser = async (userId) => {
     const user = await getByIdUser(userId)
     if (!user) throw errorBuilder('Not found',404)
@@ -29,7 +29,7 @@ export const getUser = async (userId) => {
     }
 }
 
-//===========POST USER===============
+//==============POST USER==================
 export const createNewUser = async (userData) => {
     const {username, email, password, role} = userData
     if (!username || !email || !password) throw errorBuilder('All fields are mandatory')
@@ -93,3 +93,4 @@ export const disableUser = async (userId) => {
     if(!updatedUser) throw errorBuilder(`User Id with ${userId} not found`, 404)
     return updatedUser
 }
+

@@ -42,10 +42,9 @@ export const login = async (req,res)=>{
                 maxAge: 360000
             }
         )
-        return res.status(201).json({
+        return res.status(200).json({
             message: 'User logged in successfully',
             user: result.user,
-            token: result.token
         })
 
     } catch (error) {

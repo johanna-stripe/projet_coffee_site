@@ -22,8 +22,13 @@ const app = express();
 
 app.use(express.json());
 //express.json() → dit à Express de lire automatiquement le JSON envoyé dans les requêtes (le req.body)
-app.use(cors(0))
-//cors(0) → autorise toutes les origines à appeler l'API
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true //essentiel pour utiliser withCredentials dans axios et donc dire d'inclure les cookies dans les requêtes
+}));
+
+
 app.use(helmet()) //pas besoin de le configurer comme limiter
 //voir ce que fait postman sans helmet (on double les vérifications de sécurité, donc mon appli est bien secure)
 

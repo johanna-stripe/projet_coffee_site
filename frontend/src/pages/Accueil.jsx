@@ -1,30 +1,29 @@
 //================= IMPORTS=====================
 import React from "react";
-import '../3.style/Accueil.css';
+import '../style/accueil.css';
 
 //=================CHILDREN IMPORTS=====================
-import Slider from "../2.components/Slider.jsx";
+import Slider from "../components/Slider.jsx";
 //On importe le composant enfant Slider pour pouvoir l'utiliser comme une balise JSX (<Slider />) plus bas.
 // C'est exactement comme importer une fonction — parce qu'un composant React est une fonction.
-import Selection from "../2.components/Selection.jsx";
+import Selection from "../components/Selection.jsx";
 import SelectionClient from "./SelectionClient.jsx";
-import History from "../2.components/History.jsx";
-import TrustBadges from "../2.components/TrustBadges.jsx";
+import History from "../components/History.jsx";
+import TrustBadges from "../components/TrustBadges.jsx";
 
 //=================IMAGES IMPORTS=====================
-import coffeeBeanSlider from '../4.assets/images/coffee/coffee_bean_slider.jpg';
-import coffeeSliderMorning from '../4.assets/images/coffee/coffee_slider_morning.png'
-import teaSlider from '../4.assets/images/tea/tea_4.jpg';
+import coffeeBeanSlider from '../assets/images/coffee/coffee_bean_slider.jpg';
+import coffeeSliderMorning from '../assets/images/coffee/coffee_slider_morning.png'
+import teaSlider from '../assets/images/tea/tea_4.jpg';
 
-import coffeeSelection from '../4.assets/images/coffee/coffee_grain_moulu.jpg'
-import teaSelection from '../4.assets/images/tea/tea.jpg';
-import coffeeMachineSelection from '../4.assets/images/coffee_machine/machine_cafe_1.jpg';
-import accessoiresSelection from '../4.assets/images/accessories/accessoire.jpg';
+import coffeeSelection from '../assets/images/coffee/coffee_grain_moulu.jpg'
+import teaSelection from '../assets/images/tea/tea.jpg';
+import coffeeMachineSelection from '../assets/images/coffee_machine/machine_cafe_1.jpg';
+import accessoiresSelection from '../assets/images/accessories/accessoire.jpg';
 
-import shieldCheck from "../4.assets/icons/shield-check.svg"
-import delivery from "../4.assets/icons/truck.svg"
-import star from "../4.assets/icons/star.svg"
-
+import shieldCheck from "../assets/icons/shield-check.svg"
+import delivery from "../assets/icons/truck.svg"
+import star from "../assets/icons/star.svg"
 
 const slides = [
     {
@@ -52,9 +51,11 @@ const slides = [
         cta: "Voir les thés et infusions",
     },
 ];
-//C'est un tableau d'objets. Chaque objet représente un slide avec toutes ses infos (image, titre, texte, etc.).
-// Placé en dehors du composant Accueil --> Comme ce tableau ne dépend de rien et ne change jamais, il n'a pas besoin d'être recréé à chaque fois que le composant se rafraîchit.
-// S'il était à l'intérieur du composant, il serait recréé (nouvel objet en mémoire) à chaque rendu, ce qui est du gaspillage inutile.
+/*
+C'est un tableau d'objets. Chaque objet représente un slide avec toutes ses infos (image, titre, texte, etc.).
+Placé en dehors du composant Accueil --> Comme ce tableau ne dépend de rien et ne change jamais, il n'a pas besoin d'être recréé à chaque fois que le composant se rafraîchit.
+S'il était à l'intérieur du composant, il serait recréé (nouvel objet en mémoire) à chaque rendu, ce qui est du gaspillage inutile.
+ */
 
 const selections = [
     {

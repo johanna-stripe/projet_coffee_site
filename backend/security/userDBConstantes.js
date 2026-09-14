@@ -21,8 +21,8 @@ export const FIND_USER_BY_ID = `
 
 //===========CREATE USER===============
 export const CREATE_USER = `
-    INSERT INTO users (user_name, user_email, password, role)
-    VALUES (?, ?, ?, ?)
+    INSERT INTO users (first_name, last_name, user_email, password, role)
+    VALUES (?, ?, ?, ?, ?)
 `
 
 

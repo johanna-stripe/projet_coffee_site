@@ -5,6 +5,7 @@
     --color-secondary: rgb(51, 27, 10);
     --color-tertiary: #905b27;
     --color-quaternary: #305847;
+    --color-fifth: #1E0F05
 }
 
 html {
@@ -20,7 +21,6 @@ html {
 body {
     margin: 0;
     padding: 0;
-    padding-top: 100px;
     font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif, SansSerif;
     background: var(--color-primary);

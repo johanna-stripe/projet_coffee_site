@@ -1,4 +1,4 @@
-import torrefaction from '../4.assets/images/history/torefaction.jpg';
+import torrefaction from '../assets/images/history/torefaction.jpg';
 
 
 const History = () => {

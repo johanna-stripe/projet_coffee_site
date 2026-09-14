@@ -9,8 +9,8 @@ import {generateToken} from "./helper/tokenUtiles.js";
 
 //=================REGISTER===================
 export const registerUser = async (userData) => {
-    const {username, email, password} = userData
-    if (!username || !email || !password) throw errorBuilder('All fields are mandatory')
+    const {firstName, lastName, email, password} = userData
+    if (!firstName ||!lastName || !email || !password) throw errorBuilder('All fields are mandatory')
     if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
 
     //Verifier que l'user n'existe pas déjà (avec son email)
@@ -20,7 +20,8 @@ export const registerUser = async (userData) => {
     const hashedPassword = await hashPassword(password)
 
     const user = await saveUser({
-        username,
+        firstName,
+        lastName,
         email,
         password: hashedPassword,
         role: "USER"
@@ -31,7 +32,8 @@ export const registerUser = async (userData) => {
     return {
         user: {
             id: user.id,
-            username: user.username,
+            firstName: user.firstName,
+            lastName:user.lastName,
             email: user.email,
             role: user.role
         },
