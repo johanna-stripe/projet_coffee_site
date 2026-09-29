@@ -8,7 +8,7 @@ export const AuthProvider = ({children}) => {
 //composant qui va englober tout (ou une partie) de l'appli. Donc tout ce qui est dans children aura accés aux données
 
     const [user, setUser] = useState(null)
-    //user : contiendra les infos de l'utilisateur connecté (null si personne n'est connecté)
+    //user : contiendra les infos de l'utilisateur connecté (null si personne n'est connectée)
 
     const [authLoading, setAuthLoading] = useState(true)
     //boolean qui sert à savoir si un utilisateur est déjà connecté ou non.
@@ -23,6 +23,7 @@ export const AuthProvider = ({children}) => {
         */
 
         setUser(response.data.user)
+        console.log(response.data)
         /*
         → on met à jour le state user avec les infos renvoyées par le back.
         Plus besoin de gérer le token côté frontend : il est dans le cookie,
@@ -32,7 +33,6 @@ export const AuthProvider = ({children}) => {
         return response.data
     }
 
-
     const login = async (formData) => {
         const response = await api.post('/auth/login', formData)
 
@@ -41,14 +41,14 @@ export const AuthProvider = ({children}) => {
         return response.data
     }
 
-    const logout = (req, res) => {
-        res.clearCookie('token', {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
-            //on reprend exactement la config du cookie qu'on a crée dans authController. MaxAge n'est pas utile dans une suppression
-        });
-        return res.status(200).json({message: 'Logged out successfully'});
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout')
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setUser(null) //Le finally garantit que même si la requête échoue (réseau, etc.), le state user est remis à null côté front, pour éviter de rester "bloqué connecté" visuellement.
+        }
     }
 
 
@@ -82,6 +82,10 @@ export const AuthProvider = ({children}) => {
     Pourquoi c'est nécessaire : React oublie tout son state à chaque rechargement de page (F5), donc sans ça, user repartirait à null même si le token est toujours valide. Ce useEffect restaure la session automatiquement au démarrage.
      */
 
+    const updateUser = (updatedFields) => {
+        setUser(prev => ({ ...prev, ...updatedFields }))
+    }
+
     return (
         <AuthContext.Provider
             value={{ // {{ }} → 1eres car on écrit du JSX, 2e car value prend un objet
@@ -90,6 +94,7 @@ export const AuthProvider = ({children}) => {
                 register,           // la fonction pour créer un compte
                 login,              // la fonction pour se connecter
                 logout,              // la fonction pour se déconnecter
+                updateUser,
                 isAuthenticated: Boolean(user), // true si user existe, false si null
                 isAdmin: user?.role === 'ADMIN' // true si user est admin
             }}
@@ -113,7 +118,4 @@ Avec useAuth, c'est plus court et plus lisible :
 import { useAuth } from '../context/AuthContext';
 const { user, login, isAuthenticated } = useAuth();
 */
-
-
-
 

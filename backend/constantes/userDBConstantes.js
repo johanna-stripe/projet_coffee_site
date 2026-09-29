@@ -8,7 +8,7 @@ export const FIND_USER_BY_EMAIL = `
 
 //===========GET ALL USERS===============
 export const FIND_ALL_USERS = `
-    SELECT user_id AS id, user_name AS username, user_email AS email, password, role, is_active, created_at
+    SELECT user_id AS id, first_name, last_name, user_email AS email, phone, birth_date, password, role, is_active, created_at
     FROM users
 `
 
@@ -21,14 +21,20 @@ export const FIND_USER_BY_ID = `
 
 //===========CREATE USER===============
 export const CREATE_USER = `
-    INSERT INTO users (first_name, last_name, user_email, password, role)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO users (first_name, last_name, user_email, phone, birth_date, password)
+    VALUES (?, ?, ?, ?, ?, ?)
 `
 
 
 //===========UPDATE USER BY ID===============
 export const UPDATE_USER_BY_ID = (fields) => {
-    const setClause = fields.map(field => `${field} = ?`).join(', ')
+    const columnMapping = {
+        email: 'user_email', // Traduit 'email' en 'user_email'
+        new_password: 'password'
+    };
+    const setClause = fields
+        .map(field => `${columnMapping[field] || field} = ?`)
+        .join(', ')
     return `
         UPDATE users
         SET ${setClause}

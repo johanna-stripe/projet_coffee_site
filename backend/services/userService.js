@@ -6,9 +6,10 @@ import {
     updateUserById,
     updateUserRole,
     deactivate, activate
-} from "./userModel.js";
+} from "../models/userModel.js";
 import {errorBuilder} from "../private methods/privateMethods.js";
-import {hashPassword} from "./helper/passwordUtiles.js";
+import {hashPassword} from "../security/helper/passwordUtiles.js";
+import bycrypt from "bcrypt";
 
 
 //===========GET ALL USERS===============
@@ -23,26 +24,32 @@ export const getUser = async (userId) => {
     const user = await getByIdUser(userId)
     if (!user) throw errorBuilder('Not found',404)
     return {
-        user_name: user.user_name,
-        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        user_email : user.user_email,
         role: user.role,
     }
 }
 
 //==============POST USER==================
 export const createNewUser = async (userData) => {
-    const {username, email, password, role} = userData
-    if (!username || !email || !password) throw errorBuilder('All fields are mandatory')
+    const {first_name, last_name, user_email, phone, birth_date, password, role} = userData
+
+    if (!first_name || !last_name || !user_email || !phone || !birth_date || !password) throw errorBuilder('All fields are mandatory')
+
     if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
 
-    const existingUser = await findUserByEmail(email)
+    const existingUser = await findUserByEmail(user_email)
     if (existingUser) throw errorBuilder('User already exists')
 
     const hashedPassword = await hashPassword(password)
 
     const userValues = [
-        username,
-        email,
+        first_name,
+        last_name,
+        user_email,
+        phone,
+        birth_date,
         hashedPassword,
         role
     ]
@@ -52,9 +59,13 @@ export const createNewUser = async (userData) => {
 
 //===========PATCH USER===============
 export const modifyUser = async (userId, updates) => {
-    const allowed_updates = ['user_name', 'password']
+    const allowed_updates = ['first_name', 'last_name', 'email', 'phone', 'birth_date', 'new_password']
     const fields_to_update = []
     const values_to_update = []
+
+    if(updates.new_password){
+        updates.new_password=await bycrypt.hash(updates.new_password, 10)
+    }
 
     allowed_updates.forEach((field)=>{
         if(updates[field] !== undefined){

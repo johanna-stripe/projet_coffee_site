@@ -1,0 +1,24 @@
+.side-menu ul li:hover{
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.side-menu ul li:hover .menu-icon{
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.menu-icon {
+    color: var(--color-secondary);
+    transition: color 0.1s ease;
+}
+
+.active{
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.active.menu-icon {
+    color: var(--color-primary);
+}
+

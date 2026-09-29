@@ -6,10 +6,10 @@ import {
     updateRole,
     enableUser,
     disableUser
-} from "./userService.js";
+} from "../services/userService.js";
 
 import {errorBuilder} from "../private methods/privateMethods.js";
-import {authorizeRole} from "./midddleware/roleMiddleware.js";
+import bycrypt from "bcrypt";
 
 
 //===========GET ALL USERS===============
@@ -76,12 +76,30 @@ export const postUser = async (req, res) => {
 
 
 //===================PATCH=======================
-export const updateUser = async(req,res)=>{
+export const updateUser = async (req, res) => {
     try {
         const userId = req.params.id
         if (!userId) return res.status(400).json('User Id is required')
 
-        const results = await modifyUser(userId)
+        const updates = req.body
+
+        if(updates.new_password){
+            if(!updates.current_password){
+                return res.status(400).json({message: 'Mot de passe actuel requis'})
+            }
+
+            const existingUser= await getUser(userId)
+            const isMatch = await bycrypt.compare(updates.current_password, existingUser.password)
+            if(!isMatch) {
+                return res.status(401).json({message: 'Mot de passe actuel incorrect'})
+            }
+        }
+
+        if (updates.birth_date) {
+            updates.birth_date = updates.birth_date.split('T')[0]; // "1995-09-03"
+        }
+
+        const results = await modifyUser(userId, updates)
 
         return res.json({
             message: 'User modified successfully:',
@@ -104,7 +122,7 @@ export const patchUserRole = async (req, res) => {
         if (!req.body) throw errorBuilder('User role is required')
 
         const results = await updateRole(userId, role)
-        if(!results || results.affectedRows===0) throw errorBuilder('User role could not be updated')
+        if (!results || results.affectedRows === 0) throw errorBuilder('User role could not be updated')
 
         return res.json({
             userId,
@@ -125,7 +143,7 @@ export const patchUserActivate = async (req, res) => {
         if (!userId) throw errorBuilder('User Id is required')
 
         const results = await enableUser(userId)
-        if(!results || results.affectedRows===0) throw errorBuilder('User could not be deactivated')
+        if (!results || results.affectedRows === 0) throw errorBuilder('User could not be deactivated')
 
         return res.json({
             userId,
@@ -145,7 +163,7 @@ export const patchUserDeactivate = async (req, res) => {
         if (!userId) throw errorBuilder('User Id is required')
 
         const results = await disableUser(userId)
-        if(!results || results.affectedRows===0) throw errorBuilder('User could not be deactivated')
+        if (!results || results.affectedRows === 0) throw errorBuilder('User could not be deactivated')
 
         return res.json({
             userId,

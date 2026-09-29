@@ -8,7 +8,7 @@ import {
     UPDATE_ROLE,
     UPDATE_ACTIVATE_USER,
     UPDATE_DEACTIVATE_USER,
-} from "./userDBConstantes.js";
+} from "../constantes/userDBConstantes.js";
 
 
 //===========FIND USER BY EMAIL===============
@@ -18,14 +18,16 @@ export const findUserByEmail = async (email) => {
 }
 
 //===========SAVE USER===============
-export const saveUser = async ({firstName, lastName, email, password, role = "USER"}) => {
-    const [results] = await db.query(CREATE_USER, [firstName, lastName, email, password, role])
+export const saveUser = async ({first_name, last_name, user_email, phone, birth_date, password, role = "USER"}) => {
+    const [results] = await db.query(CREATE_USER, [first_name, last_name, user_email, phone, birth_date, password, role])
     return {
-        id: results.insertId,
-        firstName,
-        lastName,
-        email,
-        role
+        user_id: results.insertId,
+        first_name,
+        last_name,
+        user_email,
+        phone: phone || null,
+        birth_date: birth_date || null,
+        role,
     }
 }
 
@@ -44,6 +46,8 @@ export const getByIdUser = async (userId) => {
 
 //===========POST USER===============
 export const createUser = async (userValues) => {
+    console.log('SQL:', CREATE_USER)
+    console.log('VALUES:', userValues, userValues.length)
     const [results] = await db.query(CREATE_USER, userValues)
     return results
 }

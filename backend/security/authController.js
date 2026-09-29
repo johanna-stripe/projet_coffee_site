@@ -13,10 +13,17 @@ export const register = async (req, res) => {
 
         const result = await registerUser(req.body)
 
+        res.cookie('token', result.token, { //on récupère le token qu'on vient de générer dans loginUser qui est dans const result
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 360000
+            }
+        )
+
         return res.status(201).json({
             message: 'User registered successfully',
             user: result.user,
-            token: result.token
         })
 
     } catch (error) {
@@ -52,6 +59,16 @@ export const login = async (req,res)=>{
         return res.status(500).json({error: error.message || 'Internal Server Error'})
     }
 }
+
+export const logout = (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict'
+    });
+    return res.status(200).json({message: 'Logged out successfully'});
+}
+
 
 
 //===================SECURED ENDPOINT=====================

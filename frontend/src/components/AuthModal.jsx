@@ -9,6 +9,7 @@ const AuthModal = ({isOpen, onClose}) => {
 
     // Si la modal n'est pas ouverte, on ne rend rien du tout
     if (!isOpen) return null;
+    //Cette ligne dit : "si la valeur que j'ai reçue est false, je n'affiche rien". C'est ça qui contrôle l'ouverture/fermeture. Rien d'autre.
 
     return (
         <div
@@ -64,7 +65,7 @@ const AuthModal = ({isOpen, onClose}) => {
                     {mode === "login" ? (
                         <LoginForm
                             onClose={onClose}
-                            swithToRegister={() => setMode("register")}
+                            switchToRegister={() => setMode("register")}
                         />
                     ) : (
                         <RegisterForm

@@ -19,7 +19,6 @@ import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
 const router = express.Router();
 export default router
 
-
 //===================GET========================
 //Voir toutes les marques
 router.get('/', getAllBrands)

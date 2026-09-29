@@ -1,7 +1,7 @@
 import {
     saveUser,
     findUserByEmail,
-} from "./userModel.js";
+} from "../models/userModel.js";
 
 import {errorBuilder} from "../private methods/privateMethods.js";
 import {comparePassword, hashPassword} from "./helper/passwordUtiles.js";
@@ -9,33 +9,40 @@ import {generateToken} from "./helper/tokenUtiles.js";
 
 //=================REGISTER===================
 export const registerUser = async (userData) => {
-    const {firstName, lastName, email, password} = userData
-    if (!firstName ||!lastName || !email || !password) throw errorBuilder('All fields are mandatory')
+    const {first_name, last_name, user_email, phone, birth_date, password} = userData
+
+    if (!first_name || !last_name || !user_email || !password) throw errorBuilder('All fields marked with * are mandatory')
+
     if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
 
     //Verifier que l'user n'existe pas déjà (avec son email)
-    const existingUser = await findUserByEmail(email)
+    const existingUser = await findUserByEmail(user_email)
     if (existingUser) throw errorBuilder('The email already exists', 409)
 
     const hashedPassword = await hashPassword(password)
 
     const user = await saveUser({
-        firstName,
-        lastName,
-        email,
+        first_name,
+        last_name,
+        user_email,
+        phone: phone || null,
+        birth_date: birth_date || null,
         password: hashedPassword,
-        role: "USER"
+        role: "USER",
     })
 
     const token = generateToken(user)
 
     return {
         user: {
-            id: user.id,
-            firstName: user.firstName,
-            lastName:user.lastName,
-            email: user.email,
-            role: user.role
+            user_id: user.user_id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.user_email,
+            phone: user.phone,
+            birth_date: user.birth_date,
+            created_at: user.created_at,
+            role: user.role,
         },
         token
     };
@@ -62,9 +69,13 @@ export const loginUser = async ({email, password})=>{
     return {
         user:{
             id: existingUser.user_id,
-            username: existingUser.username,
-            email: existingUser.email,
-            role: existingUser.role
+            first_name: existingUser.first_name,
+            last_name: existingUser.last_name,
+            email: existingUser.user_email,
+            phone:existingUser.phone,
+            birth_date:existingUser.birth_date,
+            role: existingUser.role,
+            created_at: existingUser.created_at
         },
         token
     }

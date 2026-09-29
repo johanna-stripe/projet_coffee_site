@@ -41,9 +41,7 @@ const Footer = () => {
                 <nav className="footer-nav flex flex-direction-column">
                     <p className="letter-spacing-3px uppercase font-size-085em c-tertiary">Informations</p>
                     <ul className="footer-links list-none p-0 m-0 flex flex-direction-column gap-12px">
-                        <li><a href="#" className="c-secondary text-decoration-none">Qui sommes-nous ?</a></li>
                         <li><a href="#" className="c-secondary text-decoration-none">Notre brûlerie</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Blog & recettes</a></li>
                         <li><a href="#" className="c-secondary text-decoration-none">Contact</a></li>
                         <li><a href="#" className="c-secondary text-decoration-none">FAQ</a></li>
                         <li><a href="#" className="c-secondary text-decoration-none">Mentions légales</a></li>

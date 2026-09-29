@@ -1,10 +1,8 @@
 //=============================IMPORTS=============================
 import express from "express";
-
 import {
     //GET
-    getAllProducts,
-    getFullInfoFromProducts,
+    getAllProducts, getFullInfoFromProducts,
     //POST
     createProduct,
     //PUT
@@ -16,7 +14,6 @@ import {
 } from "../controllers/productController.js";
 import {authenticate} from "../security/midddleware/authMiddleware.js";
 import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
-
 
 const router = express.Router();
 // on utiliser .Router pour pouvoir passer d'un fichier à l'autre en MVC

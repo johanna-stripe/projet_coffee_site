@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import {errorBuilder} from "../../private methods/privateMethods.js";
-import {getByIdUser} from "../userModel.js";
+import {getByIdUser} from "../../models/userModel.js";
 
 //C'est le middleware qui vient avant authorizeRole : il vérifie que l'utilisateur est bien qui il prétend être (authentification), avant que authorizeRole ne vérifie ses droits (autorisation).
 
@@ -25,8 +25,11 @@ export const authenticate = async (req, res, next) => {
 
         req.user = {
             user_id: user.user_id,
-            user_name: user.user_name,
-            email: user.user_email,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            user_email: user.user_email,
+            phone: user.phone,
+            birth_date: user.birth_date,
             role: user.role
         }
 
@@ -43,6 +46,6 @@ export const authenticate = async (req, res, next) => {
 
     } catch (error) {
         console.log(error)
-        throw res.status(500).json({error: error.message || 'Invalid or expired Token'})
+        return res.status(401).json({error: error.message || 'Invalid or expired Token'})
     }
 }

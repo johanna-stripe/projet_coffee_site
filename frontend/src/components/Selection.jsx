@@ -16,7 +16,7 @@ const Selection = ({selections}) => {
                          src={item.img}
                          alt={item.alt}/>
                     <div
-                        className="position-absolute text-align-left c-white font-bold bottom-1em left-1em z-index-1">
+                        className="position-absolute text-align-left c-white font-bold bottom-1em left-1em z-index1">
                         <h3 className="m-0">{item.title}</h3>
                         <p className="m-top-5px font-montserrat">{item.cta}</p>
                     </div>

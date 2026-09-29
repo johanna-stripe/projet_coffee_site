@@ -15,7 +15,7 @@ import customerRoutes from "./routes/customerRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import brandRoutes from "./routes/brandRoutes.js";
 import authRoutes from "./security/authRoutes.js";
-import userRoutes from "./security/userRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 //=============DEMARRAGE DU SERVEUR===============
 const app = express();

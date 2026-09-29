@@ -6,8 +6,10 @@ But de ce fichier :
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8800/api/v1',
+    baseURL: "http://localhost:8800/api/v1",
     withCredentials: true // essentiel : dit au navigateur d'envoyer les cookies avec les requêtes
 })
 
 export default api;
+
+//process.env.REACT_APP_API_URL ||
