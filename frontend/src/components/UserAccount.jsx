@@ -9,6 +9,7 @@ import {RiLogoutBoxRLine} from "react-icons/ri";
 import "../style/authModal.css"
 import "../style/userAccount.css"
 import {useAuth} from "../context/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
 import UserInformations from "./UserInformation.jsx";
 import UserAddresses from "./UserAddresses.jsx";
 import UserPurchases from "./UserPuscharses.jsx";
@@ -19,11 +20,10 @@ const UserAccount = ({isOpen, onClose, onLogout}) => {
 
     if (!isOpen) return null;
 
+    const {user, logout} = useAuth()
     const [mode, setMode] = useState("UserInformation")
-
-    const {user} = useAuth()
-
     const [userAccount, setUserAccount] = useState(user)
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (user) {
@@ -33,6 +33,13 @@ const UserAccount = ({isOpen, onClose, onLogout}) => {
             })
         }
     }, [user]);
+
+
+        const handleLogout = async () => {
+            onClose();
+            navigate('/');
+            await logout();
+        };
 
     return (
         <div
@@ -79,7 +86,7 @@ const UserAccount = ({isOpen, onClose, onLogout}) => {
                                               className={`menu-icon m-right-15px ${mode === "UserSecurity" ? "active" : ""}`}/></span> Sécurité
                             </li>
                             <li className="menu-item logout flex align-items-center p-10px m-top-30px cursor-pointer"
-                                onClick={onLogout}>
+                                onClick={handleLogout}>
                                 <span><RiLogoutBoxRLine size={19} alt="logout"
                                                         className="menu-icon m-right-15px"/></span> Se déconnecter
                             </li>

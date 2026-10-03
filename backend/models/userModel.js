@@ -9,25 +9,68 @@ import {
     UPDATE_ACTIVATE_USER,
     UPDATE_DEACTIVATE_USER,
 } from "../constantes/userDBConstantes.js";
+import {
+    CREATE_NEW_CUSTOMER,
+    FIND_CUSTOMER_BY_EMAIL,
+    LINK_CUSTOMER_TO_USER,
+} from "../constantes/customerDBConstantes.js";
+import {errorBuilder} from "../private methods/privateMethods.js";
 
 
 //===========FIND USER BY EMAIL===============
+// renvoie le user + ses infos customer (first_name, last_name, phone, birth_date...)
 export const findUserByEmail = async (email) => {
     const [results] = await db.query(FIND_USER_BY_EMAIL, [email])
-    return results [0]
+    return results[0]
 }
 
-//===========SAVE USER===============
-export const saveUser = async ({first_name, last_name, user_email, phone, birth_date, password, role = "USER"}) => {
-    const [results] = await db.query(CREATE_USER, [first_name, last_name, user_email, phone, birth_date, password, role])
-    return {
-        user_id: results.insertId,
-        first_name,
-        last_name,
-        user_email,
-        phone: phone || null,
-        birth_date: birth_date || null,
-        role,
+//===========SAVE USER + CUSTOMER (transaction)===============
+// Crée le compte (users) ET la fiche perso (customer) en une seule fois :
+// si l'un des deux échoue, rien n'est enregistré (ROLLBACK).
+export const saveUserWithCustomer = async ({username, email, password, role = "USER"}, customer) => {
+    const connection = await db.getConnection()
+    try {
+        await connection.beginTransaction()
+
+        const [userResult] = await connection.query(CREATE_USER, [username, email, password, role])
+        const user_id = userResult.insertId
+
+        let customer_id = null
+        if (customer) {
+            const {first_name, last_name, customer_email, phone, birth_date} = customer
+
+            // Un client invité avec le même email existe déjà ? -> on le rattache au nouveau compte
+            const [existing] = await connection.query(FIND_CUSTOMER_BY_EMAIL, [customer_email])
+            if (existing[0]) {
+                if (existing[0].user_id) throw errorBuilder('This contact email is already linked to an account', 409)
+                await connection.query(LINK_CUSTOMER_TO_USER,
+                    [user_id, first_name, last_name, phone || null, birth_date || null, existing[0].customer_id])
+                customer_id = existing[0].customer_id
+            } else {
+                const [customerResult] = await connection.query(CREATE_NEW_CUSTOMER,
+                    [user_id, first_name, last_name, customer_email, phone || null, birth_date || null])
+                customer_id = customerResult.insertId
+            }
+        }
+
+        await connection.commit()
+
+        return {
+            user_id,
+            customer_id,
+            username,
+            email,
+            role,
+            first_name: customer?.first_name ?? null,
+            last_name: customer?.last_name ?? null,
+            phone: customer?.phone || null,
+            birth_date: customer?.birth_date || null,
+        }
+    } catch (error) {
+        await connection.rollback()
+        throw error
+    } finally {
+        connection.release()
     }
 }
 
@@ -41,15 +84,6 @@ export const findAllUsers = async () => {
 export const getByIdUser = async (userId) => {
     const [results] = await db.query(FIND_USER_BY_ID, [userId])
     return results[0]
-}
-
-
-//===========POST USER===============
-export const createUser = async (userValues) => {
-    console.log('SQL:', CREATE_USER)
-    console.log('VALUES:', userValues, userValues.length)
-    const [results] = await db.query(CREATE_USER, userValues)
-    return results
 }
 
 //===========PATCH USER===============

@@ -1,26 +1,37 @@
-//==================GET CUSTOMER=====================
-export const FIND_CUSTOMER_BY_ID = `SELECT *
-                                    FROM customer
-                                    WHERE customer_id = ?`
+// Table customer = les infos PERSONNELLES / de contact.
+// user_id peut être NULL (client invité sans compte).
 
+//==================GET CUSTOMER=====================
+export const FIND_CUSTOMER_BY_ID = `
+    SELECT customer_id, user_id, first_name, last_name, customer_email, phone, birth_date
+    FROM customer
+    WHERE customer_id = ?
+`
+
+export const FIND_CUSTOMER_BY_USER_ID = `
+    SELECT customer_id, user_id, first_name, last_name, customer_email, phone, birth_date
+    FROM customer
+    WHERE user_id = ?
+    LIMIT 1
+`
+
+export const FIND_CUSTOMER_BY_EMAIL = `
+    SELECT customer_id, user_id, first_name, last_name, customer_email, phone, birth_date
+    FROM customer
+    WHERE customer_email = ?
+    LIMIT 1
+`
 
 export const FIND_CUSTOMER_ADDRESSES_BY_ID = `
-    SELECT ca.address_id,
-           c.customer_id,
-           ca.street,
-           ca.city,
-           ca.postcode,
-           ca.country
-
-    FROM customer_address ca
-             JOIN customer c ON c.customer_id = ca.customer_id
-    WHERE c.customer_id = ?
+    SELECT address_id, customer_id, address_name, street, city, postcode, country
+    FROM customer_address
+    WHERE customer_id = ?
 `
 
 //==================POST CUSTOMER=====================
 export const CREATE_NEW_CUSTOMER = `
-    INSERT INTO customer (password_hash, first_name, last_name, email_address, phone_number)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO customer (user_id, first_name, last_name, customer_email, phone, birth_date)
+    VALUES (?, ?, ?, ?, ?, ?)
 `
 
 //==================POST CUSTOMER ADDRESS=====================
@@ -39,6 +50,24 @@ export const PATCH_CUSTOMER = (fields) => {
         WHERE customer_id = ?
     `
 }
+
+//==================PATCH CUSTOMER BY USER ID=====================
+export const PATCH_CUSTOMER_BY_USER_ID = (fields) => {
+    const setClause = fields.map(field => `${field}=?`).join(', ')
+    return `
+        UPDATE customer
+        SET ${setClause}
+        WHERE user_id = ?
+    `
+}
+
+//==================LINK GUEST CUSTOMER TO USER=====================
+// Un client invité (user_id NULL) qui crée un compte : on rattache sa fiche existante
+export const LINK_CUSTOMER_TO_USER = `
+    UPDATE customer
+    SET user_id = ?, first_name = ?, last_name = ?, phone = ?, birth_date = ?
+    WHERE customer_id = ? AND user_id IS NULL
+`
 
 //==================PATCH CUSTOMER ADDRESS=====================
 export const PATCH_CUSTOMER_ADDRESS = (fields) => {

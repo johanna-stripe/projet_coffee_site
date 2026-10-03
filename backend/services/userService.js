@@ -2,14 +2,18 @@ import {
     findAllUsers,
     getByIdUser,
     findUserByEmail,
-    createUser,
+    saveUserWithCustomer,
     updateUserById,
     updateUserRole,
     deactivate, activate
 } from "../models/userModel.js";
+import {
+    findCustomerByUserId,
+    createANewCustomer,
+    modifyCustomerByUserId,
+} from "../models/customerModel.js";
 import {errorBuilder} from "../private methods/privateMethods.js";
 import {hashPassword} from "../security/helper/passwordUtiles.js";
-import bycrypt from "bcrypt";
 
 
 //===========GET ALL USERS===============
@@ -24,61 +28,110 @@ export const getUser = async (userId) => {
     const user = await getByIdUser(userId)
     if (!user) throw errorBuilder('Not found',404)
     return {
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        // infos venant de la table customer
         first_name: user.first_name,
         last_name: user.last_name,
-        user_email : user.user_email,
-        role: user.role,
     }
 }
 
-//==============POST USER==================
+//==============POST USER (admin)==================
+// username, email, password obligatoires (table users)
+// first_name + last_name optionnels : s'ils sont fournis, on crée aussi la fiche customer
 export const createNewUser = async (userData) => {
-    const {first_name, last_name, user_email, phone, birth_date, password, role} = userData
+    const {username, email, password, role, first_name, last_name, phone, birth_date} = userData
 
-    if (!first_name || !last_name || !user_email || !phone || !birth_date || !password) throw errorBuilder('All fields are mandatory')
+    if (!username || !email || !password) throw errorBuilder('Username, email and password are mandatory')
 
     if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
 
-    const existingUser = await findUserByEmail(user_email)
-    if (existingUser) throw errorBuilder('User already exists')
+    const existingUser = await findUserByEmail(email)
+    if (existingUser) throw errorBuilder('User already exists', 409)
 
     const hashedPassword = await hashPassword(password)
 
-    const userValues = [
-        first_name,
-        last_name,
-        user_email,
-        phone,
-        birth_date,
-        hashedPassword,
-        role
-    ]
+    const customer = (first_name && last_name)
+        ? {first_name, last_name, customer_email: email, phone, birth_date}
+        : null
 
-    return await createUser(userValues)
+    return await saveUserWithCustomer(
+        {username, email, password: hashedPassword, role: role || 'USER'},
+        customer
+    )
 }
 
 //===========PATCH USER===============
+// Les champs reçus du front sont répartis entre les 2 tables :
+//  - users    : username, email, new_password
+//  - customer : first_name, last_name, phone, birth_date
 export const modifyUser = async (userId, updates) => {
-    const allowed_updates = ['first_name', 'last_name', 'email', 'phone', 'birth_date', 'new_password']
-    const fields_to_update = []
-    const values_to_update = []
-
-    if(updates.new_password){
-        updates.new_password=await bycrypt.hash(updates.new_password, 10)
+    const userFieldMap = {
+        username: 'username',
+        email: 'email',
+        new_password: 'password'
+    }
+    const customerFieldMap = {
+        first_name: 'first_name',
+        last_name: 'last_name',
+        phone: 'phone',
+        birth_date: 'birth_date'
     }
 
-    allowed_updates.forEach((field)=>{
-        if(updates[field] !== undefined){
-            fields_to_update.push(field)
-            values_to_update.push(updates[field])
+    //----- table users -----
+    const userFields = []
+    const userValues = []
+    for (const [key, column] of Object.entries(userFieldMap)) {
+        if (updates[key] === undefined) continue
+        userFields.push(column)
+        userValues.push(key === 'new_password' ? await hashPassword(updates[key]) : updates[key])
+    }
+
+    //----- table customer -----
+    const customerFields = []
+    const customerValues = []
+    for (const [key, column] of Object.entries(customerFieldMap)) {
+        if (updates[key] === undefined) continue
+        customerFields.push(column)
+        customerValues.push(updates[key] === '' ? null : updates[key])
+    }
+
+    if (userFields.length === 0 && customerFields.length === 0) throw errorBuilder('No field to update', 400)
+
+    const results = {}
+
+    if (userFields.length > 0) {
+        if (updates.email !== undefined) {
+            const other = await findUserByEmail(updates.email)
+            if (other && String(other.user_id) !== String(userId)) throw errorBuilder('The email already exists', 409)
         }
-    })
+        results.user = await updateUserById(userFields, [...userValues, userId])
+    }
 
-    if(fields_to_update.length===0) throw errorBuilder('No field to update')
+    if (customerFields.length > 0) {
+        const customer = await findCustomerByUserId(userId)
+        if (customer) {
+            results.customer = await modifyCustomerByUserId(customerFields, [...customerValues, userId])
+        } else {
+            // pas encore de fiche customer -> on la crée (prénom + nom obligatoires)
+            if (!updates.first_name || !updates.last_name) {
+                throw errorBuilder('First name and last name are required to create the customer profile', 400)
+            }
+            const user = await getByIdUser(userId)
+            if (!user) throw errorBuilder('User not found', 404)
+            results.customer = await createANewCustomer([
+                userId,
+                updates.first_name,
+                updates.last_name,
+                user.email,
+                updates.phone || null,
+                updates.birth_date || null
+            ])
+        }
+    }
 
-    values_to_update.push(userId)
-
-    return await updateUserById(fields_to_update, values_to_update)
+    return results
 }
 
 
@@ -104,4 +157,3 @@ export const disableUser = async (userId) => {
     if(!updatedUser) throw errorBuilder(`User Id with ${userId} not found`, 404)
     return updatedUser
 }
-

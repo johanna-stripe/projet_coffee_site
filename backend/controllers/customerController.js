@@ -11,7 +11,7 @@ import {
     modifyCustomerAddressByPatch,
     //DELETE
     deleteByIdCustomer,
-    deleteByIdCustomerAddress,
+    deleteByIdCustomerAddress, getMyCustomerProfile,
 } from "../services/customerService.js";
 
 
@@ -36,6 +36,18 @@ export const getCustomerProfile = async (req, res) => {
     } catch (error) {
         console.log(error)
         return res.status(error.statusCode || 500).json({error: error.message || 'Internal server error'})
+    }
+}
+
+
+export const getMyProfile = async (req, res) => {
+    try {
+        const result = await getMyCustomerProfile(req.user.id)
+        // req.user.id vient de middleware authenticate
+        return res.json(result)
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal Server Error'})
     }
 }
 

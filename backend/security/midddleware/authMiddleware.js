@@ -24,10 +24,14 @@ export const authenticate = async (req, res, next) => {
         if (!user.is_active) throw errorBuilder('Account deactivated', 403)
 
         req.user = {
+            id: user.user_id,           // utilisé par customerController (req.user.id) et le front (user.id)
             user_id: user.user_id,
+            customer_id: user.customer_id,
+            username: user.username,
+            email: user.email,
+            // infos venant de la table customer (LEFT JOIN dans getByIdUser)
             first_name: user.first_name,
             last_name: user.last_name,
-            user_email: user.user_email,
             phone: user.phone,
             birth_date: user.birth_date,
             role: user.role

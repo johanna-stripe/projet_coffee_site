@@ -8,7 +8,7 @@ export const AuthProvider = ({children}) => {
 //composant qui va englober tout (ou une partie) de l'appli. Donc tout ce qui est dans children aura accés aux données
 
     const [user, setUser] = useState(null)
-    //user : contiendra les infos de l'utilisateur connecté (null si personne n'est connectée)
+    //user : contiendra les infos de l'utilisateur connecté (null si personne n'est connecté)
 
     const [authLoading, setAuthLoading] = useState(true)
     //boolean qui sert à savoir si un utilisateur est déjà connecté ou non.
@@ -50,7 +50,6 @@ export const AuthProvider = ({children}) => {
             setUser(null) //Le finally garantit que même si la requête échoue (réseau, etc.), le state user est remis à null côté front, pour éviter de rester "bloqué connecté" visuellement.
         }
     }
-
 
     //loadCurrentUser -> Eviter qu'un user soit déconnecté tout le temps
     const loadCurrentUser = async () => {

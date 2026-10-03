@@ -9,7 +9,8 @@ import {
 } from "../services/userService.js";
 
 import {errorBuilder} from "../private methods/privateMethods.js";
-import bycrypt from "bcrypt";
+import bcrypt from "bcrypt";
+import {getByIdUser} from "../models/userModel.js";
 
 
 //===========GET ALL USERS===============
@@ -58,14 +59,11 @@ export const postUser = async (req, res) => {
         if (!req.body) throw errorBuilder('User data is required')
 
         const results = await createNewUser(req.body)
-        if (!results || results.affectedRows === 0) throw errorBuilder('User could not be created')
+        if (!results || !results.user_id) throw errorBuilder('User could not be created')
 
         return res.json({
             message: 'User created',
-            data: {
-                id: results.insertId,
-                ...req.body
-            }
+            data: results // on ne renvoie plus req.body (il contenait le mot de passe en clair)
         })
 
     } catch (error) {
@@ -79,32 +77,32 @@ export const postUser = async (req, res) => {
 export const updateUser = async (req, res) => {
     try {
         const userId = req.params.id
-        if (!userId) return res.status(400).json('User Id is required')
+        if (!userId) return res.status(400).json({message: 'User Id is required'})
 
-        const updates = req.body
+        const updates = {...req.body}
 
-        if(updates.new_password){
-            if(!updates.current_password){
+        if (updates.new_password) {
+            if (!updates.current_password) {
                 return res.status(400).json({message: 'Mot de passe actuel requis'})
             }
 
-            const existingUser= await getUser(userId)
-            const isMatch = await bycrypt.compare(updates.current_password, existingUser.password)
-            if(!isMatch) {
+            const existingUser = await getByIdUser(userId)
+            if (!existingUser) {
+                return res.status(404).json({message: 'Utilisateur introuvable'})
+            }
+
+            const isMatch = await bcrypt.compare(updates.current_password, existingUser.password)
+            if (!isMatch) {
                 return res.status(401).json({message: 'Mot de passe actuel incorrect'})
             }
         }
 
         if (updates.birth_date) {
-            updates.birth_date = updates.birth_date.split('T')[0]; // "1995-09-03"
+            updates.birth_date = updates.birth_date.split('T')[0]
         }
 
         const results = await modifyUser(userId, updates)
-
-        return res.json({
-            message: 'User modified successfully:',
-            results
-        })
+        return res.json({message: 'User modified successfully', results})
 
     } catch (error) {
         console.log(error)

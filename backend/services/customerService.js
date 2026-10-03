@@ -11,7 +11,7 @@ import {
     modifyByPatchCustomerAddress,
     //DELETE
     deleteCustomerById,
-    deleteCustomerAddressById,
+    deleteCustomerAddressById, findCustomerByUserId,
 } from "../models/customerModel.js";
 
 import {
@@ -26,11 +26,23 @@ export const getCustomerById = async (customerId) => {
     if (!customer) throw errorBuilder('Not found', 404)
     return {
         customer_id: customer.customer_id,
-        password_hash: customer.password_hash,
+        user_id: customer.user_id,          // NULL = client invité
         first_name: customer.first_name,
         last_name: customer.last_name,
-        phone_number: customer.phone_number
+        customer_email: customer.customer_email,
+        phone: customer.phone,
+        birth_date: customer.birth_date
     }
+}
+
+//==================GET CUSTOMER BY USER_ID=====================
+export const getMyCustomerProfile = async (userId) => {
+    const customer = await findCustomerByUserId(userId)
+    if (!customer) throw errorBuilder('Customer profile not found', 404)
+
+    const addresses = await findCustomerAddressesById(customer.customer_id)
+
+    return { customer, addresses }
 }
 
 //==================GET CUSTOMER ADDRESSES=====================
@@ -49,8 +61,11 @@ export const getCustomerAddressesById = async (customerId) => {
 }
 
 //==================POST CUSTOMER=====================
+// user_id facultatif : sans user_id = client invité
 export const createNewCustomer = async (customerData) => {
-    const {password, first_name, last_name, email_address, phone_number} = customerData
+    const {user_id, first_name, last_name, birth_date} = customerData
+    const customer_email = customerData.customer_email ?? customerData.email_address
+    const phone = customerData.phone ?? customerData.phone_number
 
     const cleanFirstName = normalizeText(first_name)
     if (!cleanFirstName) throw errorBuilder('First name is required', 400)
@@ -58,18 +73,20 @@ export const createNewCustomer = async (customerData) => {
     const cleanLastName = normalizeText(last_name)
     if (!cleanLastName) throw errorBuilder('Last name is required', 400)
 
-    const cleanEmailAddress = normalizeEmailAddress(email_address)
+    const cleanEmailAddress = normalizeEmailAddress(customer_email)
     if (!cleanEmailAddress) throw errorBuilder('correct email address is required : example@email.com', 400)
 
-    const cleanPhoneNumber = normalizePhoneNumber(phone_number)
-    if (!cleanPhoneNumber) throw errorBuilder('correct phone number is required. Example: 06 12 34 56 78', 400)
+    // téléphone facultatif (colonne NULL)
+    const cleanPhoneNumber = phone ? normalizePhoneNumber(phone) : null
+    if (phone && !cleanPhoneNumber) throw errorBuilder('correct phone number is required. Example: 06 12 34 56 78', 400)
 
     const values = [
-        password,
+        user_id || null,
         cleanFirstName,
         cleanLastName,
         cleanEmailAddress,
-        cleanPhoneNumber
+        cleanPhoneNumber,
+        birth_date || null
     ]
     return await createANewCustomer(values)
 }
@@ -101,23 +118,21 @@ export const createNewCustomerAddress = async (customerId, customerAddressData) 
 
 //==================PATCH CUSTOMER=====================
 export const modifyCustomerByPatch = async (customerId, changes) => {
-    const allowed_updates = ['password_hash', 'first_name', 'last_name', 'email_address', 'phone_number']
+    const allowed_updates = ['first_name', 'last_name', 'customer_email', 'phone', 'birth_date']
     const fields_to_update = []
     const values_to_update = []
 
     allowed_updates.forEach((field) => {
         if (changes[field] !== undefined) { //pour chaque élément de allowed_updates si changes (donc mon req.body) a un élément modifié (donc !==undefined)
             fields_to_update.push(field); //on push dans la colonne
-            if (field === 'first_name') {
+            if (field === 'first_name' || field === 'last_name') {
                 values_to_update.push(normalizeText(changes[field]))
-            } else if (field === 'last_name') {
-                values_to_update.push(normalizeText(changes[field]))
-            } else if (field === 'email_address') {
+            } else if (field === 'customer_email') {
                 values_to_update.push(normalizeEmailAddress(changes[field]))
-            } else if (field === 'phone_number') {
-                values_to_update.push(normalizePhoneNumber(changes[field]))
-            } else if (field === 'password_hash') {
-                values_to_update.push(changes[field]);
+            } else if (field === 'phone') {
+                values_to_update.push(changes[field] ? normalizePhoneNumber(changes[field]) : null)
+            } else if (field === 'birth_date') {
+                values_to_update.push(changes[field] || null)
             }
         }
     })

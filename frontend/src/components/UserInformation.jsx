@@ -99,12 +99,14 @@ const UserInformation = () => {
         }
     }
 
+    if (!user) return null;
+
     return (
         <>
             <div className="content-header flex justify-content-space-between">
                 <div>
-                    <h3 className="font-size-150em c-secondary m-bottom-5px">Mes informations</h3>
-                    <p className="subtitle c-secondary m-0">Gérez votre profil personnel</p>
+                    <h3 className="font-size-2em c-secondary m-bottom-5px">Mes informations</h3>
+                    <p className="font-size-125em subtitle c-secondary m-0 p-bottom-20px">Gérez votre profil personnel</p>
                 </div>
 
                 <div className="flex gap-15px">
@@ -126,7 +128,6 @@ const UserInformation = () => {
                             <span className="m-left-10px c-secondary">Annuler</span>
                         </button>) : ("")}
                 </div>
-
             </div>
 
             <div className="profile-summary flex align-items-center m-top-20px m-bottom-20px">
@@ -134,7 +135,7 @@ const UserInformation = () => {
                     className="avatar b-quaternary c-primary font-size-150em p-15px flex align-items-center justify-content-center">
                     {userAccount.first_name?.[0]}{userAccount.last_name?.[0]}
                 </div>
-                <div className="profile-name m-10px">
+                <div className="profile-name m-10px flex flex-direction-column gap-5px">
                     <p className="font-size-150em m-0">{userAccount.first_name} {userAccount.last_name}</p>
                     <p className="client-since c-tertiary m-0">Client depuis
                         le {formatDateFR(userAccount.client_since)}</p>
@@ -143,38 +144,38 @@ const UserInformation = () => {
 
             <hr className="divider"/>
 
-            <div className="info-grid flex flex-direction-column">
+            <div className="info-grid flex flex-direction-column m-top-20px m-bottom-20px">
                 <form
                     onSubmit={handleSubmit}
                 >
                     <div className="flex m-bottom-20px">
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary">PRÉNOM</label>
+                            <label className="c-tertiary font-size-125em">PRÉNOM</label>
                             {isEditing ? (
                                 <input
                                     type="text"
                                     name="first_name"
                                     value={modifyUser.first_name}
                                     onChange={handleModifyChange}
-                                    className="auth-input border-none p-top-5px p-bottom-5px font-size-1em w-50 m-0 c-secondary form-placeholder"
+                                    className="auth-input border-none p-top-5px p-bottom-5px font-size-14px w-50 m-0 c-secondary form-placeholder"
                                 />
                             ) : (
-                                <p className="w-50 m-0 p-top-5px p-bottom-5px font-size-1em c-secondary form-placeholder">{userAccount.first_name || '-'}</p>
+                                <p className="w-50 m-0 p-top-5px p-bottom-5px font-size-14px c-secondary form-placeholder">{userAccount.first_name || '-'}</p>
                             )
                             }
                         </div>
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary">NOM</label>
+                            <label className="c-tertiary font-size-125em">NOM</label>
                             {isEditing ? (
                                 <input
                                     type="text"
                                     name="last_name"
                                     value={modifyUser.last_name}
                                     onChange={handleModifyChange}
-                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-1em w-50 m-0 c-secondary form-placeholder"
+                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-14px w-50 m-0 c-secondary form-placeholder"
                                 />
                             ) : (
-                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-1em c-secondary form-placeholder">{userAccount.last_name || '-'}</p>
+                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-14px c-secondary form-placeholder">{userAccount.last_name || '-'}</p>
                             )
                             }
                         </div>
@@ -182,49 +183,49 @@ const UserInformation = () => {
 
                     <div className="flex m-bottom-20px">
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary">ADRESSE E-MAIL</label>
+                            <label className="c-tertiary font-size-125em">ADRESSE E-MAIL</label>
                             {isEditing ? (
                                 <input
                                     type="text"
                                     name="email"
                                     value={modifyUser.email}
                                     onChange={handleModifyChange}
-                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-1em w-50 m-0 c-secondary form-placeholder"
+                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-14px w-50 m-0 c-secondary form-placeholder"
                                 />
                             ) : (
-                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-1em c-secondary form-placeholder">{userAccount.email || '-'}</p>
+                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-14px c-secondary form-placeholder">{userAccount.email || '-'}</p>
                             )
                             }
                         </div>
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary uppercase">téléphone</label>
+                            <label className="c-tertiary font-size-125em uppercase">téléphone</label>
                             {isEditing ? (
                                 <input
                                     type="tel"
                                     name="phone"
                                     value={modifyUser.phone}
                                     onChange={handleModifyChange}
-                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-1em w-50 m-0 c-secondary form-placeholder"
+                                    className="auth-input p-top-5px p-bottom-5px border-none font-size-14px w-50 m-0 c-secondary form-placeholder"
                                 />
                             ) : (
-                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-1em c-secondary form-placeholder">{userAccount.phone || '-'}</p>
+                                <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-14px c-secondary form-placeholder">{userAccount.phone || '-'}</p>
                             )
                             }
                         </div>
                     </div>
 
                     <div className="info-field w-45 flex-1 flex flex-direction-column">
-                        <label className="c-tertiary uppercase">date de naissance</label>
+                        <label className="c-tertiary font-size-125em uppercase">date de naissance</label>
                         {isEditing ? (
                             <input
                                 type="date"
                                 name="birth_date"
                                 value={formatDateISO(modifyUser.birth_date)}
                                 onChange={handleModifyChange}
-                                className="auth-input p-top-5px p-bottom-5px border-none font-size-1em w-50 m-0 c-secondary form-placeholder"
+                                className="auth-input p-top-5px p-bottom-5px border-none font-size-14px w-50 m-0 c-secondary form-placeholder"
                             />
                         ) : (
-                            <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-1em c-secondary form-placeholder">{formatDateFR(userAccount.birth_date) || '-'}</p>
+                            <p className="p-top-5px p-bottom-5px w-50 m-0 font-size-14px c-secondary form-placeholder">{formatDateFR(userAccount.birth_date) || '-'}</p>
                         )
                         }
                     </div>

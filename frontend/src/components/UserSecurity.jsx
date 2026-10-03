@@ -7,9 +7,8 @@ import "../style/userAccount.css"
 
 const UserSecurity = () => {
 
-    const [isEditing, setIsEditing] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
+    const [success, setSuccess] = useState('')
 
     const {user, updateUser} = useAuth()
 
@@ -19,11 +18,32 @@ const UserSecurity = () => {
         confirm_password: ''
     })
 
+    const [showPassword, setShowPassword] = useState({
+        current_password: false,
+        new_password: false,
+        confirm_password: false
+    })
+
+    const toggleShowPassword = (field) => {
+        setShowPassword((prev) => ({
+            ...prev,
+            [field]: !prev[field]
+        }))
+    }
+
+    useEffect(() => {
+        if (!success) return
+        const timer = setTimeout(() => setSuccess(''), 4000)
+        return () => clearTimeout(timer)
+    }, [success])
+
+
     const handleChange = (e) => {
         setPasswordForm({
             ...passwordForm,
             [e.target.name]: e.target.value
         })
+        setSuccess('')
     }
 
 
@@ -51,6 +71,7 @@ const UserSecurity = () => {
 
             setPasswordForm({current_password: '', new_password: '', confirm_password: ''})
             setError('')
+            setSuccess('Mot de passe modifié avec succès')
 
         } catch (err) {
             setError(err.response?.data?.message || err.message || 'Échec de la mise à jour');
@@ -62,7 +83,7 @@ const UserSecurity = () => {
         <>
             <div className="content-header flex justify-content-space-between">
                 <div className="m-bottom-20px">
-                    <h3 className="font-size-150em c-secondary m-bottom-5px">Sécurité</h3>
+                    <h3 className="font-size-2em c-secondary m-bottom-5px">Sécurité</h3>
                     <p className="subtitle c-secondary m-0">Gérez votre mot de passe et la sécurité du compte</p>
                 </div>
             </div>
@@ -79,7 +100,7 @@ const UserSecurity = () => {
                                 <label className="c-tertiary letter-spacing-1px uppercase font-size-085em">Mot de passe
                                     actuel</label>
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword.current_password ? "text" : "password"}
                                     name="current_password"
                                     value={passwordForm.current_password}
                                     placeholder="••••••••••"
@@ -89,8 +110,8 @@ const UserSecurity = () => {
                                 <button
                                     type="button"
                                     className="auth-toggle-password position-absolute right-0 cursor-pointer b-none border-none c-secondary c-tertiary bottom-05em "
-                                    onClick={() => setShowPassword((prevState) => !prevState)}
-                                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                    onClick={() => toggleShowPassword("current_password")}
+                                    aria-label={showPassword.current_password ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                                 >
                                     👁
                                 </button>
@@ -101,7 +122,7 @@ const UserSecurity = () => {
                                     de passe
                                 </label>
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword.new_password ? "text" : "password"}
                                     name="new_password"
                                     value={passwordForm.new_password}
                                     placeholder="••••••••••"
@@ -111,8 +132,8 @@ const UserSecurity = () => {
                                 <button
                                     type="button"
                                     className="auth-toggle-password cursor-pointer b-none border-none c-secondary c-tertiary bottom-05em "
-                                    onClick={() => setShowPassword((prevState) => !prevState)}
-                                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                    onClick={() => toggleShowPassword("new_password")}
+                                    aria-label={showPassword.new_password ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                                 >
                                     👁
                                 </button>
@@ -124,7 +145,7 @@ const UserSecurity = () => {
                                     nouveau mot de passe
                                 </label>
                                 <input
-                                    type={showPassword ? "text" : "password"}
+                                    type={showPassword.confirm_password ? "text" : "password"}
                                     name="confirm_password"
                                     value={passwordForm.confirm_password}
                                     placeholder="••••••••••"
@@ -134,8 +155,8 @@ const UserSecurity = () => {
                                 <button
                                     type="button"
                                     className="auth-toggle-password position-absolute right-0 cursor-pointer b-none border-none c-secondary c-tertiary bottom-05em "
-                                    onClick={() => setShowPassword((prevState) => !prevState)}
-                                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                                    onClick={() => toggleShowPassword("confirm_password")}
+                                    aria-label={showPassword.confirm_password ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                                 >
                                     👁
                                 </button>
@@ -147,6 +168,8 @@ const UserSecurity = () => {
 
 
                     {error && <p style={{color: "red"}}>{error}</p>}
+                    {success && <p style={{color: "green"}}>{success}</p>}
+
                     <button
                         type="submit"
                         className="align-self-center m-right-50px m-top-10px b-none b-secondary c-primary p-10px flex cursor-pointer"

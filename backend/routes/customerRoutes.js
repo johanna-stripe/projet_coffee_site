@@ -13,7 +13,7 @@ import {
     patchCustomerAddress,
     //DELETE
     deleteCustomerAccount,
-    deleteCustomerAddress,
+    deleteCustomerAddress, getMyProfile,
 } from "../controllers/customerController.js";
 import {authenticate} from "../security/midddleware/authMiddleware.js";
 import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
@@ -31,6 +31,8 @@ export default router
 router.get('/:id', authenticate, getCustomerProfile)
 
 router.get('/:id/addresses', authenticate, getCustomerAddresses)
+
+router.get('/me', authenticate, getMyProfile)
 
 //===================POST========================
 router.post('/', authenticate, authorizeRole('ADMIN'), createCustomer)

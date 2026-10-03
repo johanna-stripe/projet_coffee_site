@@ -1,35 +1,47 @@
+// Table users = le COMPTE (username, email de connexion, mot de passe, rôle).
+// Les infos personnelles (prénom, nom, téléphone, date de naissance) sont dans customer.
+// On fait un LEFT JOIN pour récupérer les deux d'un coup quand on en a besoin.
+
+const USER_WITH_CUSTOMER = `
+    SELECT u.user_id, u.username, u.email, u.password, u.role, u.is_active, u.created_at, u.updated_at,
+           c.customer_id, c.first_name, c.last_name, c.customer_email, c.phone, c.birth_date
+    FROM users u
+    LEFT JOIN customer c ON c.user_id = u.user_id
+`
+
 //===========FIND USER BY EMAIL===============
 export const FIND_USER_BY_EMAIL = `
-    SELECT *
-    FROM users
-    WHERE user_email = ?
+    ${USER_WITH_CUSTOMER}
+    WHERE u.email = ?
     LIMIT 1
 `
 
 //===========GET ALL USERS===============
+// (on n'expose plus le mot de passe hashé dans la liste)
 export const FIND_ALL_USERS = `
-    SELECT user_id AS id, first_name, last_name, user_email AS email, phone, birth_date, password, role, is_active, created_at
-    FROM users
+    SELECT u.user_id AS id, u.username, u.email, u.role, u.is_active, u.created_at,
+           c.customer_id, c.first_name, c.last_name, c.phone, c.birth_date
+    FROM users u
+    LEFT JOIN customer c ON c.user_id = u.user_id
 `
 
+//===========FIND USER BY ID===============
 export const FIND_USER_BY_ID = `
-    SELECT *
-    FROM users
-    WHERE user_id = ?
+    ${USER_WITH_CUSTOMER}
+    WHERE u.user_id = ?
     LIMIT 1
 `
 
 //===========CREATE USER===============
 export const CREATE_USER = `
-    INSERT INTO users (first_name, last_name, user_email, phone, birth_date, password)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO users (username, email, password, role)
+    VALUES (?, ?, ?, ?)
 `
 
 
 //===========UPDATE USER BY ID===============
 export const UPDATE_USER_BY_ID = (fields) => {
     const columnMapping = {
-        email: 'user_email', // Traduit 'email' en 'user_email'
         new_password: 'password'
     };
     const setClause = fields
@@ -62,4 +74,3 @@ export const UPDATE_DEACTIVATE_USER = `
     SET is_active = FALSE
     WHERE user_id = ?
 `
-
