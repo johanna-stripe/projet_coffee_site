@@ -1,0 +1,221 @@
+/* ====================== MES ADRESSES ====================== */
+
+.address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.address-header h3 {
+    margin-top: 0;
+}
+
+/* 2 colonnes, 1 seule sur petit écran */
+.address-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 800px) {
+    .address-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.address-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ---------- Carte adresse ---------- */
+.address-card {
+    background: white;
+    border: 1px solid transparent;
+    padding: 20px;
+}
+
+.address-card-active {
+    border-color: var(--color-quaternary);
+}
+
+.address-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.address-card-title {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.4em;
+    font-weight: normal;
+    color: var(--color-secondary);
+}
+
+.address-card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Badge « PAR DÉFAUT » */
+.address-badge {
+    background: rgba(48, 88, 71, 0.12);
+    color: var(--color-quaternary);
+    font-size: 0.85em;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+}
+
+/* Lien « Définir par défaut » */
+.address-link-btn {
+    margin-top: 15px;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--color-quaternary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-family: inherit;
+    font-size: 1.1em;
+    cursor: pointer;
+}
+
+.address-link-btn:hover,
+.address-link-btn:focus-visible {
+    color: var(--color-secondary);
+}
+
+.address-card-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.address-icon-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    color: var(--color-tertiary);
+    opacity: 0.6;
+}
+
+.address-icon-btn:hover,
+.address-icon-btn:focus-visible {
+    opacity: 1;
+}
+
+.address-card-body p {
+    margin: 0;
+    font-size: 1.25em;
+    line-height: 1.75;
+    color: var(--color-secondary);
+}
+
+/* ---------- Formulaire ---------- */
+.address-form {
+    border: 1px solid rgba(144, 91, 39, 0.25);
+    padding: 25px 22px;
+}
+
+.address-form-title {
+    margin: 0 0 20px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.4em;
+    font-weight: normal;
+    color: var(--color-secondary);
+}
+
+.address-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 15px;
+}
+
+.address-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.address-field-full {
+    grid-column: 1 / -1;
+}
+
+.address-field label {
+    font-size: 0.85em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+}
+
+.address-field input {
+    background: white;
+    border: 1px solid rgba(51, 27, 10, 0.12);
+    padding: 12px 14px;
+    font-size: 1.2em;
+    color: var(--color-secondary);
+    font-family: inherit;
+}
+
+.address-field input:focus {
+    outline: 2px solid var(--color-quaternary);
+    outline-offset: -1px;
+}
+
+.address-form-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.address-error {
+    margin: 15px 0 0;
+    color: #C1121F;
+    font-size: 1.15em;
+}
+
+/* ---------- Boutons ---------- */
+.address-btn {
+    padding: 12px 18px;
+    font-size: 1.05em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid transparent;
+}
+
+.address-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.address-btn-dark {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    white-space: nowrap;
+}
+
+.address-btn-green {
+    background: var(--color-quaternary);
+    color: var(--color-primary);
+}
+
+.address-btn-outline {
+    background: none;
+    border-color: rgba(144, 91, 39, 0.4);
+    color: var(--color-tertiary);
+}
+
+.address-btn:focus-visible {
+    outline: 2px solid var(--color-tertiary);
+    outline-offset: 2px;
+}

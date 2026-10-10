@@ -1,25 +1,33 @@
 import logo from '../assets/images/logos/leTempsDuneTasse_logoHorloge.png'
-
+import { FaInstagram } from "react-icons/fa6";
+import { FaFacebook } from "react-icons/fa";
+import { FaPinterest } from "react-icons/fa";
+import { FaTiktok } from "react-icons/fa";
 
 const Footer = () => {
     return (
         <footer className="site-footer b-primary c-secondary p-30px">
-            <div className="footer-top flex flex-wrap justify-content-space-evenly gap-30px">
+            <div className="footer-top flex flex-wrap justify-content-space-between p-right-50px">
                 {/* Colonne marque */}
-                <div className="footer-brand flex m-0 align-items-center">
+                <div className="footer-brand flex m-0 gap-20px align-items-center">
                     <img src={logo} alt="logoLeTempsDuneTasse" className="h-150px "/>
                     <div className="flex flex-direction-column">
                     <p className="footer-text m-top-20px w-200px">
                         Brûlerie artisanale en Provence. Grains sélectionnés à la source, torréfiés avec soin, livrés
                         dans leur fraîcheur.
                     </p>
-                    <div className="footer-socials flex gap-10px m-top-20px">
+                    <div className="footer-socials flex gap-20px m-top-10px">
                         <a href="#" className="social-icon flex align-items-center justify-content-center"
-                           aria-label="Instagram">I</a>
+                           aria-label="Instagram"><FaInstagram size={17} /></a>
                         <a href="#" className="social-icon flex align-items-center justify-content-center"
-                           aria-label="Facebook">F</a>
+                           aria-label="Facebook"><FaFacebook size={17} />
+                        </a>
                         <a href="#" className="social-icon flex align-items-center justify-content-center"
-                           aria-label="Pinterest">P</a>
+                           aria-label="Pinterest"><FaPinterest size={17}  />
+                        </a>
+                        <a href="#" className="social-icon flex align-items-center justify-content-center"
+                           aria-label="Tiktok"><FaTiktok size={17} />
+                        </a>
                     </div>
                     </div>
                 </div>

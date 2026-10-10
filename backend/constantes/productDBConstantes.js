@@ -1,25 +1,28 @@
 //========================GET ALL PRODUCTS=========================
 export const FIND_ALL_PRODUCTS = `
-    SELECT
-        c.category_id,
-        c.category_name,
-        p.product_id,
-        p.product_name,
-        b.brand_id,
-        b.brand_name,
-        p.product_image_url,
-        p.price,
-        p.stock
-    FROM product p 
-    JOIN category c ON c.category_id = p.category_id
-# JOIN --> ne garde que les lignes où la correspondance existe des deux côtés. 
+    SELECT c.category_id,
+           c.category_name,
+           c.parent_id,
+           p.product_id,
+           p.product_name,
+           b.brand_id,
+           b.brand_name,
+           p.product_image_url,
+           p.price,
+           p.stock,
+           ct.weight
+    FROM product p
+             JOIN category c ON c.category_id = p.category_id
+        # JOIN --> ne garde que les lignes où la correspondance existe des deux côtés. 
 # donc produit et category sont en relation 1,N --> Un produit est forcément relié à une ou plusieurs category donc JOIN classique suffit
-    LEFT JOIN brand b ON b.brand_id = p.brand_id
-#     LEFT JOIN --> garde toutes les lignes de la table de gauche (celle après FROM, donc product ici)
+             LEFT JOIN brand b ON b.brand_id = p.brand_id
+             LEFT JOIN coffee_tea_infusion ct ON ct.product_id = p.product_id
+    # LEFT JOIN coffee_tea_infusion --> le poids n'existe que pour café/thé/infusion (null pour machines et accessoires)
+    #     LEFT JOIN --> garde toutes les lignes de la table de gauche (celle après FROM, donc product ici)
 # comme produit et brand sont en 0,N, la marque n'est pas obligatoire pour le produit, donc on peut avoir brand_id = null
 # donc si un produit n'a pas de marque, il disparaît silencieusement de la liste avec un simple JOIN
 # JOIN LEFT va garder tous les éléments de product
-    `
+`
 
 //======================GET PRODUCT INFO BY ID=====================
 export const FIND_PRODUCT_FULL_INFO_BY_ID = `

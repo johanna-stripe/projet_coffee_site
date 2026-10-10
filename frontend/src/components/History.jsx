@@ -3,7 +3,9 @@ import torrefaction from '../assets/images/history/torefaction.jpg';
 
 const History = () => {
     return (
-        <section className="flex h-550px">
+        <section className="flex h-550px"
+        id="brulerie"
+        >
             <div className="flex-1 flex position-relative m-right-20px justify-content-right">
                 <img
                     src={torrefaction}

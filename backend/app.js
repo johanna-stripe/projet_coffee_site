@@ -32,14 +32,27 @@ app.use(cors({
 app.use(helmet()) //pas besoin de le configurer comme limiter
 //voir ce que fait postman sans helmet (on double les vérifications de sécurité, donc mon appli est bien secure)
 
+// Limite générale : protège tout le serveur sans gêner un usage normal
+// (une seule page peut faire plusieurs requêtes : profil, adresses, enregistrement...)
 const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 100,
+    message:{
+        message: 'Too many requests. Retry later'
+    },
+})
+app.use(limiter);
+
+// Limite stricte : seulement pour la connexion et l'inscription (contre les attaques par force brute)
+const authLimiter = rateLimit({
     windowMs: 60 * 1000, // 1 minute
     max: 5,
     message:{
         message: 'Too many connection attempts. Retry later'
     },
 })
-app.use(limiter);
+app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1/auth/register', authLimiter);
 
 app.use(cookieParser())
 

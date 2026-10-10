@@ -23,9 +23,10 @@ export const FIND_CUSTOMER_BY_EMAIL = `
 `
 
 export const FIND_CUSTOMER_ADDRESSES_BY_ID = `
-    SELECT address_id, customer_id, address_name, street, city, postcode, country
+    SELECT address_id, customer_id, address_name, is_default, street, city, postcode, country
     FROM customer_address
     WHERE customer_id = ?
+    ORDER BY is_default DESC, address_id
 `
 
 //==================POST CUSTOMER=====================
@@ -36,8 +37,23 @@ export const CREATE_NEW_CUSTOMER = `
 
 //==================POST CUSTOMER ADDRESS=====================
 export const CREATE_NEW_CUSTOMER_ADDRESS =`
-    INSERT INTO customer_address (customer_id, street, city, postcode, country)
-    VALUES (?, ?, ?, ?, ?)
+    INSERT INTO customer_address (customer_id, address_name, is_default, street, city, postcode, country)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+`
+
+//==================ADRESSE PAR DÉFAUT=====================
+// 1) on enlève le "par défaut" de toutes les adresses du client
+export const UNSET_DEFAULT_ADDRESSES = `
+    UPDATE customer_address
+    SET is_default = 0
+    WHERE customer_id = ?
+`
+
+// 2) on le met sur l'adresse choisie
+export const SET_DEFAULT_ADDRESS = `
+    UPDATE customer_address
+    SET is_default = 1
+    WHERE customer_id = ? AND address_id = ?
 `
 
 

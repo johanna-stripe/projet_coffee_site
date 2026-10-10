@@ -150,7 +150,7 @@ const UserInformation = () => {
                 >
                     <div className="flex m-bottom-20px">
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary font-size-125em">PRÉNOM</label>
+                            <label className="c-tertiary">PRÉNOM</label>
                             {isEditing ? (
                                 <input
                                     type="text"
@@ -165,7 +165,7 @@ const UserInformation = () => {
                             }
                         </div>
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary font-size-125em">NOM</label>
+                            <label className="c-tertiary">NOM</label>
                             {isEditing ? (
                                 <input
                                     type="text"
@@ -183,7 +183,7 @@ const UserInformation = () => {
 
                     <div className="flex m-bottom-20px">
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary font-size-125em">ADRESSE E-MAIL</label>
+                            <label className="c-tertiary">ADRESSE E-MAIL</label>
                             {isEditing ? (
                                 <input
                                     type="text"
@@ -198,7 +198,7 @@ const UserInformation = () => {
                             }
                         </div>
                         <div className="info-field w-45 flex-1 flex flex-direction-column">
-                            <label className="c-tertiary font-size-125em uppercase">téléphone</label>
+                            <label className="c-tertiary uppercase">téléphone</label>
                             {isEditing ? (
                                 <input
                                     type="tel"
@@ -215,7 +215,7 @@ const UserInformation = () => {
                     </div>
 
                     <div className="info-field w-45 flex-1 flex flex-direction-column">
-                        <label className="c-tertiary font-size-125em uppercase">date de naissance</label>
+                        <label className="c-tertiary uppercase">date de naissance</label>
                         {isEditing ? (
                             <input
                                 type="date"

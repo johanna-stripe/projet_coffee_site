@@ -16,7 +16,7 @@ import UserPurchases from "./UserPuscharses.jsx";
 import UserSecurity from "./UserSecurity.jsx";
 
 
-const UserAccount = ({isOpen, onClose, onLogout}) => {
+const UserAccount = ({isOpen, onClose}) => {
 
     if (!isOpen) return null;
 
@@ -46,10 +46,10 @@ const UserAccount = ({isOpen, onClose, onLogout}) => {
             className="account-page auth-overlay position-fixed top-0 left-0 w-100 h-100 flex align-items-center justify-content-center z-index99"
             onClick={onClose}
         >
-            <div className="auth-modal position-relative b-primary w-80 h-80"
+            <div className="auth-modal account-modal position-relative b-primary w-80 h-80"
                  onClick={(e) => e.stopPropagation()}>
                 <button
-                    className="auth-close font-size-150em position-absolute top-0 right-0 cursor-pointer c-tertiary b-none border-none"
+                    className="auth-close font-size-150em p-15px position-absolute top-0 right-0 cursor-pointer c-tertiary b-none border-none"
                     onClick={onClose}
                     aria-label="Fermer"
                 >

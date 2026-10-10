@@ -22,3 +22,26 @@
     color: var(--color-primary);
 }
 
+
+
+/* ====== Hauteur de la fenêtre "Mon compte" ======
+   La fenêtre garde sa hauteur (h-80) : seule la partie de droite défile
+   quand le contenu est trop long (plusieurs adresses, formulaire ouvert...). */
+.account-modal {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;       /* plus rien ne dépasse de la fenêtre */
+    max-height: 90vh;
+}
+
+.account-modal .side-menu {
+    flex: 1;                /* le menu + le contenu prennent toute la place sous le titre */
+    min-height: 0;          /* indispensable pour que l'enfant puisse défiler en flexbox */
+}
+
+.account-content {
+    overflow-y: auto;       /* barre de défilement seulement si besoin */
+    min-height: 0;
+    padding-right: 20px;
+    padding-bottom: 30px;
+}

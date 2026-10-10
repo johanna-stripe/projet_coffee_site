@@ -3,7 +3,7 @@ const Selection = ({selections}) => {
     return (
         <section className="explore_section h-600px">
             <div className="h-200px flex flex-direction-column justify-content-center align-items-center">
-                <p className="c-tertiary m-0 slider-eyebrow m-10px">Nos univers</p>
+                <p className="c-tertiary font-size-150em m-0 slider-eyebrow m-10px">Nos univers</p>
                 <h1 className="c-secondary m-0">Explorez notre sélection</h1>
             </div>
 
