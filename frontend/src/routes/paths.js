@@ -8,11 +8,21 @@ export const CLIENT_PATHS = {
     infusion: '/collection-infusion',
     accessoires: '/collection-accessoires',
     machines: '/collection-machines',
+    product: '/produit/:id', // pattern de la route (App.jsx)
     quiSommesNous: '/qui-sommes-nous',
     login: '/login',
     register: '/register',
     admin: '/admin'
 }
+
+// lien vers la fiche d'un produit : productPath(27) → '/produit/27'
+export const productPath = (productId) => `/produit/${productId}`
+
+// lien vers une page catégorie déjà filtrée sur une sous-catégorie (category_name en base, en minuscules) :
+// subCategoryPath('/collection-cafe-grain', 'Café en grain grand cru')
+//   → '/collection-cafe-grain?categorie=caf%C3%A9%20en%20grain%20grand%20cru'
+export const subCategoryPath = (parentPath, categoryName) =>
+    `${parentPath}?categorie=${encodeURIComponent(categoryName.toLowerCase())}`
 
 export const CATEGORIES = [
     { id: 1, title: 'Café en grain',   path: CLIENT_PATHS.cafeGrain },
