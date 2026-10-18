@@ -3,24 +3,23 @@ import React from "react";
 import '../style/accueil.css';
 
 //=================CHILDREN IMPORTS=====================
-import Slider from "../components/Slider.jsx";
+import Slider from "../components/home/Slider.jsx";
 //On importe le composant enfant Slider pour pouvoir l'utiliser comme une balise JSX (<Slider />) plus bas.
 // C'est exactement comme importer une fonction — parce qu'un composant React est une fonction.
-import Selection from "../components/Selection.jsx";
-import SelectionClient from "./SelectionClient.jsx";
-import History from "../components/History.jsx";
-import TrustBadges from "../components/TrustBadges.jsx";
+import Selection from "../components/home/Selection.jsx";
+import SelectionClient from "../components/home/SelectionClient.jsx";
+import History from "../components/home/History.jsx";
+import TrustBadges from "../components/layout/TrustBadges.jsx";
 
 //=================IMAGES IMPORTS=====================
 import coffeeBeanSlider from '../assets/images/coffee/coffee_bean_slider.jpg';
 import coffeeSliderMorning from '../assets/images/coffee/coffee_slider_morning.png'
 import teaSlider from '../assets/images/tea/tea_4.jpg';
 
-import coffeeSelection from '../assets/images/coffee/coffee_grain_moulu.jpg'
-import teaSelection from '../assets/images/tea/tea.jpg';
-import coffeeMachineSelection from '../assets/images/coffee_machine/machine_cafe_1.jpg';
-import accessoiresSelection from '../assets/images/accessories/accessoire.jpg';
-
+import bioSelection from '../assets/icons/selection/bio.svg';
+import italianSelection from '../assets/icons/selection/coffee.svg';
+import specialtySelection from '../assets/icons/selection/specialty.svg';
+import {CLIENT_PATHS, subCategoryPath} from "../routes/paths.js";
 
 const slides = [
     {
@@ -30,22 +29,25 @@ const slides = [
         title: "L'art du café en grains",
         text: "Sélectionnés à la source, torréfiés dans notre atelier.",
         cta: "Découvrir nos cafés",
+        path: CLIENT_PATHS.cafeGrain
     },
     {
         img: coffeeSliderMorning,
-        alt: "Le rituel du matin",
+        alt: "Café moulu pour le rituel du matin",
         eyebrow: "Torréfaction artisanale",
-        title: "Le rituel du matin",
-        text: "Chaque tasse raconte l'histoire d'un terroir unique.",
-        cta: "Explorez la sélection",
+        title: "Moulu pour votre cafetière",
+        text: "Filtre, piston, italienne ou expresso : une mouture adaptée à chacune.",
+        cta: "Découvrir nos cafés moulus",
+        path: CLIENT_PATHS.cafeMoulu,
     },
     {
         img: teaSlider,
-        alt: "Thé et infusions d'exception",
-        eyebrow: "Torréfaction artisanale",
-        title: "Thé et infusions d'exception",
+        alt: "Thé d'exception",
+        eyebrow: "Thés du monde entier",
+        title: "Thé d'exception",
         text: "Des feuilles soigneusement choisies pour chaque moment",
-        cta: "Voir les thés et infusions",
+        cta: "Voir les thés",
+        path: CLIENT_PATHS.the
     },
 ];
 /*
@@ -56,76 +58,27 @@ S'il était à l'intérieur du composant, il serait recréé (nouvel objet en m�
 
 const selections = [
     {
-        img: coffeeSelection,
-        alt: "café_grain_moulu",
-        title: "Café grain & moulu" ,
-        cta: "Découvrir ❯"
+        img: specialtySelection,
+        alt: "cafés_de_spécialité",
+        title: "Cafés de spécialité",
+        path: subCategoryPath(CLIENT_PATHS.cafeGrain, "café en grain grand cru"),
+        description: "Une gamme de cafés d'exception issus de petites productions aux profils gustatifs remarquables."
     },
     {
-        img: teaSelection,
-        alt: "thé-et-infusions",
-        title: "Thé & infusion" ,
-        cta: "Découvrir ❯"
+        img: bioSelection,
+        alt: "cafés_bio",
+        title: "Cafés bio",
+        path: subCategoryPath(CLIENT_PATHS.cafeGrain, "café en grain biologique"),
+        description: "Notre sélection de café en grain bio est certifiée biologique par le label Ecocert afin de vous garantir une agriculture respectueuse de l'environnement."
     },
     {
-        img: coffeeMachineSelection,
-        alt: "cafetière",
-        title: "Cafetière & théière" ,
-        cta: "Découvrir ❯"
+        img: italianSelection,
+        alt: "cafés_italiens",
+        title: "Cafés italiens",
+        path: subCategoryPath(CLIENT_PATHS.cafeGrain, "café en grain italien"),
+        description: "Les meilleurs cafés en grain italiens pour transformer votre rituel quotidien en un moment d'exception."
     },
-    {
-        img: accessoiresSelection,
-        alt: "accessoire-thé",
-        title: "Accessoires" ,
-        cta: "Découvrir ❯"
-    },
-
 ]
-
-const selectionClient = [
-    {
-        img: coffeeBeanSlider,
-        alt: "coffee-bean",
-        origin:"Etiopie" ,
-        coffeeName: "Éthiopie Yirgacheffe\n",
-        parfums: "Floral, agrumes, jasmin",
-        price: "14,90€",
-    },
-    {
-        img: coffeeBeanSlider,
-        alt: "coffee-bean",
-        origin:"Etiopie" ,
-        coffeeName: "Éthiopie Yirgacheffe\n",
-        parfums: "Floral, agrumes, jasmin",
-        price: "14,90€",
-    },
-    {
-        img: coffeeBeanSlider,
-        alt: "coffee-bean",
-        origin:"Etiopie" ,
-        coffeeName: "Éthiopie Yirgacheffe\n",
-        parfums: "Floral, agrumes, jasmin",
-        price: "14,90€",
-    },
-    {
-        img: coffeeBeanSlider,
-        alt: "coffee-bean",
-        origin:"Etiopie" ,
-        coffeeName: "Éthiopie Yirgacheffe\n",
-        parfums: "Floral, agrumes, jasmin",
-        price: "14,90€",
-    },
-    {
-        img: coffeeBeanSlider,
-        alt: "coffee-bean",
-        origin:"Etiopie" ,
-        coffeeName: "Éthiopie Yirgacheffe\n",
-        parfums: "Floral, agrumes, jasmin",
-        price: "14,90€",
-    },
-
-]
-
 
 //Accueil est un composant fonction : une fonction JS qui retourne du JSX (l'équivalent React du HTML).
 const Accueil = () => {
@@ -135,7 +88,7 @@ const Accueil = () => {
             {/* premier 'slides=' : nom de la prop, c'est moi qui choisi */}
             {/* deuxième {slides} est la variable qu'on a définit en haut, dont on passe la valeur */}
             <Selection selections={selections}/>
-            <SelectionClient selectionClient={selectionClient}/>
+            <SelectionClient/>
             <History/>
         </>
     );
