@@ -5,18 +5,33 @@ export const FIND_ALL_PRODUCTS = `
            c.parent_id,
            p.product_id,
            p.product_name,
+           p.product_description,
            b.brand_id,
            b.brand_name,
            p.product_image_url,
            p.price,
            p.stock,
-           ct.weight
+           ct.origin,
+           ct.roast,
+           ct.grind_type,
+           ct.intensity,
+           ct.weight,
+           m.technology,
+           m.pressure_power,
+           m.grinder,
+           m.tank_capacity,
+           a.usage,
+           a.material,
+           a.capacity,
+           a.color
     FROM product p
              JOIN category c ON c.category_id = p.category_id
         # JOIN --> ne garde que les lignes où la correspondance existe des deux côtés. 
 # donc produit et category sont en relation 1,N --> Un produit est forcément relié à une ou plusieurs category donc JOIN classique suffit
              LEFT JOIN brand b ON b.brand_id = p.brand_id
              LEFT JOIN coffee_tea_infusion ct ON ct.product_id = p.product_id
+             LEFT JOIN machines m ON m.product_id = p.product_id
+             LEFT JOIN accessories a ON a.product_id = p.product_id
     # LEFT JOIN coffee_tea_infusion --> le poids n'existe que pour café/thé/infusion (null pour machines et accessoires)
     #     LEFT JOIN --> garde toutes les lignes de la table de gauche (celle après FROM, donc product ici)
 # comme produit et brand sont en 0,N, la marque n'est pas obligatoire pour le produit, donc on peut avoir brand_id = null
