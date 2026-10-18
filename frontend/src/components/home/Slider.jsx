@@ -2,6 +2,7 @@ import {
     useState,
     useEffect
 } from "react";
+import {Link} from "react-router-dom";
 
 const Slider = ({slides}) => {
     /*
@@ -67,10 +68,13 @@ const Slider = ({slides}) => {
                             <p className="letter-spacing-3px uppercase c-tertiary">{slide.eyebrow}</p>
                             <h1 className="m-0">{slide.title}</h1>
                             <p className="font-size-150em">{slide.text}</p>
-                            <a href="#"
-                               className="c-white uppercase font-size-150em text-decoration-none b-quaternary p-15px">
-                                {slide.cta}
-                            </a>
+                            {/* le bouton n'apparaît que si le slide a un path (cf. slides dans Accueil.jsx) */}
+                            {slide.path && (
+                                <Link to={slide.path}
+                                      className="c-white uppercase font-size-150em text-decoration-none b-quaternary p-15px">
+                                    {slide.cta}
+                                </Link>
+                            )}
                         </div>
                     </div>
                 ))}

@@ -1,17 +1,17 @@
-import '../style/navBar.css';
+import '../../style/navBar.css';
 
-import logo2 from '../assets/images/logos/leTempsDuneTasse_logo.png'
+import logo2 from '../../assets/images/logos/leTempsDuneTasse_logo.png'
 import {FaRegUser} from "react-icons/fa";
 import {PiBasket} from "react-icons/pi";
 import {IoSearch, IoMenu, IoClose} from "react-icons/io5";
-import useMediaQuery from "../helper/useMediaQuery.js";
-import AuthModal from "./AuthModal.jsx";
+import useMediaQuery from "../../helper/useMediaQuery.js";
+import AuthModal from "../auth/AuthModal.jsx";
 import {useEffect, useRef, useState} from "react";
-import {useAuth} from "../context/AuthContext.jsx";
-import UserAccount from "./UserAccount.jsx";
+import {useAuth} from "../../context/AuthContext.jsx";
+import UserAccount from "../user/UserAccount.jsx";
 import SubMenu from "./SubMenu.jsx";
 import {Link} from "react-router-dom";
-import {CLIENT_PATHS} from "../routes/paths.js";
+import {CLIENT_PATHS} from "../../routes/paths.js";
 
 const NavBar = () => {
     const navRef = useRef(null)

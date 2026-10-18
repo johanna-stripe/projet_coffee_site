@@ -1,7 +1,7 @@
 import {FaPen, FaRegTrashAlt} from "react-icons/fa";
 import {useEffect, useState} from "react";
-import api from "../axios/axiosConfig.js";
-import "../style/userAddresses.css";
+import api from "../../axios/axiosConfig.js";
+import "../../style/userAddresses.css";
 
 // Valeurs du formulaire quand on ajoute une nouvelle adresse
 const EMPTY_FORM = {

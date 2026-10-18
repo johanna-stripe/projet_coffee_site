@@ -1,6 +1,6 @@
 import {useState} from "react";
-import {useAuth} from "../context/AuthContext.jsx";
-import "../style/authModal.css"
+import {useAuth} from "../../context/AuthContext.jsx";
+import "../../style/authModal.css"
 
 
 const RegisterForm = ({onClose, switchToLogin}) => {

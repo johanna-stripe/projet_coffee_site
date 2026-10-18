@@ -1,7 +1,7 @@
 import React from 'react'
-import shieldCheck from "../assets/icons/shield-check.svg"
-import delivery from "../assets/icons/truck.svg"
-import star from "../assets/icons/star.svg"
+import shieldCheck from "../../assets/icons/shield-check.svg"
+import delivery from "../../assets/icons/truck.svg"
+import star from "../../assets/icons/star.svg"
 
 const trustBadges = [
     {
