@@ -9,7 +9,7 @@ import accessoires from '../assets/images/accessories/accessoire_2.jpg';
 const headers = {
     1: {
         subtitle: "La boutique café",
-        title: "Café grain",
+        title: "Café en grains",
         description: "Des cafés de spécialité sélectionnés à la source puis torréfiés en petits lots, pour révéler le caractère singulier de chaque terroir.",
         image: cafeGrains,
     },
@@ -21,26 +21,26 @@ const headers = {
     },
     3: {
         subtitle: "La boutique thé",
-        title: "Thé",
+        title: "Thé d'exception",
         description: "Des thés verts, noirs et blancs choisis auprès de petits producteurs, pour des tasses fines, parfumées et pleines de nuances.",
         image: the
     },
     4: {
         subtitle: "La boutique infusion",
-        title: "Infusion",
+        title: "Le jardin dans la tasse",
         description: "Plantes, fleurs et fruits séchés assemblés avec soin, pour des infusions douces et naturelles à savourer à toute heure.",
         image: infusion
     },
     5: {
         subtitle: "La boutique matériel",
-        title: "Machines à café",
+        title: "Votre café, avec précision",
         description: "Des machines fiables et élégantes, des expressos traditionnels aux modèles avec broyeur intégré, pour un café de qualité chez vous.",
         image: machines
     },
     6: {
         subtitle: "La boutique accessoires",
-        title: "Accessoires",
-        description: "Tasses, théières, moulins et ustensiles : tout ce qu'il faut pour préparer et déguster vos boissons dans les meilleures conditions.",
+        title: "L'art de la préparation",
+        description: "Des outils choisis pour leur précision, leur durabilité et leur élégance, afin de transformer chaque préparation en véritable rituel.",
         image: accessoires
     }
 }
@@ -97,7 +97,7 @@ const ProductHeader = ({categoryId}) => {
                         <p className="product-header__description">{header.description}</p>
                     </div>
                 </div>
-                <div className="flex gap-80px m-40px m-top-100px m-bottom-60px">
+                <div className="product-header2 flex gap-80px m-40px m-top-100px m-bottom-60px">
                     <div className="m-left-50px">
                     <h4 className="product-header2__subtitle">{header2.subtitle}</h4>
                     <h1 className="product-header2__title">{header2.title}</h1>

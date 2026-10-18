@@ -19,7 +19,7 @@ const History = () => {
             </div>
 
             <div className="flex-1 flex flex-direction-column m-left-20px m-right-80px align-self-center gap-20px">
-                <h5 className="m-0 c-secondary letter-spacing-3px">Notre Histoire</h5>
+                <h5 className="m-0 c-secondary font-size-125em letter-spacing-3px">Notre Histoire</h5>
                 <h2 className="m-0 font-size-3em">
                     Découvrir <br/>
                     <span className="font-italique">la brûlerie</span>

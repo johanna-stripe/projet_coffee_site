@@ -23,7 +23,7 @@ const AuthModal = ({isOpen, onClose}) => {
                 // stopPropagation empêche qu'un clic À L'INTÉRIEUR de la modal remonte jusqu'à l'overlay et la ferme par erreur
             >
                 <button
-                    className="auth-close position-absolute p-10px top-0 right-0 cursor-pointer c-tertiary b-none border-none"
+                    className="auth-close position-absolute p-10px top-0 right-0 m-top-20px m-right-10px cursor-pointer c-tertiary b-none border-none"
                     onClick={onClose}
                     aria-label="Fermer"
                 >

@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({product}) => {
     return (
         <article className="product-card">
             <div className="product-card__media">
@@ -16,8 +16,23 @@ const ProductCard = ({ product }) => {
             </div>
 
             <div className="product-card__body">
+                <div className="flex gap-20px">
+                    {product.origin && (
+                        <div className="flex flex-direction-column align-items-center">
+                            <p className="m-bottom-5px m-0 font-bold">Origine</p>
+                            <p className="product-card__origin">{product.origin}</p>
+                        </div>
+                    )}
+                    {product.roast && (
+                        <div className="flex flex-direction-column align-items-center">
+                            <p className="m-bottom-5px m-0 font-bold">Torréfaction</p>
+                            <p className="product-card__roast">{product.roast}</p>
+                        </div>
+                    )}
+                </div>
                 <p className="product-card__brand">{product.brand_name}</p>
                 <h2 className="product-card__name">{product.product_name}</h2>
+                <p className="product-card__description">{product.product_description}</p>
 
                 <div className="product-card__footer">
                     <p className="product-card__price">{product.price} €</p>

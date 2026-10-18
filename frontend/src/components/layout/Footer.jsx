@@ -1,4 +1,4 @@
-import logo from '../assets/images/logos/leTempsDuneTasse_logoHorloge.png'
+import logo from '../assets/images/logos/leTempsDuneTasse_logo_2.png'
 import { FaInstagram } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";

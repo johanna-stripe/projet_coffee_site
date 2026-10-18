@@ -1,10 +1,13 @@
 import React from 'react';
-import "../style/authModal.css"
+import {CLIENT_PATHS} from "../routes/paths.js";
+import {Link} from "react-router-dom";
+import '../style/subMenu.css'
 
 const subMenus = [
     {
         categoryParent :"café",
         category: "Café grain",
+        path: CLIENT_PATHS.cafeGrain,
         subCategories: [
             "Café en grain grand cru",
             "Café en grain biologique",
@@ -16,6 +19,7 @@ const subMenus = [
     {
         categoryParent :"café",
         category: "Café moulu",
+        path: CLIENT_PATHS.cafeMoulu,
         subCategories: [
             "Café moulu grand cru",
             "Café moulu biologique",
@@ -38,6 +42,7 @@ const subMenus = [
     {
         categoryParent :"thé & infusions",
         category: "Nos thés",
+        path: CLIENT_PATHS.the,
         subCategories: [
             "Thé en vrac",
             "Thé vert",
@@ -49,6 +54,7 @@ const subMenus = [
     {
         categoryParent :"thé & infusions",
         category: "Nos infusions",
+        path: CLIENT_PATHS.infusion,
         subCategories: [
             "Infusion en vrac",
             "Infusion aux herbes",
@@ -70,7 +76,8 @@ const subMenus = [
     },
     {
         categoryParent :"machines",
-        category: "Machines",
+        category: "Voir toutes nos machines",
+        path: CLIENT_PATHS.machines,
         subCategories: [
             "Machine à grain",
             "Machine à expresso",
@@ -81,7 +88,8 @@ const subMenus = [
     },
     {
         categoryParent :"accessoires",
-        category: "Accessoires",
+        category: "Voir tous nos accessoires",
+        path: CLIENT_PATHS.accessoires,
         subCategories: [
             "Accessoires café",
             "Accessoires thé",
@@ -92,11 +100,34 @@ const subMenus = [
     },
 ]
 
-const SubMenu = ({isOpen, category, top, left, gap}) => {
+const SubMenu = ({isOpen, category, top, left, gap, inline = false, onNavigate}) => {
 
     if (!isOpen) return null;
 
     const filtered = subMenus.filter((s) => s.categoryParent === category)
+
+    // Mobile / tablette : le sous-menu s'affiche dans le flux, sous l'entrée du menu (accordéon)
+    if (inline) {
+        return (
+            <div className="submenu-inline" onClick={(e) => e.stopPropagation()}>
+                {filtered.map((subMenu) => (
+                    <div key={subMenu.category} className="submenu-inline__group">
+                        <h4 className="m-0">
+                            {subMenu.path ? (
+                                <Link to={subMenu.path} className="c-secondary text-decoration-none"
+                                      onClick={onNavigate}>
+                                    {subMenu.category}
+                                </Link>
+                            ) : subMenu.category}
+                        </h4>
+                        {subMenu.subCategories.map((sub) => (
+                            <p key={sub} className="submenu2 m-0">{sub}</p>
+                        ))}
+                    </div>
+                ))}
+            </div>
+        )
+    }
 
     return (
         <div
@@ -110,14 +141,24 @@ const SubMenu = ({isOpen, category, top, left, gap}) => {
             }}
             onClick={(e) => e.stopPropagation()}
         >
-            <div className="sub-menu b-primary flex "
+            <div className="b-primary flex"
                  style={{gap: 100, padding: "10px 40px"}}
             >
                     {filtered.map((subMenu) => (
                         <div key={subMenu.category}>
-                            <h4>{subMenu.category}</h4>
+                            <h4 className="submenu">
+                                <Link
+                                    to={subMenu.path}
+                                    className="c-secondary text-decoration-none"
+                                >
+                                    {subMenu.category}
+                                </Link>
+                            </h4>
                             {subMenu.subCategories.map((sub) => (
-                                <p key={sub}>{sub}</p>
+                                <p key={sub}
+                                   className="submenu2"
+                                >
+                                    {sub}</p>
                             ))}
                         </div>
                     ))}

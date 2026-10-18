@@ -1,0 +1,257 @@
+/***************************************************************/
+/*********************** RESPONSIVE DESIGN *********************/
+/***************************************************************/
+/* Chargé EN DERNIER (voir main.jsx) : à spécificité égale, ces règles
+   l'emportent sur les classes utilitaires de settings.css.
+   Breakpoints :  tablette ≤ 1100px | mobile large ≤ 900px | mobile ≤ 600px */
+
+
+/* ==========================================================
+   ORDINATEUR PORTABLE  (≤ 1280px) : logo plus petit pour ne pas
+   empiéter sur le menu centré
+   ========================================================== */
+@media (max-width: 1280px) {
+    .navBar .logo img { height: 90px; }
+}
+
+
+/* ==========================================================
+   PETITS ÉCRANS D'ORDINATEUR / TABLETTE PAYSAGE  (≤ 1100px)
+   ========================================================== */
+@media (max-width: 1100px) {
+    .navBar .logo img { height: 80px; }
+
+    .navBar {
+        padding-left: 20px;
+        padding-right: 20px;
+        grid-template-columns: 1fr minmax(0, 400px) 1fr;
+        column-gap: 20px;
+    }
+
+    .navBar .logo { left: 20px; }
+    .navBar .menu { padding: 12px 20px; }
+    .navBar .menu ul { gap: 28px; }
+
+    /* Cafés préférés : carrousel horizontal (5 cartes ne tiennent plus) */
+    .selection-client { height: auto; padding: 50px 0; }
+    .selection-client > div:last-child {
+        justify-content: flex-start;
+        overflow-x: auto;
+        margin: 0;
+        padding: 0 20px 10px;
+        width: 100%;
+        box-sizing: border-box;
+        scroll-snap-type: x mandatory;
+        scroll-padding: 0 20px; /* le snap respecte la marge de gauche */
+    }
+    .selection-client > div:last-child > div { flex: 0 0 220px; scroll-snap-align: start; }
+
+    /* Histoire */
+    #brulerie { height: auto; min-height: 550px; }
+    #brulerie > div:last-child { margin-right: 30px; padding: 30px 0; }
+    #brulerie h2 { font-size: 2.2em; }
+}
+
+
+/* ==========================================================
+   TABLETTE PORTRAIT / MOBILE LARGE  (≤ 900px)
+   ========================================================== */
+@media (max-width: 900px) {
+
+    /* ---------- NavBar : burger + recherche pleine largeur ---------- */
+    .navBar {
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas:
+            "burger logo actions"
+            "search search search"
+            "menu   menu   menu";
+        padding: 8px 16px;
+        column-gap: 12px;
+        row-gap: 8px;
+        max-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .navBar-burger { display: flex; }
+
+    .navBar .logo {
+        position: static;
+        transform: none;
+        grid-area: logo;
+        justify-self: center;
+    }
+    .navBar .logo img { height: 60px; }
+
+    .navBar .navBar-actions > p { display: none; } /* message de bienvenue : pas la place */
+    .navBar .navBar-actions { margin: 0; }
+    .navBar .icons { gap: 18px; }
+
+    .searchBar-input { padding: 12px 0; text-align: left; }
+
+    /* Menu : tiroir déroulant sous la barre de recherche */
+    .navBar .menu {
+        display: none;
+        justify-self: stretch;
+        padding: 0 0 8px;
+        border-top: 1px solid rgba(51, 27, 10, 0.15);
+    }
+    .navBar .menu.menu--open { display: block; }
+
+    .navBar .menu ul { flex-direction: column; gap: 0; }
+    .navBar .menu li {
+        padding: 14px 4px;
+        font-size: 1.2em;
+        border-bottom: 1px solid rgba(51, 27, 10, 0.1);
+    }
+    .navBar .menu li::after { display: none; } /* pas de soulignement au survol sur tactile */
+
+    /* ---------- Slider ---------- */
+    .slider { height: 420px; }
+    .slider-text {
+        left: 8%;
+        right: 8%;
+        max-width: none;
+        height: auto;
+    }
+    .slider-text h1 { font-size: 2.6em; }
+    .slider-text p { font-size: 1.2em; }
+    .slider-arrow { width: 36px; height: 36px; font-size: 1rem; }
+    .slider-arrow-prev { left: 10px; }
+    .slider-arrow-next { right: 10px; }
+
+    /* ---------- Sélection (3 cartes) ---------- */
+    .explore_section > div:first-child {
+        height: auto;
+        padding: 40px 20px 30px;
+        text-align: center;
+    }
+    .explore_section h1 { font-size: 2.6em; }
+    .explore_section > div:last-child {
+        flex-wrap: wrap;
+        gap: 24px;
+        margin: 0 20px;
+    }
+    .selection-card { width: 100%; max-width: 340px; box-sizing: border-box; }
+
+    /* ---------- Histoire : image au-dessus du texte ---------- */
+    #brulerie { flex-direction: column; min-height: 0; }
+    #brulerie > div:first-child { flex: none; margin: 0; height: 320px; justify-content: center; }
+    #brulerie > div:first-child img { width: 100%; }
+    #brulerie > div:last-child {
+        margin: 0;
+        padding: 30px 20px 40px;
+        align-self: stretch;
+    }
+    #brulerie h2 { font-size: 2.4em; }
+    .foundedIn { bottom: 16px; right: 16px; }
+
+    /* ---------- Bandeau de réassurance ---------- */
+    .trustBadges {
+        flex-direction: column;
+        height: auto;
+        padding: 40px 20px;
+        gap: 28px;
+    }
+    .trustBadges > div { width: 100%; max-width: 340px; }
+    .trustBadges > .b-right-1px { display: none; }
+
+    /* ---------- Footer ---------- */
+    .site-footer .footer-top { flex-direction: column; gap: 32px; padding-right: 0; }
+    .site-footer .footer-brand { flex-wrap: wrap; }
+    .site-footer .footer-newsletter { max-width: none; }
+    .site-footer .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .site-footer .footer-payments { flex-wrap: wrap; justify-content: center; }
+
+    /* ---------- Pages catégorie ---------- */
+    .product-header { padding: 0 20px; min-height: 340px; }
+    .product-header__content { padding: 40px 0; }
+    .product-header__title { font-size: 3.4em; }
+    .product-header__description { font-size: 1.4em; }
+
+    .product-header2 {
+        flex-direction: column;
+        gap: 16px;
+        margin: 30px 20px;
+    }
+    .product-header2 > div,
+    .product-header2 > p { margin-left: 0; margin-right: 0; }
+    .product-header2__title { font-size: 2.4em; }
+    .product-header2__description { font-size: 1.4em; }
+
+    .product-filter { flex-wrap: wrap; margin: 0 20px; padding: 18px 0; }
+    .product-filter__count { margin-left: 0; width: 100%; }
+
+    .product-page { padding: 30px 20px; }
+    .product-grid { gap: 40px 24px; }
+
+    /* ---------- Fenêtres (connexion / mon compte) ---------- */
+    .auth-modal {
+        width: 92vw;
+        max-width: 520px;
+        max-height: 92vh;
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+    .auth-modal .auth-header { padding-left: 20px; padding-right: 20px; }
+    .auth-modal .auth-header h2 { font-size: 2em; }
+    .auth-modal .auth-body { padding: 24px 20px; }
+
+    .auth-modal.account-modal { width: 94vw; max-width: none; height: 92vh; overflow: hidden; }
+    .account-modal .side-menu { flex-direction: column; }
+    .account-modal .sidebar { flex: none; }
+    .account-modal .sidebar ul {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 12px;
+        padding: 0 12px;
+        overflow-x: auto;
+    }
+    .account-modal .menu-item {
+        margin-top: 0;
+        white-space: nowrap;
+        font-size: 0.9em;
+    }
+    .account-content { flex: 1; padding: 0 16px 24px; }
+}
+
+
+/* ==========================================================
+   MOBILE  (≤ 600px)
+   ========================================================== */
+@media (max-width: 600px) {
+    /* évite le zoom automatique d'iOS au focus d'un champ */
+    input, select, textarea { font-size: 16px; }
+
+    .navBar .logo img { height: 48px; }
+
+    .slider { height: 380px; }
+    .slider-text h1 { font-size: 2em; }
+    .slider-text p { font-size: 1.1em; margin: 0 0 10px; }
+    .slider-text a { font-size: 1.1em; padding: 10px 14px; }
+    .slider-arrow { display: none; } /* les points de pagination suffisent */
+
+    .explore_section h1 { font-size: 2em; }
+    .selection-client h2 { font-size: 2em; text-align: center; padding: 0 20px; }
+    .selection-client > div:nth-child(2) { width: 160px; }
+
+    #brulerie > div:first-child { height: 240px; }
+    #brulerie h2 { font-size: 2em; }
+
+    .product-header { min-height: 300px; }
+    .product-header__title { font-size: 2.6em; }
+    .product-header__description { font-size: 1.25em; }
+    .product-header2__title { font-size: 2em; }
+
+    .product-filter__button { padding: 10px 14px; font-size: 1.2em; }
+
+    /* 1 produit par ligne */
+    .product-grid { grid-template-columns: 1fr; }
+    .product-card__media { aspect-ratio: 1 / 1; }
+
+    .product-footer { padding: 40px 20px; }
+    .product-footer__number { font-size: 2.4em; }
+}
+
+/***************************************************************/
+/********************* END - RESPONSIVE DESIGN *****************/
+/***************************************************************/

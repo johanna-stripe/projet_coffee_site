@@ -1,18 +1,17 @@
 import '../style/navBar.css';
 
-import logo2 from '../assets/images/logos/leTempsDuneTasse_logoHorloge2.png'
+import logo2 from '../assets/images/logos/leTempsDuneTasse_logo.png'
 import {FaRegUser} from "react-icons/fa";
 import {PiBasket} from "react-icons/pi";
-import {IoSearch} from "react-icons/io5";
-
-import cartIcon from '../assets/icons/basketB.svg'
-import searchIcon from '../assets/icons/searchB.svg'
-import userIcon from '../assets/icons/userB.svg'
+import {IoSearch, IoMenu, IoClose} from "react-icons/io5";
+import useMediaQuery from "../helper/useMediaQuery.js";
 import AuthModal from "./AuthModal.jsx";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useAuth} from "../context/AuthContext.jsx";
 import UserAccount from "./UserAccount.jsx";
 import SubMenu from "./SubMenu.jsx";
+import {Link} from "react-router-dom";
+import {CLIENT_PATHS} from "../routes/paths.js";
 
 const NavBar = () => {
     const navRef = useRef(null)
@@ -20,7 +19,30 @@ const NavBar = () => {
     const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
     const [activeCategory, setActiveCategory] = useState(null)
     const [modifyUserAccount, setModifyUserAccount] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [menuOpen, setMenuOpen] = useState(false)
+    const [isScrolled, setIsScrolled] = useState(false)
+    const [navHeight, setNavHeight] = useState(0) // hauteur de la barre complète, gardée en réserve quand elle passe en fixed
+    const scrolledRef = useRef(false)
+    // Sous 900px : menu burger, sous-menus en accordéon au clic (pas de survol sur écran tactile)
+    const isMobile = useMediaQuery("(max-width: 900px)")
     const {user, isAuthenticated, logout} = useAuth()
+
+    useEffect(() => {
+        // au-delà de 80px de scroll, la barre passe en version compacte (cf. .navBar--scrolled dans navBar.css)
+        const handleScroll = () => {
+            const scrolled = window.scrollY > 80
+            if (scrolled === scrolledRef.current) return
+            // on mesure la barre AVANT qu'elle rétrécisse : un placeholder de même hauteur
+            // évite que le contenu de la page saute vers le haut (bug du premier scroll)
+            if (scrolled && navRef.current) setNavHeight(navRef.current.offsetHeight)
+            scrolledRef.current = scrolled
+            setIsScrolled(scrolled)
+        }
+        handleScroll()
+        window.addEventListener("scroll", handleScroll, {passive: true})
+        return () => window.removeEventListener("scroll", handleScroll)
+    }, [])
 
     const menuItems = [
         {label: "Café", category: "café"},
@@ -41,30 +63,78 @@ const NavBar = () => {
         setActiveCategory(category)
     }
 
+    const closeMenu = () => {
+        setActiveCategory(null)
+        setMenuOpen(false)
+    }
+
+    const handleItemClick = (item) => {
+        if (item.targetId) {
+            scrollToSection(item.targetId)
+            closeMenu()
+        } else if (isMobile && item.category) {
+            setActiveCategory((prev) => (prev === item.category ? null : item.category))
+        }
+    }
+
     const scrollToSection = (id) => {
         document.getElementById(id)?.scrollIntoView({behavior: "smooth", block: "start"})
         //?. optional chaining --> si ce qui est à gauche existe, continue ; sinon, arrête-toi sans erreur
     }
 
+    // version compacte uniquement sur ordinateur : le mobile a déjà sa barre réduite
+    const isCompact = isScrolled && !isMobile
+
     return (
+        <>
+        {isCompact && <div style={{height: navHeight}} aria-hidden="true"/>}
         <div ref={navRef}
-             className="navBar flex align-self-center justify-content-space-between m-left-50px p-top-5px p-bottom-5px">
+             className={`navBar p-top-5px p-bottom-5px ${isCompact ? "navBar--scrolled" : ""}`}>
+            <button
+                type="button"
+                className="navBar-burger"
+                aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((open) => !open)}
+            >
+                {menuOpen ? <IoClose size={28}/> : <IoMenu size={28}/>}
+            </button>
+
             <div className="logo">
+                <Link
+                to={CLIENT_PATHS.home}
+                onClick={closeMenu}>
                 <img
                     src={logo2}
                     alt="logoleTempsdUneTasse"
-                    className="h-90px cursor-pointer"
+                    className="h-120px cursor-pointer"
                 />
+            </Link>
             </div>
-            <div className="menu align-self-center">
+
+            <form className="searchBar" role="search" onSubmit={(e) => e.preventDefault()}>
+                <input
+                    type="search"
+                    className="searchBar-input"
+                    placeholder="Rechercher..."
+                    aria-label="Rechercher un produit"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit" className="searchBar-btn" aria-label="Lancer la recherche">
+                    <IoSearch size={21} className="icon"/>
+                </button>
+            </form>
+
+            <div className={`menu align-self-center ${menuOpen ? "menu--open" : ""}`}>
                 <ul className="c-secondary flex gap-40px list-none font-size-15px">
                     {menuItems.map((item => (
                         <li
                             key={item.label}
                             className="position-relative cursor-pointer"
-                            onMouseEnter={item.category ? (e) => openSubMenu(e, item.category) : undefined}
-                            onMouseLeave={() => setActiveCategory(null)}
-                            onClick={item.targetId ? () => scrollToSection(item.targetId) : undefined}
+                            onMouseEnter={item.category && !isMobile ? (e) => openSubMenu(e, item.category) : undefined}
+                            onMouseLeave={!isMobile ? () => setActiveCategory(null) : undefined}
+                            onClick={() => handleItemClick(item)}
                         >
                             {item.label}
                             {item.category && (
@@ -74,6 +144,8 @@ const NavBar = () => {
                                     top={subMenuPos.top}
                                     left={subMenuPos.left}
                                     gap={subMenuPos.gap}
+                                    inline={isMobile}
+                                    onNavigate={closeMenu}
                                 />
                             )}
                         </li>
@@ -81,15 +153,10 @@ const NavBar = () => {
                 </ul>
             </div>
 
-            <div className=" flex flex-direction-column m-right-50px align-content-center">
+            <div className="navBar-actions flex flex-direction-column align-content-center">
                 <p className="font-size-125em c-tertiary">
                     {isAuthenticated ? `Bienvenue ${user.first_name}` : ""}</p>
                 <div className="icons flex gap-30px align-self-center">
-                    <IoSearch
-                        size={21}
-                        className={"icon cursor-pointer"}
-                        alt={"search-icon"}
-                    />
                         <FaRegUser
                             size={20}
                             className={"icon cursor-pointer"}
@@ -118,6 +185,7 @@ const NavBar = () => {
                 />
             </div>
         </div>
+        </>
 )
 }
 
