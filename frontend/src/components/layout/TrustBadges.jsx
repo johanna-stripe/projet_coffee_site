@@ -1,6 +1,30 @@
 import React from 'react'
+import shieldCheck from "../assets/icons/shield-check.svg"
+import delivery from "../assets/icons/truck.svg"
+import star from "../assets/icons/star.svg"
 
-const TrustBadges = ({trustBadges}) => {
+const trustBadges = [
+    {
+        img: shieldCheck,
+        alt: "secured-payment-icon",
+        title : "Paiement sécurisé",
+        text: "Transactions SSL 256 bits. Visa, Mastercard, PayPal, Amex acceptés."
+    },
+    {
+        img: delivery,
+        alt: "delivery-truck-icon",
+        title : "Livraison gratuite dès 35 €",
+        text: "Expédition offerte en France métropolitaine. Colissimo 48h."
+    },
+    {
+        img: star,
+        alt: "star-icon",
+        title : "Traçabilité & fraîcheur",
+        text: "Grains torréfiés sous 48h. Origine, altitude et profil aromatique garantis."
+    }
+]
+
+const TrustBadges = () => {
     return (
         <section className="trustBadges flex justify-content-space-evenly b-quaternary h-250px align-items-center">
             {trustBadges.map((item, index) => (

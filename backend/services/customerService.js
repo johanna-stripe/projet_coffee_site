@@ -12,6 +12,7 @@ import {
     //DELETE
     deleteCustomerById,
     deleteCustomerAddressById, findCustomerByUserId,
+    setDefaultCustomerAddress,
 } from "../models/customerModel.js";
 
 import {
@@ -92,22 +93,32 @@ export const createNewCustomer = async (customerData) => {
 }
 
 //==================POST CUSTOMER ADDRESS=====================
-export const createNewCustomerAddress = async (customerId, customerAddressData) => {
-    const {street, city, postcode, country} = customerAddressData
+// Pour une adresse on garde les majuscules (« 12 rue des Oliviers », « Aix-en-Provence ») :
+// on enlève seulement les espaces autour, sans passer en minuscules comme normalizeText.
+const trimText = (text) => (typeof text === "string" ? text.trim() : "")
 
-    const cleanStreet = normalizeText(street)
+export const createNewCustomerAddress = async (customerId, customerAddressData) => {
+    const {address_name, street, city, postcode, country} = customerAddressData
+
+    const cleanStreet = trimText(street)
     if (!cleanStreet) throw errorBuilder('Street is required', 400)
 
-    const cleanCity = normalizeText(city)
+    const cleanCity = trimText(city)
     if (!cleanCity) throw errorBuilder('City is required', 400)
 
-    const cleanPostcode = normalizeText(postcode)
+    const cleanPostcode = trimText(postcode)
     if (!cleanPostcode) throw errorBuilder('Postcode is required', 400)
 
-    const cleanCountry = normalizeText(country)
+    const cleanCountry = trimText(country)
     if (!cleanCountry) throw errorBuilder('Country is required', 400)
 
+    // La toute première adresse du client devient automatiquement l'adresse par défaut
+    const existingAddresses = await findCustomerAddressesById(customerId)
+    const isDefault = existingAddresses.length === 0 ? 1 : 0
+
     const values = [
+        trimText(address_name) || null, // étiquette facultative : « Domicile », « Bureau »...
+        isDefault,
         cleanStreet,
         cleanCity,
         cleanPostcode,
@@ -146,14 +157,16 @@ export const modifyCustomerByPatch = async (customerId, changes) => {
 
 //==================PATCH CUSTOMER ADDRESS=====================
 export const modifyCustomerAddressByPatch = async (addressId, changes) => {
-    const allowed_updates = ['street', 'city', 'postcode', 'country']
+    const allowed_updates = ['address_name', 'street', 'city', 'postcode', 'country']
     const fields_to_update = []
     const values_to_update = []
 
     allowed_updates.forEach((field) => {
         if (changes[field] !== undefined) { //pour chaque élément de allowed_updates si changes (donc mon req.body) a un élément modifié (donc !==undefined)
+            const value = trimText(changes[field])
+            if (!value && field !== 'address_name') throw errorBuilder(`${field} cannot be empty`, 400)
             fields_to_update.push(field); //on push dans la colonne
-            values_to_update.push(normalizeText(changes[field]))
+            values_to_update.push(value || null)
         }
     })
 
@@ -174,7 +187,26 @@ export const deleteByIdCustomer = async (customerId) => {
 
 //==================DELETE CUSTOMER ADDRESS=====================
 export const deleteByIdCustomerAddress = async (customerId, customerAddress) => {
+    const addresses = await findCustomerAddressesById(customerId)
+    const deleted = addresses.find(address => String(address.address_id) === String(customerAddress))
+
     const results = await deleteCustomerAddressById(customerId, customerAddress)
     if (!results || results.affectedRows === 0) throw errorBuilder('Not found',404)
+
+    // Si on vient de supprimer l'adresse par défaut, la plus ancienne qui reste prend le relais
+    if (deleted?.is_default) {
+        const remaining = addresses.filter(address => address.address_id !== deleted.address_id)
+        if (remaining.length > 0) {
+            const oldest = remaining.reduce((a, b) => (a.address_id < b.address_id ? a : b))
+            await setDefaultCustomerAddress(customerId, oldest.address_id)
+        }
+    }
+    return results
+}
+
+//==================ADRESSE PAR DÉFAUT=====================
+export const setDefaultAddress = async (customerId, addressId) => {
+    const results = await setDefaultCustomerAddress(customerId, addressId)
+    if (!results || results.affectedRows === 0) throw errorBuilder('Address not found for this customer', 404)
     return results
 }

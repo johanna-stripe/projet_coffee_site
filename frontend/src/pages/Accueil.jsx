@@ -21,9 +21,6 @@ import teaSelection from '../assets/images/tea/tea.jpg';
 import coffeeMachineSelection from '../assets/images/coffee_machine/machine_cafe_1.jpg';
 import accessoiresSelection from '../assets/images/accessories/accessoire.jpg';
 
-import shieldCheck from "../assets/icons/shield-check.svg"
-import delivery from "../assets/icons/truck.svg"
-import star from "../assets/icons/star.svg"
 
 const slides = [
     {
@@ -129,27 +126,6 @@ const selectionClient = [
 
 ]
 
-const trustBadges = [
-    {
-        img: shieldCheck,
-        alt: "secured-payment-icon",
-        title : "Paiement sécurisé",
-        text: "Transactions SSL 256 bits. Visa, Mastercard, PayPal, Amex acceptés."
-    },
-    {
-        img: delivery,
-        alt: "delivery-truck-icon",
-        title : "Livraison gratuite dès 35 €",
-        text: "Expédition offerte en France métropolitaine. Colissimo 48h."
-    },
-    {
-        img: star,
-        alt: "star-icon",
-        title : "Traçabilité & fraîcheur",
-        text: "Grains torréfiés sous 48h. Origine, altitude et profil aromatique garantis."
-    }
-]
-
 
 //Accueil est un composant fonction : une fonction JS qui retourne du JSX (l'équivalent React du HTML).
 const Accueil = () => {
@@ -161,7 +137,6 @@ const Accueil = () => {
             <Selection selections={selections}/>
             <SelectionClient selectionClient={selectionClient}/>
             <History/>
-            <TrustBadges trustBadges={trustBadges}/>
         </>
     );
 };

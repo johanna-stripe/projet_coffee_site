@@ -1,0 +1,333 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:wght@400&display=swap");
+
+/* ===== Fiche produit détaillée ===== */
+.product-detail {
+    padding: 20px 50px 60px;
+    font-family: "Lato", sans-serif;
+    color: var(--color-secondary);
+    margin: 20px 200px
+}
+
+/* ----- Fil d'Ariane ----- */
+.product-detail__breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+    font-size: 1.1em;
+    color: var(--color-tertiary);
+}
+
+.product-detail__breadcrumb a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.product-detail__breadcrumb a:hover {
+    color: var(--color-quaternary);
+}
+
+.product-detail__breadcrumb [aria-current="page"] {
+    color: var(--color-fifth);
+}
+
+/* ----- Mise en page 2 colonnes ----- */
+.product-detail__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 480px) minmax(0, 1fr);
+    gap: 65px;
+    align-items: start;
+}
+
+/* ----- Image ----- */
+.product-detail__media {
+    margin: 0;
+}
+
+.product-detail__image-wrapper {
+    position: relative;
+    aspect-ratio: 4 / 5;
+}
+
+.product-detail__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.product-detail__badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    padding: 8px 14px;
+    background: var(--color-primary);
+    color: var(--color-quaternary);
+    font-size: 1em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.product-detail__caption {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 1em;
+    color: var(--color-tertiary);
+}
+
+/* ----- Colonne d'informations ----- */
+.product-detail__eyebrow {
+    margin: 0 0 10px;
+    font-size: 1.1em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+.product-detail__title {
+    margin: 0 0 14px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 400;
+    font-size: 4em;
+    line-height: 1.1;
+    color: var(--color-fifth);
+}
+
+.product-detail__rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 1.1em;
+    color: var(--color-tertiary);
+}
+
+.product-detail__stars {
+    color: var(--color-quaternary);
+    letter-spacing: 2px;
+}
+
+.product-detail__rule {
+    width: 40px;
+    margin: 22px 0;
+    border: 0;
+    border-top: 1px solid var(--color-quaternary);
+}
+
+.product-detail__description {
+    margin: 0 0 24px;
+    font-weight: 300;
+    font-size: 1.5em;
+    line-height: 1.7;
+}
+
+.product-detail__label {
+    margin: 0;
+    font-size: 1em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* ----- Profil aromatique ----- */
+.product-detail__aromas {
+    margin-bottom: 26px;
+}
+
+.product-detail__aromas ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.product-detail__aromas li {
+    padding: 8px 18px;
+    border: 1px solid rgba(64, 43, 33, 0.3);
+    font-weight: 300;
+    font-size: 1.2em;
+}
+
+.product-detail__aromas li::first-letter {
+    text-transform: uppercase;
+}
+
+/* ----- Conditionnement ----- */
+.product-detail__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 20px 0 0;
+    border-top: 1px solid rgba(64, 43, 33, 0.2);
+    font-size: 1.2em;
+}
+
+/* ----- Prix + quantité ----- */
+.product-detail__buy {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0 22px;
+    border-bottom: 1px solid rgba(64, 43, 33, 0.2);
+}
+
+.product-detail__price {
+    margin: 0 0 4px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 3em;
+    color: var(--color-secondary);
+}
+
+.product-detail__stock {
+    margin: 0;
+    font-size: 1em;
+    color: var(--color-quaternary);
+}
+
+.product-detail__stock--out {
+    color: #a33a2a;
+}
+
+.product-detail__quantity {
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(64, 43, 33, 0.3);
+}
+
+.product-detail__quantity button {
+    width: 42px;
+    height: 42px;
+    border: 0;
+    background: transparent;
+    color: var(--color-secondary);
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.product-detail__quantity button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.product-detail__quantity span {
+    min-width: 50px;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+/* ----- Bouton panier ----- */
+.product-detail__cart {
+    width: 100%;
+    margin-top: 22px;
+    padding: 20px;
+    border: 0;
+    background: var(--color-quaternary);
+    color: var(--color-primary);
+    font-family: "Lato", sans-serif;
+    font-size: 1.2em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.product-detail__cart:hover:not(:disabled) {
+    background: var(--color-secondary);
+}
+
+.product-detail__cart:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.product-detail__reassurance {
+    margin: 14px 0 24px;
+    text-align: center;
+    font-size: 1em;
+    color: var(--color-tertiary);
+}
+
+/* ----- Température / durée / dosage ----- */
+.product-detail__brew {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    padding: 20px 0;
+    border-top: 1px solid rgba(64, 43, 33, 0.2);
+    border-bottom: 1px solid rgba(64, 43, 33, 0.2);
+}
+
+.product-detail__brew div {
+    padding: 0 10px;
+    text-align: center;
+}
+
+.product-detail__brew div + div {
+    border-left: 1px solid rgba(64, 43, 33, 0.2);
+}
+
+.product-detail__brew dd {
+    margin: 0 0 6px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.6em;
+}
+
+.product-detail__brew dt {
+    font-size: 0.9em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+/* ----- Accordéons ----- */
+.product-detail__accordion {
+    padding: 20px 0;
+    border-bottom: 1px solid rgba(64, 43, 33, 0.2);
+}
+
+.product-detail__accordion summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3em;
+    cursor: pointer;
+    list-style: none; /* retire la flèche native */
+}
+
+.product-detail__accordion summary::-webkit-details-marker {
+    display: none;
+}
+
+.product-detail__accordion summary::after {
+    content: "+";
+    color: var(--color-tertiary);
+}
+
+.product-detail__accordion[open] summary::after {
+    content: "×";
+}
+
+.product-detail__accordion p {
+    margin: 16px 0 0;
+    font-weight: 300;
+    font-size: 1.2em;
+    line-height: 1.7;
+    color: var(--color-tertiary);
+}
+
+/* ===== Tablette / mobile : une seule colonne ===== */
+@media (max-width: 900px) {
+    .product-detail {
+        padding: 20px 20px 40px;
+    }
+
+    .product-detail__layout {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .product-detail__title {
+        font-size: 3em;
+    }
+}

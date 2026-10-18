@@ -9,8 +9,8 @@ export const FIND_PRODUCTS_BY_CATEGORY_ID = `
     SELECT c.category_id,
            c.category_name,
            COUNT(p.product_id) AS product_count
-    FROM CATEGORY c
-             LEFT JOIN PRODUCT p ON p.category_id = c.category_id
+    FROM category c
+             LEFT JOIN product p ON p.category_id = c.category_id
     #     LEFT JOIN car si la category existe mais n'a pas de produit elle remontera qd même, ce qui n'aurait pas été le cas avec un simple JOIN
     WHERE c.category_id = ?
     GROUP BY c.category_id, c.category_name

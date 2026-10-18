@@ -3,7 +3,10 @@ import Accueil from "./pages/Accueil.jsx";
 import NavBar from "./components/NavBar.jsx";
 import Footer from "./components/Footer.jsx";
 import {AuthProvider} from "./context/AuthContext.jsx";
-import {CLIENT_PATHS} from "./routes/paths.js";
+import {CATEGORIES, CLIENT_PATHS} from "./routes/paths.js";
+import ProductPage from "./pages/ProductPage.jsx";
+import TrustBadges from "./components/TrustBadges.jsx";
+import React from "react";
 
 
 export default function App() {
@@ -14,17 +17,15 @@ export default function App() {
                 {/* mettre la nav bar ici comme ça elle engloble toutes les routes */}
                 <Routes>
                     <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>
-                    {/*<Route path={CLIENT_PATHS.cafeGrain} element={<CafeGrain/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.cafeMoulu} element={<CafeMoulu/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.the} element{<The/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.infusion} element={<Infusion/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.accessoires} element={<Accessoires/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.machines} element={<Machines/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.quiSommesNous} element={<QuiSommesNous/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.login} element={<login/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.register} element={<Register/>}/>*/}
-                    {/*<Route path={CLIENT_PATHS.admin} element={<AdminDashboard/>}/>*/}
+                    {CATEGORIES.map((cat => (
+                        <Route
+                            key={cat.id}
+                            path={cat.path}
+                            element={<ProductPage categoryId={cat.id} title={cat.title}/>}
+                        />
+                    )))}
                 </Routes>
+                <TrustBadges/>
                 <Footer/>
             </AuthProvider>
         </BrowserRouter>

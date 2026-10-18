@@ -1,0 +1,50 @@
+/* ===== Bandeau de réassurance en bas de page catégorie ===== */
+.product-footer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 70px 40px;
+    background: var(--color-secondary);
+}
+
+.product-footer__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+/* Numéro 01 / 02 / 03 : italique, vert discret sur fond brun */
+.product-footer__number {
+    flex-shrink: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-size: 3em;
+    line-height: 1;
+    color: var(--color-quaternary);
+}
+
+.product-footer__title {
+    margin: 0 0 8px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-weight: 400;
+    font-size: 2em;
+    line-height: 1.2;
+    color: var(--color-primary);
+}
+
+.product-footer__subtitle {
+    margin: 0;
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    font-size: 1.4em;
+    line-height: 1.7;
+    color: rgba(243, 235, 217, 0.75);
+}
+
+/* Tablette et mobile : les blocs s'empilent */
+@media (max-width: 900px) {
+    .product-footer {
+        grid-template-columns: 1fr;
+        padding: 50px 30px;
+    }
+}

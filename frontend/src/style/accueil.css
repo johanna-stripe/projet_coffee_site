@@ -123,3 +123,14 @@
 .b-bottom-2px-c-primary { border-bottom: 2px solid var(--color-primary); }
 .b-top-1px { border-top: 1px solid var(--color-secondary); }
 .b-right-1px {border-right: 1px solid var(--color-primary)}
+
+
+/*******************Footer*****************/
+.social-icon {
+    color: var(--color-secondary);   /* la couleur que tu veux pour l'icône */
+    text-decoration: none;         /* enlève le soulignement */
+}
+
+.social-icon:hover {
+    color: var(--color-tertiary);
+}

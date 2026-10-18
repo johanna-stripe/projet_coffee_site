@@ -1,4 +1,4 @@
-.menu ul li::after {
+.menu li::after {
     content: "";
     background-color: var(--color-quaternary);
     width: 100%;
@@ -15,9 +15,7 @@
     transform: scaleX(1);
 }
 
-.icon {
-    transition: filter 0.2s ease;
-}
 .icon:hover {
-    filter: brightness(2.5);
+    color: var(--color-tertiary);
+
 }

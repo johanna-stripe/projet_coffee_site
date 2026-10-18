@@ -17,6 +17,9 @@ import {
     //DELETE
     DELETE_CUSTOMER_BY_ID,
     DELETE_CUSTOMER_ADDRESS_BY_ID,
+    //ADRESSE PAR DÉFAUT
+    UNSET_DEFAULT_ADDRESSES,
+    SET_DEFAULT_ADDRESS,
 } from "../constantes/customerDBConstantes.js";
 
 //==================GET CUSTOMER BY ID=====================
@@ -91,4 +94,31 @@ export const deleteCustomerById = async (customerId) => {
 export const deleteCustomerAddressById = async (customerId, customerAddress) => {
     const [results] = await db.query(DELETE_CUSTOMER_ADDRESS_BY_ID, [customerId, customerAddress])
     return results
+}
+
+
+//==================ADRESSE PAR DÉFAUT=====================
+// Transaction : les 2 requêtes passent ensemble ou pas du tout,
+// pour qu'un client ait toujours UNE SEULE adresse par défaut.
+export const setDefaultCustomerAddress = async (customerId, addressId) => {
+    const connection = await db.getConnection()
+    try {
+        await connection.beginTransaction()
+        await connection.query(UNSET_DEFAULT_ADDRESSES, [customerId])
+        const [results] = await connection.query(SET_DEFAULT_ADDRESS, [customerId, addressId])
+
+        if (results.affectedRows === 0) {
+            // l'adresse n'existe pas ou n'appartient pas à ce client -> on annule tout
+            await connection.rollback()
+            return results
+        }
+
+        await connection.commit()
+        return results
+    } catch (error) {
+        await connection.rollback()
+        throw error
+    } finally {
+        connection.release()
+    }
 }

@@ -12,6 +12,7 @@ import {
     //DELETE
     deleteByIdCustomer,
     deleteByIdCustomerAddress, getMyCustomerProfile,
+    setDefaultAddress,
 } from "../services/customerService.js";
 
 
@@ -211,5 +212,27 @@ export const deleteCustomerAddress = async (req, res) => {
         console.log(error)
         return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
 
+    }
+}
+
+
+//==================PATCH ADRESSE PAR DÉFAUT=====================
+export const patchDefaultAddress = async (req, res) => {
+    try {
+        const customerId = req.params.id
+        const addressId = req.params.address_id
+        if (!customerId || !addressId) return res.status(400).json({error: 'Customer Id and Address Id are required'})
+
+        const results = await setDefaultAddress(customerId, addressId)
+
+        return res.json({
+            customerId, addressId,
+            message: 'Default address updated',
+            results
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({error: error.message || 'Internal Server error'})
     }
 }

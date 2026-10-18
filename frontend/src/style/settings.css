@@ -126,6 +126,7 @@
 /* ==========================================
    4. DIMENSIONS (WIDTH / HEIGHT / GAP)
    ========================================== */
+.w-auto {width: auto}
 
 /* Width (Percentages) */
 .w-10 { width: 10%; }
@@ -160,6 +161,8 @@
 .w-900px { width: 900px; }
 
 /* Height */
+.h-auto {height: auto}
+
 .h-15 { height: 15%; }
 .h-25 { height: 25%; }
 .h-50 { height: 50%; }
