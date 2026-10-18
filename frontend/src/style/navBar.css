@@ -1,3 +1,81 @@
+.navBar {
+    position: sticky;
+    top: 0;
+    right: 0;
+    padding-left: 50px;
+    padding-right: 50px; /* symétrique, pour que le centre de la grille = centre de la page */
+    z-index: 1000;
+    background-color: var(--color-primary);
+
+    /* ligne 1 : logo | recherche | actions ; ligne 2 : menu */
+    display: grid;
+    grid-template-columns: 1fr minmax(0, 900px) 1fr; /* colonnes latérales égales => recherche centrée */
+    grid-template-areas:
+        "logo search actions"
+        "menu menu   menu";
+    align-items: center;
+    column-gap: 40px;
+}
+
+/* logo hors de la grille : centré verticalement sur toute la hauteur de la navbar (sticky = containing block) */
+.navBar .logo {
+    position: absolute;
+    left: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.navBar .searchBar { grid-area: search; }
+.navBar .navBar-actions { grid-area: actions; justify-self: end; }
+.navBar .menu { grid-area: menu; justify-self: center; padding: 20px 60px 20px; }
+/* au scroll (desktop seulement, le mobile a déjà sa barre compacte) : barre compacte
+   = logo réduit + recherche + icônes, sans la ligne du menu */
+@media (min-width: 901px) {
+    /* fixed + placeholder dans NavBar.jsx : la barre peut rétrécir sans décaler le contenu de la page */
+    .navBar.navBar--scrolled { position: fixed; top: 0; left: 0; right: 0; box-sizing: border-box; }
+    .navBar.navBar--scrolled { min-height: 84px; } /* le logo est en absolute : la barre doit rester plus haute que lui */
+    .navBar.navBar--scrolled .menu { display: none; }
+    .navBar.navBar--scrolled .logo img { height: 74px; }
+}
+.navBar .menu ul { padding: 0; margin: 0; } /* le padding par défaut du ul décalerait le centrage */
+
+.searchBar {
+    display: flex;
+    align-items: center;
+    background-color: rgba(51, 27, 10, 0.08);
+    border-radius: 30px;
+    padding: 0 20px;
+    width: 100%;
+    box-sizing: border-box; /* le padding ne doit pas faire dépasser la barre de sa colonne */
+}
+
+.searchBar-input {
+    flex: 1;
+    min-width: 0; /* permet à l'input de rétrécir sous sa largeur par défaut */
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 16px 0;
+    font-size: 1em;
+    font-family: inherit;
+    color: var(--color-secondary);
+    text-align: center;
+}
+
+.searchBar-input::placeholder {
+    color: var(--color-tertiary);
+    opacity: 0.8;
+    text-align: left;
+}
+
+.searchBar-btn {
+    border: none;
+    background: transparent;
+    color: var(--color-secondary);
+    cursor: pointer;
+    display: flex;
+    padding: 0;
+}
+
 .menu li::after {
     content: "";
     background-color: var(--color-quaternary);
@@ -18,4 +96,31 @@
 .icon:hover {
     color: var(--color-tertiary);
 
+}
+
+/* Bouton burger : caché sur grand écran, affiché dans responsive.css */
+.navBar-burger {
+    display: none;
+    grid-area: burger;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    border: none;
+    background: transparent;
+    color: var(--color-secondary);
+    cursor: pointer;
+}
+
+/* Sous-menu en accordéon (mobile / tablette) */
+.submenu-inline {
+    padding: 8px 0 8px 16px;
+    cursor: default;
+}
+
+.submenu-inline__group {
+    margin-bottom: 14px;
+}
+
+.submenu-inline__group p {
+    padding: 4px 0;
 }

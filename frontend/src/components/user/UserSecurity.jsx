@@ -1,9 +1,9 @@
 import {FaCheck, FaPen} from "react-icons/fa";
 import React, {useEffect, useState} from "react";
-import {useAuth} from "../context/AuthContext.jsx";
-import api from "../axios/axiosConfig.js";
-import "../style/authModal.css"
-import "../style/userAccount.css"
+import {useAuth} from "../../context/AuthContext.jsx";
+import api from "../../axios/axiosConfig.js";
+import "../../style/authModal.css"
+import "../../style/userAccount.css"
 
 const UserSecurity = () => {
 

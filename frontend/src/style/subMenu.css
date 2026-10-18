@@ -1,0 +1,39 @@
+.submenu {
+    position: relative;
+    display: inline-block;
+}
+
+.submenu::after {
+    content: "";
+    background-color: var(--color-quaternary);
+    width: 100%;
+    height: 1.5px;
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    will-change: transform
+}
+
+.submenu:hover::after {
+    transform: scaleX(1);
+}
+
+.submenu2 {
+    margin: 0;
+    padding: 8px 0; /* espace entre chaque ligne du sous-menu */
+    transition: color 0.2s ease;
+}
+
+.submenu2:hover {
+    color: var(--color-tertiary);
+}
+
+/* le lien hérite de la couleur du <p> pour garder l'effet de survol */
+.submenu2 a {
+    display: block; /* toute la ligne est cliquable */
+    color: inherit;
+    text-decoration: none;
+}

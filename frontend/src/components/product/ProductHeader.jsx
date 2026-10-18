@@ -1,10 +1,10 @@
 import React from 'react';
-import cafeGrains from '../assets/images/coffee/cafe_grains(3).jpg';
-import cafeMoulu from '../assets/images/coffee/cafe_moulu.jpg';
-import the from '../assets/images/tea/tea_5.jpg';
-import infusion from '../assets/images/tea/tea_3(v2).jpg';
-import machines from '../assets/images/coffee_machine/machine_cafe_2.jpg';
-import accessoires from '../assets/images/accessories/accessoire_2.jpg';
+import cafeGrains from '../../assets/images/coffee/cafe_grains(3).jpg';
+import cafeMoulu from '../../assets/images/coffee/cafe_moulu.jpg';
+import the from '../../assets/images/tea/tea_5.jpg';
+import infusion from '../../assets/images/tea/tea_3(v2).jpg';
+import machines from '../../assets/images/coffee_machine/machine_cafe_2.jpg';
+import accessoires from '../../assets/images/accessories/accessoire_2.jpg';
 
 const headers = {
     1: {

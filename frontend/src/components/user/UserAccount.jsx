@@ -6,9 +6,9 @@ import {FaShoppingCart} from "react-icons/fa";
 import {FaLock} from "react-icons/fa";
 import {RiLogoutBoxRLine} from "react-icons/ri";
 
-import "../style/authModal.css"
-import "../style/userAccount.css"
-import {useAuth} from "../context/AuthContext.jsx";
+import "../../style/authModal.css"
+import "../../style/userAccount.css"
+import {useAuth} from "../../context/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";
 import UserInformations from "./UserInformation.jsx";
 import UserAddresses from "./UserAddresses.jsx";

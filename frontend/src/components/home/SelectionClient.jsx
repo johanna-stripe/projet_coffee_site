@@ -1,31 +1,56 @@
-const SectionClient = ({selectionClient}) => {
+import React, {useEffect, useState} from "react";
+import api from "../../axios/axiosConfig.js";
+import ProductCard from "../product/ProductCard.jsx";
+import {Link} from "react-router-dom";
+import {CLIENT_PATHS} from "../../routes/paths.js";
+import '../../style/productPage.css' // styles de .product-card (partagés avec la page produits)
+
+// ids de CATEGORIES dans routes/paths.js
+const CATEGORY_COFFEE_BEANS = 1
+const CATEGORY_GROUND_COFFEE = 2
+const BEANS_COUNT = 3
+const GROUND_COUNT = 2
+
+const belongsTo = (product, categoryId) =>
+    product.category_id === categoryId || product.parent_id === categoryId
+
+// Pas encore d'avis clients : en attendant, on met en avant les 3 premiers cafés en grains
+// et les 2 premiers cafés moulus de la base, avec exactement la même carte que la page produits.
+const SelectionClient = () => {
+    const [products, setProducts] = useState([])
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            try {
+                const response = await api.get('/products')
+                const beans = response.data.filter((p) => belongsTo(p, CATEGORY_COFFEE_BEANS)).slice(0, BEANS_COUNT)
+                const ground = response.data.filter((p) => belongsTo(p, CATEGORY_GROUND_COFFEE)).slice(0, GROUND_COUNT)
+                setProducts([...beans, ...ground])
+            } catch (err) {
+                setProducts([]) // en cas d'erreur, on n'affiche simplement pas la section
+            }
+        }
+        loadProducts()
+    }, [])
+
+    if (products.length === 0) return null
+
     return (
-        <section className="selection-client h-550px flex flex-direction-column justify-content-center align-items-center b-secondary c-primary">
-            <h2 className="m-bottom-10px">Les cafés préférés de nos clients</h2>
-            <div className="w-300px b-bottom-2px-c-primary m-bottom-40px"></div>
-            <div className="flex align-items-center justify-content-space-evenly gap-30px m-left-50px m-right-50px">
-                {selectionClient.map((item, index) => (
-                    <div
-                        key={index}
-                        className="flex flex-direction-column align-items-center h-350px w-220px" style={{backgroundColor: 'rgba(62, 32, 12, 0.73)'}}>
-                        <img
-                            src={item.img}
-                            alt={item.alt}
-                            className="h-100 w-100 object-fit-cover"
-                        />
-                        <div className="inline-block align-self-flex-start m-left-10px">
-                            <p className="letter-spacing-3px c-tertiary">{item.origin}</p>
-                            <p className="font-size-150em font-italique">{item.title}</p>
-                            <p className="">{item.parfums}</p>
-                            <p className="font-size-125em">{item.price} <span className="font-size-075em c-tertiary">/ 250g</span></p>
-                        </div>
-                        <a className=" inline-block align-self-flex-start c-primary uppercase font-size-075em text-decoration-none b-quaternary p-10px" href="#">+ Ajouter au panier</a>
+        <section className="selection-client flex flex-direction-column justify-content-center align-items-center b-secondary">
+            <p className="c-tertiary font-size-150em m-0 slider-eyebrow m-10px">Notre sélection</p>
+            <h2 className="c-primary m-0">Nos coups de cœur du moment</h2>
+            <div className="selection-client__list">
+                {products.map((product) => (
+                    <div key={product.product_id} className="selection-client__item b-primary">
+                        <ProductCard product={product}/>
                     </div>
                 ))}
             </div>
+            <Link to={CLIENT_PATHS.cafeGrain} className="selection-client__more">
+                Voir tous nos cafés
+            </Link>
         </section>
     )
 }
 
-export default SectionClient
-
+export default SelectionClient

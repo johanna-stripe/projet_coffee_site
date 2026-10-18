@@ -2,6 +2,7 @@
 
 /* ===== Fiche produit détaillée ===== */
 .product-detail {
+    animation: product-fade-in 0.45s ease both; /* keyframes définies dans productPage.css */
     padding: 20px 50px 60px;
     font-family: "Lato", sans-serif;
     color: var(--color-secondary);

@@ -1,14 +1,18 @@
 import React from 'react';
+import {Link} from "react-router-dom";
+import {productPath} from "../../routes/paths.js";
 
 const ProductCard = ({product}) => {
     return (
         <article className="product-card">
             <div className="product-card__media">
-                <img
-                    className="product-card__image"
-                    src={product.product_image_url}
-                    alt={product.product_name}
-                />
+                <Link to={productPath(product.product_id)} className="product-card__link">
+                    <img
+                        className="product-card__image"
+                        src={product.product_image_url}
+                        alt={product.product_name}
+                    />
+                </Link>
                 <span className="product-card__badge">{product.category_name}</span>
                 <button type="button" className="product-card__button">
                     Ajouter au panier
@@ -31,7 +35,11 @@ const ProductCard = ({product}) => {
                     )}
                 </div>
                 <p className="product-card__brand">{product.brand_name}</p>
-                <h2 className="product-card__name">{product.product_name}</h2>
+                <h2 className="product-card__name">
+                    <Link to={productPath(product.product_id)} className="product-card__link">
+                        {product.product_name}
+                    </Link>
+                </h2>
                 <p className="product-card__description">{product.product_description}</p>
 
                 <div className="product-card__footer">

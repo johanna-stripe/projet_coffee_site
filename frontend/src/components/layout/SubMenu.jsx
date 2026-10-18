@@ -1,7 +1,6 @@
 import React from 'react';
-import {CLIENT_PATHS} from "../routes/paths.js";
-import {Link} from "react-router-dom";
-import '../style/subMenu.css'
+import {CLIENT_PATHS, subCategoryPath} from "../../routes/paths.js";
+import '../../style/subMenu.css'
 
 const subMenus = [
     {
@@ -32,11 +31,10 @@ const subMenus = [
         categoryParent :"café",
         category: "Nos cafés par origine",
         subCategories: [
-        "Cafés d’Asie",
-        "Cafés d’Éthiopie",
-        "Cafés d’Amérique",
-        "Cafés du Brésil",
-        "Cafés du Nicaragua"
+            "Cafés d’Italie",              // Italie
+            "Cafés d’Afrique",             // Éthiopie, Kenya
+            "Cafés d’Amérique centrale",   // Mexique, Guatemala, Honduras, Panama, Jamaïque
+            "Cafés d’Amérique du Sud",     // Colombie, Pérou, Brésil
         ]
     },
     {
@@ -105,6 +103,17 @@ const SubMenu = ({isOpen, category, top, left, gap, inline = false, onNavigate})
     if (!isOpen) return null;
 
     const filtered = subMenus.filter((s) => s.categoryParent === category)
+    // Une sous-catégorie renvoie vers la page de sa catégorie, déjà filtrée (ex : café en grain grand cru).
+    // Les groupes sans path (origines, marques) ne correspondent pas à une catégorie en base : simple texte.
+
+    // <a href> et non <Link> : le clic recharge la page (rechargement complet, pas de navigation interne React Router)
+    const renderSubCategory = (subMenu, sub) => (
+        <p key={sub} className="submenu2">
+            {subMenu.path ? (
+                <a href={subCategoryPath(subMenu.path, sub)}>{sub}</a>
+            ) : sub}
+        </p>
+    )
 
     // Mobile / tablette : le sous-menu s'affiche dans le flux, sous l'entrée du menu (accordéon)
     if (inline) {
@@ -114,15 +123,12 @@ const SubMenu = ({isOpen, category, top, left, gap, inline = false, onNavigate})
                     <div key={subMenu.category} className="submenu-inline__group">
                         <h4 className="m-0">
                             {subMenu.path ? (
-                                <Link to={subMenu.path} className="c-secondary text-decoration-none"
-                                      onClick={onNavigate}>
+                                <a href={subMenu.path} className="c-secondary text-decoration-none">
                                     {subMenu.category}
-                                </Link>
+                                </a>
                             ) : subMenu.category}
                         </h4>
-                        {subMenu.subCategories.map((sub) => (
-                            <p key={sub} className="submenu2 m-0">{sub}</p>
-                        ))}
+                        {subMenu.subCategories.map((sub) => renderSubCategory(subMenu, sub))}
                     </div>
                 ))}
             </div>
@@ -147,19 +153,16 @@ const SubMenu = ({isOpen, category, top, left, gap, inline = false, onNavigate})
                     {filtered.map((subMenu) => (
                         <div key={subMenu.category}>
                             <h4 className="submenu">
-                                <Link
-                                    to={subMenu.path}
-                                    className="c-secondary text-decoration-none"
-                                >
-                                    {subMenu.category}
-                                </Link>
+                                {subMenu.path ? (
+                                    <a
+                                        href={subMenu.path}
+                                        className="c-secondary text-decoration-none"
+                                    >
+                                        {subMenu.category}
+                                    </a>
+                                ) : subMenu.category}
                             </h4>
-                            {subMenu.subCategories.map((sub) => (
-                                <p key={sub}
-                                   className="submenu2"
-                                >
-                                    {sub}</p>
-                            ))}
+                            {subMenu.subCategories.map((sub) => renderSubCategory(subMenu, sub))}
                         </div>
                     ))}
 

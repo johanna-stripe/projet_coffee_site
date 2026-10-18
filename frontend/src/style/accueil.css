@@ -74,40 +74,85 @@
 }
 
 
-/*********************Explore_section*********************/
-.image-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 50%; /* couvre la moitié basse */
-    background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0) 100%
-    );
-    pointer-events: none; /* pour ne pas bloquer les clics */
+/*********************Selection client*********************/
+.selection-client {
+    padding: 60px 0;
 }
 
-.image-container img:hover {
-    transition: transform 0.75s ease;
-    cursor: pointer;
-    transform: scale(1.05);
-    /* 0.9 = 90% de la taille originale */
-    /*1.1 = 110% (plus grand)*/
+.selection-client__list {
+    display: flex;
+    justify-content: space-between; /* les cartes se répartissent sur toute la largeur */
+    gap: 30px; /* espace minimum quand l'écran est étroit */
+    margin: 40px 50px 0 50px;
+    width: calc(100% - 100px);
 }
 
-.image-container p {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
+/* bouton « Voir tous nos cafés » : contour vert, se remplit au survol */
+.selection-client__more {
+    margin-top: 50px;
+    padding: 16px 40px;
+    border: 1px solid var(--color-quaternary);
+    color: var(--color-quaternary);
+    font-family: "Lato", sans-serif;
+    font-size: 1.2em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.25s ease, color 0.25s ease;
 }
 
-.image-container:hover p {
+.selection-client__more:hover {
+    background: var(--color-quaternary);
     color: var(--color-primary);
-    visibility: visible;
-    opacity: 1;
+}
+
+/* padding autour du texte uniquement : l'image reste pleine largeur (page produits non concernée) */
+.selection-client .product-card__body {
+    padding: 18px 16px 16px;
+}
+
+.selection-client__item {
+    flex: 1 1 0; /* les cartes se partagent la largeur disponible... */
+    max-width: 300px; /* ...jusqu'à 300px chacune, puis space-between répartit le reste */
+    min-width: 0;
+}
+
+/*********************Explore_section*********************/
+.selection-card {
+    background: #faf5ea;
+    border: 1px solid rgba(144, 91, 39, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 4px 20px rgba(51, 27, 10, 0.08);
+    padding: 40px 30px;
+    width: 280px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.selection-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+}
+
+.selection-card-img {
+    width: 180px;
+    height: 180px;
+    margin: 0 auto 15px; /* le blob fait partie du SVG */
+}
+
+.selection-card-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 30px;
+    background: var(--color-quaternary);
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.25s ease;
+}
+
+.selection-card-btn:hover {
+    background: var(--color-secondary);
 }
 
 
