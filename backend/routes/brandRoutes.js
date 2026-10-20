@@ -13,8 +13,8 @@ import {
     //DELETE
     deleteBrand,
 } from "../controllers/brandController.js";
-import {authenticate} from "../security/midddleware/authMiddleware.js";
-import {authorizeRole} from "../security/midddleware/roleMiddleware.js";
+import {authenticate} from "../security/middleware/authMiddleware.js";
+import {authorizeRole} from "../security/middleware/roleMiddleware.js";
 
 const router = express.Router();
 export default router

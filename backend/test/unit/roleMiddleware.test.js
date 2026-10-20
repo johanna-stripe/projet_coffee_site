@@ -1,5 +1,5 @@
 import {describe, expect, jest, test} from "@jest/globals"
-import {authorizeRole} from "../../security/midddleware/roleMiddleware.js";
+import {authorizeRole} from "../../security/middleware/roleMiddleware.js";
 
 
 describe('authorizeRole', () => {
