@@ -1,16 +1,10 @@
 //==============IMPORTS==================
 import {
-    //GET
     getCartByCustomerId,
-    //POST
-    createNewCart,
-    //PATCH
     modifyCartByPatch,
-    //DELETE
     deleteByIdCustomerCart,
-    deleteByIdCartItem,
+    deleteByIdCartItem, getProductsbyCartId, addNewItemToCart,
 } from "../services/cartService.js";
-
 
 //==================GET CART BY CUSTOMER ID=====================
 export const getCart = async (req, res) => {
@@ -34,28 +28,44 @@ export const getCart = async (req, res) => {
 
     } catch (error) {
         console.log('You have a Server error')
-       return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
+    }
+}
+
+
+export const getProductsInCart = async (req, res) => {
+    try {
+        const cartId = req.params.cart_id
+        if (!cartId) return res.status(400).json({error: 'Cart Id is required'})
+
+        const results = await getProductsbyCartId(cartId)
+        if (!results) return res.status(404).json({error: 'Cart could not be found'})
+
+        return res.json({
+            cartId,
+            message: 'Cart found successfully',
+            results
+        })
+    } catch (error) {
+        console.log('You have a Server error')
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
     }
 }
 
 //===================POST CART=======================
-export const createCart = async (req, res) => {
+export const addItemToCart = async (req, res) => {
     try {
         const customerId = req.params.customer_id
-        if (!customerId) {
-            return res.status(400).json({error: 'Customer id is required'})
-        }
+        if (!customerId) return res.status(400).json({error: 'Customer id is required'})
 
-        if (!req.body) {
-            return res.status(400).json({error: 'Order details are required'})
-        }
+        const cartData = req.body
+        if (!cartData) return res.status(400).json({error: 'Item and quantity are required'})
 
-        const results = await createNewCart(customerId, req.body)
-        if (!results || results.affectedRows === 0) {
-            return res.status(404).json({error: 'Cart could not be created'})
-        }
+        const results = await addNewItemToCart(customerId, cartData)
+        if (!results) return res.status(404).json({error: 'Cart Item could not be added'})
+
         return res.status(201).json({
-            message: 'Cart created successfully',
+            message: 'Cart item added successfully',
             data: {
                 id: results.insertId,
                 ...req.body

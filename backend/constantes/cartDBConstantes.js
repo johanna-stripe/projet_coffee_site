@@ -9,6 +9,21 @@ export const FIND_CART_BY_CUSTOMER_ID = `
     WHERE c.customer_id = ?
 `
 
+
+export const FIND_PRODUCTS_IN_CART = `
+    SELECT ci.cart_id,
+           ci.product_id,
+           ci.quantity,
+           p.product_name,
+           p.price,
+           p.product_image_url,
+           p.stock
+    FROM cart_item ci
+             JOIN product p on p.product_id = ci.product_id
+    WHERE ci.cart_id = ?
+`
+
+
 //===================POST CART=======================
 export const CREATE_NEW_CART = `
     INSERT INTO cart(customer_id)
@@ -18,7 +33,10 @@ export const CREATE_NEW_CART = `
 export const CREATE_NEW_CART_ITEM = `
     INSERT INTO cart_item(cart_id, product_id, quantity)
     VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)
 `
+// - Produit pas encore dans le panier : l'INSERT s'exécute normalement.
+// - Produit déjà là : la quantité existante (quantity) est augmentée de la nouvelle (VALUES(quantity), la valeur que tu essayais d'insérer). Avec 2 en panier et 3 ajoutés, tu obtiens 5.
 
 
 //===================PATCH CART=======================

@@ -56,7 +56,6 @@ export const FIND_PRODUCT_FULL_INFO_BY_ID = `
     WHERE p.product_id = ?
 `
 
-
 //======================POST NEW PRODUCT==============================
 export const CREATE_NEW_PRODUCT = `
     INSERT INTO product (category_id, brand_id, product_name, product_description,

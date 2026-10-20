@@ -10,7 +10,7 @@ import {
     PATCH_CART,
     //DELETE
     DELETE_CART,
-    DELETE_CART_ITEM,
+    DELETE_CART_ITEM, FIND_PRODUCTS_IN_CART,
 } from "../constantes/cartDBConstantes.js";
 
 
@@ -20,9 +20,17 @@ export const findCartByCustomerId = async (customerId) => {
     return results[0] ?? null
 }
 
+export const findProductsInCart = async (cartId) => {
+    const [results] = await db.query(FIND_PRODUCTS_IN_CART, [cartId])
+    return results
+}
+
 //===================POST CART=======================
+
+
+
 export const createANewCart = async (customerId) => {
-    const [results] = await db.query(CREATE_NEW_CART, customerId)
+    const [results] = await db.query(CREATE_NEW_CART, [customerId])
     return results
 }
 

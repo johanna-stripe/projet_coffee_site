@@ -4,8 +4,8 @@ import {
     login,
     securedEnPoint, logout,
 } from "./authController.js";
-import {authenticate} from "./midddleware/authMiddleware.js";
-import {authorizeRole} from "./midddleware/roleMiddleware.js";
+import {authenticate} from "./middleware/authMiddleware.js";
+import {authorizeRole} from "./middleware/roleMiddleware.js";
 
 const router = express.Router();
 export default router
