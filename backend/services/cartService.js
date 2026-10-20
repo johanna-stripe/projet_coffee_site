@@ -9,42 +9,52 @@ import {
     modifyByPatchCart,
     //DELETE
     deleteCustomerCartById,
-    deleteCartItemById,
+    deleteCartItemById, findProductsInCart,
 } from "../models/cartModel.js";
 
 import {
     normalizeText,
     errorBuilder
 } from "../private methods/privateMethods.js";
-
+import req from "express/lib/request.js";
 
 //==================GET CART BY CUSTOMER ID=====================
 export const getCartByCustomerId = async (customerId) => {
     const cart = await findCartByCustomerId(customerId)
     if (!cart) throw errorBuilder('Not found', 404)
+
+    const products = await findProductsInCart(cart.cart_id)
+
     return {
         cart_id: cart.cart_id,
         cart_creation_date: cart.cart_creation_date,
         customer_id: cart.customer_id,
+        items: products
     }
 }
 
+export const getProductsbyCartId = async (cartId) => {
+    const products = await findProductsInCart(cartId)
+    if (!products || products.length === 0) throw errorBuilder('Not found', 404)
+    return products
+}
+
 //===================POST CART=======================
-export const createNewCart = async (customerId, cartData) => {
-    const {
-        product_id,
-        quantity
-    } = cartData
+export const addNewItemToCart = async (customerId, cartData) => {
+    const {product_id, quantity} = cartData
+    const cartItemValues = [product_id, quantity]
 
-    const cartItemValues = [
-        product_id,
-        quantity
-    ]
 
-    const newCart = await createANewCart(customerId)
-    const newCartId = newCart.insertId
+    // Verification si le customer a déjà un panier
+    const existingCart = await findCartByCustomerId(customerId)
+    // Si pas de panier :
+    if (!existingCart) {
+        const newCart = await createANewCart(customerId)
+        return await createANewOrderItem(newCart.insertId, cartItemValues)
 
-    return await createANewOrderItem(newCartId, cartItemValues)
+        // Si panier existe déjà :
+    }
+    return  await createANewOrderItem(existingCart.cart_id, cartItemValues)
 }
 
 

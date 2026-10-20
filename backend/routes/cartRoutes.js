@@ -2,17 +2,12 @@
 import express from "express";
 
 import {
-    //GET
     getCart,
-    //POST
-    createCart,
-    //PATCH
+    addItemToCart,
     patchOrderItem,
-    //DELETE
     deleteCustomerCart,
-    deleteItemFromCart,
+    deleteItemFromCart, getProductsInCart,
 } from "../controllers/cartController.js";
-import {authenticate} from "../security/midddleware/authMiddleware.js";
 
 
 const router = express.Router();
@@ -26,9 +21,11 @@ export default router
 //Voir le panier d'un client
 router.get('/:customer_id', getCart)
 
+router.get('/:cart_id/products', getProductsInCart)
+
 //===================POST========================
-//Create Cart
-router.post('/:customer_id', createCart)
+//Add Item to cart
+router.post('/:customer_id', addItemToCart)
 
 //===================PATCH=======================
 //Modifier la quantité d'un cart_item
