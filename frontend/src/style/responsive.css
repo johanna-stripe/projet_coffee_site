@@ -252,6 +252,48 @@
     .product-footer__number { font-size: 2.4em; }
 }
 
+/* ==========================================================
+   FICHE PRODUIT ET PANIER
+   (.product-detail avait des marges de 200px : plus de place pour le contenu sur petit écran)
+   ========================================================== */
+@media (max-width: 1280px) {
+    .product-detail { margin: 20px 80px; }
+}
+
+@media (max-width: 1100px) {
+    .product-detail { margin: 20px 30px; }
+    .product-page { padding: 40px 30px; }
+}
+
+@media (max-width: 900px) {
+    .product-detail { margin: 10px 0; }
+    .product-detail__breadcrumb { font-size: 1em; }
+    .product-detail__image-wrapper { max-width: 520px; margin: 0 auto; }
+}
+
+@media (max-width: 600px) {
+    .product-detail { padding: 16px 16px 32px; }
+    .product-detail__title { font-size: 2.4em; }
+    .product-detail__price { font-size: 2.4em; }
+    .product-detail__buy { gap: 16px; flex-wrap: wrap; }
+    .product-detail__cart { padding: 18px; }
+
+    .product-page { padding: 24px 16px; }
+    .product-page__title { font-size: 2.2em; }
+
+    /* panneau du panier */
+    .cart-drawer__header { padding: 20px 16px 16px; }
+    .cart-drawer__header h2 { font-size: 2em; }
+    .cart-shipping { padding: 12px 16px 14px; }
+    .cart-drawer__list { padding: 14px 16px; }
+    .cart-item { padding: 12px; gap: 12px; }
+    .cart-item__name { font-size: 1.4em; }
+    .cart-item__quantity button { width: 36px; height: 36px; } /* cibles tactiles plus grandes */
+    .cart-drawer__footer { padding: 12px 16px 16px; }
+    .cart-drawer__login, .cart-drawer__empty { padding: 32px 16px; }
+}
+
+
 /***************************************************************/
 /********************* END - RESPONSIVE DESIGN *****************/
 /***************************************************************/
