@@ -2,8 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import api from "../axios/axiosConfig.js";
 import ProductDetail from "../components/product/ProductDetail.jsx";
+import {useCart} from "../context/CartContext.jsx";
 
 const ProductDetailPage = () => {
+    const {addToCart} = useCart()
     const {id} = useParams() // l'id vient de l'URL : /produit/:id
     const [product, setProduct] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -32,7 +34,14 @@ const ProductDetailPage = () => {
     if (error) return <p>{error}</p>
 
     // key : quand on change de produit, React recrée le composant (la quantité repart à 1)
-    return <ProductDetail key={product.product_id} product={product}/>
+    // ProductDetail renvoie (product, quantity) alors que addToCart attend (product_id, quantity)
+    return (
+        <ProductDetail
+            key={product.product_id}
+            product={product}
+            onAddToCart={(product, quantity) => addToCart(product.product_id, quantity)}
+        />
+    )
 };
 
 export default ProductDetailPage;

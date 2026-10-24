@@ -9,7 +9,6 @@ export const FIND_CART_BY_CUSTOMER_ID = `
     WHERE c.customer_id = ?
 `
 
-
 export const FIND_PRODUCTS_IN_CART = `
     SELECT ci.cart_id,
            ci.product_id,
@@ -17,9 +16,12 @@ export const FIND_PRODUCTS_IN_CART = `
            p.product_name,
            p.price,
            p.product_image_url,
-           p.stock
+           p.stock,
+           cti.origin,
+           cti.weight
     FROM cart_item ci
              JOIN product p on p.product_id = ci.product_id
+             LEFT JOIN coffee_tea_infusion cti on cti.product_id = ci.product_id
     WHERE ci.cart_id = ?
 `
 

@@ -127,7 +127,10 @@ const ProductDetail = ({product, onAddToCart}) => {
                         type="button"
                         className="product-detail__cart"
                         disabled={!inStock}
-                        onClick={() => onAddToCart?.(product, quantity)}>
+                        onClick={async () => {
+                            const added = await onAddToCart?.(product, quantity)
+                            if (added) setQuantity(1) // retour à 1 une fois ajouté
+                        }}>
                         Ajouter au panier
                     </button>
                     <p className="product-detail__reassurance">Livraison offerte dès 35 € · paiement sécurisé</p>

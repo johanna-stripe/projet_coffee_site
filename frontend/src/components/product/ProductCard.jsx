@@ -13,10 +13,13 @@ const ProductCard = ({product}) => {
                         alt={product.product_name}
                     />
                 </Link>
-                <span className="product-card__badge">{product.category_name}</span>
-                <button type="button" className="product-card__button">
-                    Ajouter au panier
-                </button>
+                <span className="product-card__badge flex flex-direction-column">{product.category_name}</span>
+                <div className="product-card__actions">
+                    {/* la quantité et l'ajout au panier se font sur la fiche produit (ProductDetail) */}
+                    <Link to={productPath(product.product_id)} className="product-card__button">
+                        Ajouter au panier
+                    </Link>
+                </div>
             </div>
 
             <div className="product-card__body">

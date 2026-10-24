@@ -3,6 +3,8 @@ import Accueil from "./pages/Accueil.jsx";
 import NavBar from "./components/layout/NavBar.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import {AuthProvider} from "./context/AuthContext.jsx";
+import {CartProvider} from "./context/CartContext.jsx";
+import CartDrawer from "./components/cart/CartDrawer.jsx";
 import {CATEGORIES, CLIENT_PATHS} from "./routes/paths.js";
 import ProductPage from "./pages/ProductPage.jsx";
 import ProductDetailPage from "./pages/ProductDetailPage.jsx";
@@ -16,24 +18,27 @@ export default function App() {
     return (
         <BrowserRouter>
             <AuthProvider>
-                <ScrollToTop/>
-                <TopBanner/>
-                <NavBar/>
-                {/* mettre la nav bar ici comme ça elle engloble toutes les routes */}
-                <Routes>
-                    <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>
-                    {CATEGORIES.map((cat => (
-                        <Route
-                            key={cat.id}
-                            path={cat.path}
-                            // key : chaque catégorie repart avec ses filtres à zéro (sinon React garde l'état d'une page à l'autre)
-                            element={<ProductPage key={cat.id} categoryId={cat.id} title={cat.title}/>}
-                        />
-                    )))}
-                    <Route path={CLIENT_PATHS.product} element={<ProductDetailPage/>}/>
-                </Routes>
-                <TrustBadges/>
-                <Footer/>
+                <CartProvider>
+                    <ScrollToTop/>
+                    <TopBanner/>
+                    <NavBar/>
+                    {/* mettre la nav bar ici comme ça elle engloble toutes les routes */}
+                    <Routes>
+                        <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>
+                        {CATEGORIES.map((cat => (
+                            <Route
+                                key={cat.id}
+                                path={cat.path}
+                                // key : chaque catégorie repart avec ses filtres à zéro (sinon React garde l'état d'une page à l'autre)
+                                element={<ProductPage key={cat.id} categoryId={cat.id} title={cat.title}/>}
+                            />
+                        )))}
+                        <Route path={CLIENT_PATHS.product} element={<ProductDetailPage/>}/>
+                    </Routes>
+                    <TrustBadges/>
+                    <Footer/>
+                    <CartDrawer/>
+                </CartProvider>
             </AuthProvider>
         </BrowserRouter>
     );

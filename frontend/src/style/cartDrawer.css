@@ -1,0 +1,289 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400&family=Playfair+Display:ital,wght@0,400;1,400&display=swap");
+
+/* ===== Panier (panneau latéral) ===== */
+.cart-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000; /* au-dessus de la NavBar (z-index 1000), sinon elle masque le haut du panneau */
+    background: rgba(30, 15, 5, 0.45);
+    display: flex;
+    justify-content: flex-end; /* le panneau se colle à droite */
+}
+
+.cart-drawer {
+    width: min(480px, 100%);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    font-family: "Lato", sans-serif;
+    font-weight: 300;
+    box-shadow: -8px 0 30px rgba(0, 0, 0, 0.2);
+    animation: cart-slide-in 0.3s ease both;
+}
+
+@keyframes cart-slide-in {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cart-drawer { animation: none; }
+}
+
+/* ----- En-tête ----- */
+.cart-drawer__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 28px 28px 22px;
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.cart-drawer__header h2 {
+    margin: 0 0 6px;
+    font-family: "Playfair Display", Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 2.4em;
+}
+
+.cart-drawer__count {
+    margin: 0;
+    font-size: 1em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #d4b483;
+}
+
+.cart-drawer__header button,
+.cart-item__side button {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.7;
+}
+
+.cart-drawer__header button:hover,
+.cart-item__side button:hover {
+    opacity: 1;
+}
+
+/* ----- Bandeau livraison offerte ----- */
+.cart-shipping {
+    padding: 16px 28px 18px;
+    background: #dfdcc7;
+}
+
+.cart-shipping p {
+    margin: 0 0 10px;
+    font-size: 1.2em;
+}
+
+.cart-shipping strong {
+    color: var(--color-quaternary);
+    font-weight: bold;
+}
+
+.cart-shipping__bar {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(48, 88, 71, 0.2);
+    overflow: hidden;
+}
+
+.cart-shipping__fill {
+    height: 100%;
+    background: var(--color-quaternary);
+    transition: width 0.4s ease;
+}
+
+/* ----- Visiteur non connecté ----- */
+.cart-drawer__login {
+    flex: 1;
+    padding: 40px 28px;
+    text-align: center;
+}
+
+.cart-drawer__login p {
+    margin: 0 0 20px;
+    font-size: 1.5em;
+    font-family: "Playfair Display", Georgia, serif;
+}
+
+/* ----- Liste des produits ----- */
+.cart-drawer__empty {
+    flex: 1;
+    padding: 40px 28px;
+    text-align: center;
+    color: var(--color-tertiary);
+}
+
+.cart-drawer__empty p {
+    margin: 0 0 20px;
+    font-size: 1.5em;
+}
+
+.cart-drawer__list {
+    flex: 1; /* prend la place restante : le pied de panneau reste en bas */
+    overflow-y: auto;
+    margin: 0;
+    padding: 20px 28px;
+    list-style: none;
+}
+
+.cart-item {
+    display: grid;
+    grid-template-columns: 80px 1fr auto;
+    gap: 16px;
+    margin-bottom: 14px;
+    padding: 14px;
+    background: #fff;
+}
+
+.cart-item img {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    display: block;
+}
+
+.cart-item__info p {
+    margin: 0;
+}
+
+.cart-item__origin {
+    margin-bottom: 4px !important;
+    font-size: 0.95em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #b9a98f;
+}
+
+.cart-item__name {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.7em;
+}
+
+.cart-item__weight {
+    margin-bottom: 10px !important;
+    color: #b9a98f;
+    font-size: 1.1em;
+}
+
+.cart-item__quantity {
+    display: inline-flex;
+    align-items: center;
+    margin-top: 6px;
+    border: 1px solid rgba(144, 91, 39, 0.3);
+}
+
+.cart-item__quantity button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.4em;
+    color: var(--color-secondary);
+}
+
+.cart-item__quantity button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.cart-item__quantity span {
+    min-width: 40px;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.cart-item__side {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.cart-item__price {
+    margin: 0;
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.5em;
+}
+
+/* ----- Pied : totaux et boutons ----- */
+.cart-drawer__footer {
+    padding: 12px 28px 14px;
+    background: var(--color-primary); /* beige, comme le fond du panneau */
+    border-top: 1px solid rgba(144, 91, 39, 0.3);
+}
+
+.cart-drawer__line {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 0 4px;
+    font-size: 1.2em;
+}
+
+.cart-drawer__footer hr {
+    margin: 8px 0;
+    border: none;
+    border-top: 1px solid rgba(144, 91, 39, 0.25);
+}
+
+.cart-drawer__total {
+    align-items: baseline;
+    font-family: "Playfair Display", Georgia, serif;
+}
+
+.cart-drawer__total strong {
+    font-size: 1.3em;
+    font-weight: 400;
+}
+
+.cart-drawer__checkout {
+    display: block; /* peut être un <Link> : même apparence qu'un bouton */
+    box-sizing: border-box;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+    border: none;
+    background: var(--color-secondary);
+    color: var(--color-primary);
+    font-family: "Lato", sans-serif;
+    font-size: 1.1em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s ease;
+}
+
+.cart-drawer__checkout:hover {
+    background: var(--color-quaternary);
+}
+
+.cart-drawer__continue {
+    display: block;
+    margin: 10px auto 0;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: var(--color-secondary);
+    font-family: "Lato", sans-serif;
+    font-size: 1.1em;
+    text-decoration: underline;
+}
+
+/* Petit écran : le panneau prend toute la largeur */
+@media (max-width: 480px) {
+    .cart-item { grid-template-columns: 64px 1fr auto; }
+    .cart-item img { width: 64px; height: 80px; }
+}
