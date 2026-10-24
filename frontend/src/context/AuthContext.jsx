@@ -54,7 +54,7 @@ export const AuthProvider = ({children}) => {
     //loadCurrentUser -> Eviter qu'un user soit déconnecté tout le temps
     const loadCurrentUser = async () => {
         try {
-            const response = await api.get('/auth/secured-endpoint')
+            const response = await api.get('/auth/me')
             // → si un token existe, on fait une requête vers une route protégée du back
             setUser(response.data.user)
 
@@ -81,6 +81,12 @@ export const AuthProvider = ({children}) => {
     Pourquoi c'est nécessaire : React oublie tout son state à chaque rechargement de page (F5), donc sans ça, user repartirait à null même si le token est toujours valide. Ce useEffect restaure la session automatiquement au démarrage.
      */
 
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+    // état de la modale de connexion/inscription : dans le contexte pour que n'importe quel composant puisse l'ouvrir
+    // (icône utilisateur de la NavBar, bouton "Ajouter au panier" d'un visiteur non connecté...)
+    const openAuthModal = () => setIsAuthModalOpen(true)
+    const closeAuthModal = () => setIsAuthModalOpen(false)
+
     const updateUser = (updatedFields) => {
         setUser(prev => ({ ...prev, ...updatedFields }))
     }
@@ -94,6 +100,9 @@ export const AuthProvider = ({children}) => {
                 login,              // la fonction pour se connecter
                 logout,              // la fonction pour se déconnecter
                 updateUser,
+                isAuthModalOpen,    // la modale de connexion est-elle ouverte ?
+                openAuthModal,
+                closeAuthModal,
                 isAuthenticated: Boolean(user), // true si user existe, false si null
                 isAdmin: user?.role === 'ADMIN' // true si user est admin
             }}

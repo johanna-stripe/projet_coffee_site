@@ -12,11 +12,11 @@ import UserAccount from "../user/UserAccount.jsx";
 import SubMenu from "./SubMenu.jsx";
 import {Link} from "react-router-dom";
 import {CLIENT_PATHS} from "../../routes/paths.js";
+import {useCart} from "../../context/CartContext.jsx";
 
 const NavBar = () => {
     const navRef = useRef(null)
     const [subMenuPos, setSubMenuPos] = useState({top: 0, gap: 0})
-    const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
     const [activeCategory, setActiveCategory] = useState(null)
     const [modifyUserAccount, setModifyUserAccount] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
@@ -26,7 +26,10 @@ const NavBar = () => {
     const scrolledRef = useRef(false)
     // Sous 900px : menu burger, sous-menus en accordéon au clic (pas de survol sur écran tactile)
     const isMobile = useMediaQuery("(max-width: 900px)")
-    const {user, isAuthenticated, logout} = useAuth()
+    const {user, isAuthenticated, logout, isAuthModalOpen, openAuthModal, closeAuthModal} = useAuth()
+    const {items, openCart} = useCart()
+    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
+
 
     useEffect(() => {
         // au-delà de 80px de scroll, la barre passe en version compacte (cf. .navBar--scrolled dans navBar.css)
@@ -87,106 +90,109 @@ const NavBar = () => {
 
     return (
         <>
-        {isCompact && <div style={{height: navHeight}} aria-hidden="true"/>}
-        <div ref={navRef}
-             className={`navBar p-top-5px p-bottom-5px ${isCompact ? "navBar--scrolled" : ""}`}>
-            <button
-                type="button"
-                className="navBar-burger"
-                aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-                aria-expanded={menuOpen}
-                onClick={() => setMenuOpen((open) => !open)}
-            >
-                {menuOpen ? <IoClose size={28}/> : <IoMenu size={28}/>}
-            </button>
-
-            <div className="logo">
-                <Link
-                to={CLIENT_PATHS.home}
-                onClick={closeMenu}>
-                <img
-                    src={logo2}
-                    alt="logoleTempsdUneTasse"
-                    className="h-120px cursor-pointer"
-                />
-            </Link>
-            </div>
-
-            <form className="searchBar" role="search" onSubmit={(e) => e.preventDefault()}>
-                <input
-                    type="search"
-                    className="searchBar-input"
-                    placeholder="Rechercher..."
-                    aria-label="Rechercher un produit"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit" className="searchBar-btn" aria-label="Lancer la recherche">
-                    <IoSearch size={21} className="icon"/>
+            {isCompact && <div style={{height: navHeight}} aria-hidden="true"/>}
+            <div ref={navRef}
+                 className={`navBar p-top-5px p-bottom-5px ${isCompact ? "navBar--scrolled" : ""}`}>
+                <button
+                    type="button"
+                    className="navBar-burger"
+                    aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                    aria-expanded={menuOpen}
+                    onClick={() => setMenuOpen((open) => !open)}
+                >
+                    {menuOpen ? <IoClose size={28}/> : <IoMenu size={28}/>}
                 </button>
-            </form>
 
-            <div className={`menu align-self-center ${menuOpen ? "menu--open" : ""}`}>
-                <ul className="c-secondary flex gap-40px list-none font-size-15px">
-                    {menuItems.map((item => (
-                        <li
-                            key={item.label}
-                            className="position-relative cursor-pointer"
-                            onMouseEnter={item.category && !isMobile ? (e) => openSubMenu(e, item.category) : undefined}
-                            onMouseLeave={!isMobile ? () => setActiveCategory(null) : undefined}
-                            onClick={() => handleItemClick(item)}
-                        >
-                            {item.label}
-                            {item.category && (
-                                <SubMenu
-                                    isOpen={activeCategory === item.category}
-                                    category={item.category}
-                                    top={subMenuPos.top}
-                                    left={subMenuPos.left}
-                                    gap={subMenuPos.gap}
-                                    inline={isMobile}
-                                    onNavigate={closeMenu}
-                                />
-                            )}
-                        </li>
-                    )))}
-                </ul>
-            </div>
+                <div className="logo">
+                    <Link
+                        to={CLIENT_PATHS.home}
+                        onClick={closeMenu}>
+                        <img
+                            src={logo2}
+                            alt="logoleTempsdUneTasse"
+                            className="h-120px cursor-pointer"
+                        />
+                    </Link>
+                </div>
 
-            <div className="navBar-actions flex flex-direction-column align-content-center">
-                <p className="font-size-125em c-tertiary">
-                    {isAuthenticated ? `Bienvenue ${user.first_name}` : ""}</p>
-                <div className="icons flex gap-30px align-self-center">
+                <form className="searchBar" role="search" onSubmit={(e) => e.preventDefault()}>
+                    <input
+                        type="search"
+                        className="searchBar-input"
+                        placeholder="Rechercher..."
+                        aria-label="Rechercher un produit"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    <button type="submit" className="searchBar-btn" aria-label="Lancer la recherche">
+                        <IoSearch size={21} className="icon"/>
+                    </button>
+                </form>
+
+                <div className={`menu align-self-center ${menuOpen ? "menu--open" : ""}`}>
+                    <ul className="c-secondary flex gap-40px list-none font-size-15px">
+                        {menuItems.map((item => (
+                            <li
+                                key={item.label}
+                                className="position-relative cursor-pointer"
+                                onMouseEnter={item.category && !isMobile ? (e) => openSubMenu(e, item.category) : undefined}
+                                onMouseLeave={!isMobile ? () => setActiveCategory(null) : undefined}
+                                onClick={() => handleItemClick(item)}
+                            >
+                                {item.label}
+                                {item.category && (
+                                    <SubMenu
+                                        isOpen={activeCategory === item.category}
+                                        category={item.category}
+                                        top={subMenuPos.top}
+                                        left={subMenuPos.left}
+                                        gap={subMenuPos.gap}
+                                        inline={isMobile}
+                                        onNavigate={closeMenu}
+                                    />
+                                )}
+                            </li>
+                        )))}
+                    </ul>
+                </div>
+
+                <div className="navBar-actions flex flex-direction-column align-content-center">
+                    <p className="font-size-125em c-tertiary">
+                        {isAuthenticated ? `Bienvenue ${user.first_name}` : ""}</p>
+                    <div className="icons flex gap-30px align-self-center">
                         <FaRegUser
                             size={20}
                             className={"icon cursor-pointer"}
                             alt={"user-icon"}
                             onClick={() => {
-                                isAuthenticated ? setModifyUserAccount(true) : setIsAuthModalOpen(true)
+                                isAuthenticated ? setModifyUserAccount(true) : openAuthModal()
                             }}
                         />
+                        <span className="navBar-basket cursor-pointer" onClick={openCart}>
                         <PiBasket
                             size={24}
                             className={"icon cursor-pointer"}
                             alt={"basket-icon"}
-                        />
+                        />{itemCount > 0 && <span className="navBar-basket__badge">{itemCount}</span>}
+                        {/* si la condition est vraie, affiche le <span> ; sinon, n'affiche rien */}
+                        </span>
+                    </div>
+                    <AuthModal
+                        //Au clic de userIcon on a passé openAuthModal()
+                        isOpen={isAuthModalOpen}
+                        //React prend la valeur actuelle de isAuthModalOpen (donc true) et la met dans un objet : { isOpen: true }.
+                        //Donc équivaut maintenant à <AuthModal isOpen={true} .../>
+                        onClose={closeAuthModal}
+                    />
+                    <UserAccount
+                        isOpen={modifyUserAccount}
+                        onClose={() => setModifyUserAccount(false)}
+                        onLogout={logout}
+                    />
                 </div>
-                <AuthModal
-                    //Au clic de userIcon on a passé setIsAuthModalOpen(true)
-                    isOpen={isAuthModalOpen}
-                    //React prend la valeur actuelle de isAuthModalOpen (donc true) et la met dans un objet : { isOpen: true }.
-                    //Donc équivaut maintenant à <AuthModal isOpen={true} .../>
-                    onClose={() => setIsAuthModalOpen(false)}
-                />
-                <UserAccount
-                    isOpen={modifyUserAccount}
-                    onClose={() => setModifyUserAccount(false)}
-                    onLogout={logout}
-                />
             </div>
-        </div>
         </>
-)
+    )
 }
 
 export default NavBar;
