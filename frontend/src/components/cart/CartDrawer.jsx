@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 import {IoClose} from "react-icons/io5";
+import {PiBasket} from "react-icons/pi";
 import {useCart} from "../../context/CartContext.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {productPath} from "../../routes/paths.js";
@@ -67,10 +68,12 @@ const CartDrawer = () => {
                     </div>
                 ) : items.length === 0 ? (
                     <div className="cart-drawer__empty">
+                        <PiBasket size={56} className="cart-drawer__empty-icon" aria-hidden="true"/>
                         <p>Votre panier est vide.</p>
+                        <p className="c-secondary">Découvrez notre sélection et trouvez votre prochaine pause préférée.</p>
                         {/* le panneau est par-dessus la page : le fermer ramène l'utilisateur là où il était */}
                         <button type="button" className="cart-drawer__checkout" onClick={closeCart}>
-                            Commencer mes achats
+                            Découvrez la boutique
                         </button>
                     </div>
                 ) : (

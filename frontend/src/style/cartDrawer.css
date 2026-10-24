@@ -118,9 +118,17 @@
 /* ----- Liste des produits ----- */
 .cart-drawer__empty {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* centre le contenu verticalement dans la place restante */
+    align-items: center;
     padding: 40px 28px;
     text-align: center;
     color: var(--color-tertiary);
+}
+
+.cart-drawer__empty-icon {
+    margin-bottom: 20px;
 }
 
 .cart-drawer__empty p {

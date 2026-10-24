@@ -48,6 +48,7 @@ export const CartProvider = ({children}) => {
 
             // la réponse du POST ne contient pas le panier : on le recharge pour avoir l'état à jour
             await loadCart()
+            setIsCartOpen(true) // le panneau s'ouvre pour montrer ce qui vient d'être ajouté
             return true
         } catch (error) {
             // on ne touche pas au state : le panier en base n'a pas changé
