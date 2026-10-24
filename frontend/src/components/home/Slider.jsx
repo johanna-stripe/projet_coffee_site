@@ -1,6 +1,7 @@
 import {
     useState,
-    useEffect
+    useEffect,
+    useRef
 } from "react";
 import {Link} from "react-router-dom";
 
@@ -28,6 +29,23 @@ const Slider = ({slides}) => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
     };
 
+    // glisser au doigt sur mobile (les flèches sont masquées sous 600px)
+    const touchStartX = useRef(null);
+    // useRef : garde une valeur entre deux rendus sans en déclencher un nouveau (contrairement à useState)
+    const SWIPE_MIN_DISTANCE = 50; // en dessous de 50px, c'est un simple appui et pas un glissement
+
+    const handleTouchStart = (e) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = (e) => {
+        if (touchStartX.current === null) return;
+        const distance = e.changedTouches[0].clientX - touchStartX.current;
+        touchStartX.current = null;
+        if (distance <= -SWIPE_MIN_DISTANCE) goToNext(); // glissement vers la gauche : slide suivant
+        if (distance >= SWIPE_MIN_DISTANCE) goToPrev(); // glissement vers la droite : slide précédent
+    };
+
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -44,7 +62,9 @@ const Slider = ({slides}) => {
 
     return (
         <section className="slider h-500px">
-            <div className="slider-images w-100 h-100 position-relative overflow-hidden">
+            <div className="slider-images w-100 h-100 position-relative overflow-hidden"
+                 onTouchStart={handleTouchStart}
+                 onTouchEnd={handleTouchEnd}>
                 {slides.map((slide, index) => (
                     <div
                         key={index}

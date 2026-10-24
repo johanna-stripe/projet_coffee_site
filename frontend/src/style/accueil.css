@@ -1,4 +1,9 @@
 /*********************Slider_images*********************/
+/* le glissement horizontal change de slide, le défilement vertical de la page reste possible */
+.slider-images {
+    touch-action: pan-y;
+}
+
 /* --- Texte superposé --- */
 .slider-text {
     top: 50%;
