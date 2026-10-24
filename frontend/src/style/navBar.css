@@ -9,7 +9,9 @@
 
     /* ligne 1 : logo | recherche | actions ; ligne 2 : menu */
     display: grid;
-    grid-template-columns: 1fr minmax(0, 900px) 1fr; /* colonnes latérales égales => recherche centrée */
+    /* colonnes latérales égales => recherche centrée ; 220px minimum de chaque côté :
+       la place du logo à gauche, celle de « Bienvenue … » et des icônes à droite */
+    grid-template-columns: minmax(220px, 1fr) minmax(0, 640px) minmax(220px, 1fr);
     grid-template-areas:
         "logo search actions"
         "menu menu   menu";
@@ -25,7 +27,9 @@
     transform: translateY(-50%);
 }
 .navBar .searchBar { grid-area: search; }
-.navBar .navBar-actions { grid-area: actions; justify-self: end; }
+.navBar .navBar-actions { grid-area: actions; justify-self: end; min-width: 0; max-width: 100%; }
+/* « Bienvenue Prénom » reste sur une ligne ; un prénom très long est coupé par « … » */
+.navBar .navBar-actions > p { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .navBar .menu { grid-area: menu; justify-self: center; padding: 20px 60px 20px; }
 /* au scroll (desktop seulement, le mobile a déjà sa barre compacte) : barre compacte
    = logo réduit + recherche + icônes, sans la ligne du menu */
