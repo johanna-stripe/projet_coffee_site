@@ -34,7 +34,7 @@
 
     /* Cafés préférés : carrousel horizontal (5 cartes ne tiennent plus) */
     .selection-client { height: auto; padding: 50px 0; }
-    .selection-client > div:last-child {
+    .selection-client > .selection-client__list {
         justify-content: flex-start;
         overflow-x: auto;
         margin: 0;
@@ -44,7 +44,7 @@
         scroll-snap-type: x mandatory;
         scroll-padding: 0 20px; /* le snap respecte la marge de gauche */
     }
-    .selection-client > div:last-child > div { flex: 0 0 220px; scroll-snap-align: start; }
+    .selection-client > .selection-client__list > .selection-client__item { flex: 0 0 220px; scroll-snap-align: start; }
 
     /* Histoire */
     #brulerie { height: auto; min-height: 550px; }

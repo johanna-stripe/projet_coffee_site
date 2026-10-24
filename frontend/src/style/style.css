@@ -5,14 +5,16 @@
     --color-secondary: rgb(51, 27, 10);
     --color-tertiary: #905b27;
     --color-quaternary: #305847;
-    --color-fifth: #1E0F05
+    --color-fifth: #1E0F05;
+    /* marge latérale : 40px mini, puis le contenu reste centré et plafonné à 1440px sur grand écran */
+    --page-gutter: max(40px, calc((100% - 1440px) / 2));
 }
 
 html {
     scroll-behavior: smooth;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
     scroll-timeline-name: --page-scroll;
     scroll-timeline-axis: block;
     font-size: 12px !important;

@@ -88,7 +88,7 @@ const ProductHeader = ({categoryId}) => {
     return (
         <>
             <div>
-                <div className="product-header p-left-right-40px">
+                <header className="product-header p-left-right-40px">
                     <img className="product-header__image" src={header.image} alt=""/>
 
                     <div className="product-header__content">
@@ -96,8 +96,8 @@ const ProductHeader = ({categoryId}) => {
                         <h1 className="product-header__title">{header.title}</h1>
                         <p className="product-header__description">{header.description}</p>
                     </div>
-                </div>
-                <div className="product-header2 flex gap-80px m-40px m-top-100px m-bottom-60px">
+                </header>
+                <div className="product-header2 flex gap-80px m-top-100px m-bottom-60px">
                     <div className="m-left-50px">
                     <h4 className="product-header2__subtitle">{header2.subtitle}</h4>
                     <h1 className="product-header2__title">{header2.title}</h1>
