@@ -1,0 +1,75 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup</title>
+<link rel="stylesheet" href="../../../frontend/src/index.css">
+<link rel="stylesheet" href="../../../frontend/src/style/settings.css">
+<link rel="stylesheet" href="../../../frontend/src/style/style.css">
+<link rel="stylesheet" href="../../../frontend/src/style/accueil.css">
+<link rel="stylesheet" href="../../../frontend/src/style/navBar.css">
+<link rel="stylesheet" href="../../../frontend/src/style/subMenu.css">
+<link rel="stylesheet" href="../../../frontend/src/style/topBanner.css">
+<link rel="stylesheet" href="../../../frontend/src/style/productPage.css">
+<link rel="stylesheet" href="../../../frontend/src/style/productDetail.css">
+<link rel="stylesheet" href="../../../frontend/src/style/productFooter.css">
+<link rel="stylesheet" href="../../../frontend/src/style/cartDrawer.css">
+<link rel="stylesheet" href="../../../frontend/src/style/authModal.css">
+<link rel="stylesheet" href="../../../frontend/src/style/userAccount.css">
+<link rel="stylesheet" href="../../../frontend/src/style/responsive.css">
+<style>
+  .menu li.hov::after { transform: scaleX(1); }
+  .product-card.hov .product-card__actions { transform: translateY(0); }
+  .product-card.hov .product-card__image { transform: scale(1.05); }
+  body { font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana, sans-serif; }
+</style>
+<script>
+window.addEventListener('load', () => {
+  document.querySelectorAll('li[data-open]').forEach(li => {
+    const nav = li.closest('.navBar'), l = li.getBoundingClientRect(), n = nav.getBoundingClientRect();
+    const sm = li.querySelector('.sm'); if (!sm) return;
+    const abs = document.body.dataset.abs === '1';
+    sm.style.position = abs ? 'absolute' : 'fixed';
+    sm.style.top = abs ? '100%' : l.bottom + 'px';
+    sm.style.left = abs ? '0px' : l.left + 'px';
+    sm.style.paddingTop = (n.bottom - l.bottom) + 'px';
+    li.classList.add('hov');
+  });
+});
+</script></head><body ><div id="root"><div class="top-banner">Livraison offerte dès 35 € d'achat · Torréfaction artisanale française</div><div class="navBar p-top-5px p-bottom-5px">
+  <button type="button" class="navBar-burger"><svg class="icon cursor-pointer"  width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  <div class="logo"><a href="#"><img src="../../../frontend/src/assets/images/logos/leTempsDuneTasse_logo.png" alt="logo" class="h-120px cursor-pointer"></a></div>
+  <form class="searchBar" role="search" onsubmit="return false"><input type="search" class="searchBar-input" placeholder="Rechercher..."><button type="submit" class="searchBar-btn"><svg class="icon cursor-pointer"  width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg></button></form>
+  <div class="menu align-self-center "><ul class="c-secondary flex gap-40px list-none font-size-15px"><li class="position-relative cursor-pointer">Café</li><li class="position-relative cursor-pointer">Thé & Infusion</li><li class="position-relative cursor-pointer">Machines</li><li class="position-relative cursor-pointer">Accessoires</li><li class="position-relative cursor-pointer">Qui sommes-nous ?</li></ul></div>
+  <div class="navBar-actions flex flex-direction-column align-content-center"><p class="font-size-125em c-tertiary">Bienvenue Marie</p>
+    <div class="icons flex gap-30px align-self-center"><svg class="icon cursor-pointer"  width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span class="navBar-basket cursor-pointer"><svg class="icon cursor-pointer"  width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5h19l-2 11h-15z"/><path d="M7 9.5l4-6M17 9.5l-4-6"/><path d="M9 13v4M12 13v4M15 13v4"/></svg><span class="navBar-basket__badge">2</span></span></div><div class="account-page auth-overlay position-fixed top-0 left-0 w-100 h-100 flex align-items-center justify-content-center z-index99">
+  <div class="auth-modal account-modal position-relative b-primary w-80 h-80">
+    <button class="auth-close font-size-150em p-15px position-absolute top-0 right-0 cursor-pointer c-tertiary b-none border-none">✕</button>
+    <h3 class="text-align-center font-size-2em c-tertiary">Bienvenue Marie Dupont</h3>
+    <div class="flex side-menu">
+      <div class="sidebar flex flex-25 flex-direction-column"><ul class="list-none text-align-left font-size-125em c-secondary m-right-20px">
+        <li class="menu-item flex align-items-center p-10px m-top-30px cursor-pointer active"><span><svg class="menu-icon m-right-15px active" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Mes informations</li><li class="menu-item flex align-items-center p-10px m-top-30px cursor-pointer "><span><svg class="menu-icon m-right-15px " width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Mes adresses</li><li class="menu-item flex align-items-center p-10px m-top-30px cursor-pointer "><span><svg class="menu-icon m-right-15px " width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Mes achats</li><li class="menu-item flex align-items-center p-10px m-top-30px cursor-pointer "><span><svg class="menu-icon m-right-15px " width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Sécurité</li><li class="menu-item flex align-items-center p-10px m-top-30px cursor-pointer  logout"><span><svg class="menu-icon m-right-15px " width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/></svg></span> Se déconnecter</li></ul></div>
+      <div class="account-content flex-75">
+        <div class="content-header flex justify-content-space-between"><div><h3 class="font-size-2em c-secondary m-bottom-5px">Mes informations</h3>
+          <p class="font-size-125em subtitle c-secondary m-0 p-bottom-20px">Gérez votre profil personnel</p></div>
+          <div class="flex gap-15px"><button class="align-self-center m-right-50px b-none p-10px flex cursor-pointer">✎<span class="m-left-10px c-secondary">Modifier</span></button></div></div>
+        <div class="profile-summary flex align-items-center m-top-20px m-bottom-20px"><div class="avatar b-quaternary c-primary font-size-150em p-15px flex align-items-center justify-content-center">MD</div>
+          <div class="profile-name m-10px flex flex-direction-column gap-5px"><p class="font-size-150em m-0">Marie Dupont</p><p class="client-since c-tertiary m-0">Client depuis le 12/03/2024</p></div></div>
+        <hr class="divider">
+        <div class="info-grid flex flex-direction-column m-top-20px m-bottom-20px"><form>
+          <div class="flex m-bottom-20px"><div class="info-field w-45 flex-1 flex flex-direction-column"><label class="c-tertiary ">PRÉNOM</label><p class="w-50 m-0 p-top-5px p-bottom-5px font-size-14px c-secondary form-placeholder">Marie</p></div><div class="info-field w-45 flex-1 flex flex-direction-column"><label class="c-tertiary ">NOM</label><p class="w-50 m-0 p-top-5px p-bottom-5px font-size-14px c-secondary form-placeholder">Dupont</p></div></div>
+          <div class="flex m-bottom-20px"><div class="info-field w-45 flex-1 flex flex-direction-column"><label class="c-tertiary ">ADRESSE E-MAIL</label><p class="w-50 m-0 p-top-5px p-bottom-5px font-size-14px c-secondary form-placeholder">marie.dupont@email.com</p></div><div class="info-field w-45 flex-1 flex flex-direction-column"><label class="c-tertiary uppercase">téléphone</label><p class="w-50 m-0 p-top-5px p-bottom-5px font-size-14px c-secondary form-placeholder">06 12 34 56 78</p></div></div>
+          <div class="info-field w-45 flex-1 flex flex-direction-column"><label class="c-tertiary uppercase">date de naissance</label><p class="p-top-5px p-bottom-5px w-50 m-0 font-size-14px c-secondary form-placeholder">14/05/1990</p></div>
+        </form></div>
+        <hr class="divider">
+      </div></div></div></div></div>
+</div><section class="slider h-500px"><div class="slider-images w-100 h-100 position-relative overflow-hidden">
+  <div class="slider-slide position-absolute w-100 h-100" style="opacity:1"><img class="w-100 h-100 block object-fit-cover" src="../../../frontend/src/assets/images/coffee/coffee_bean_slider.jpg" alt="">
+    <div class="slider-text h-50 position-absolute flex flex-direction-column align-items-start justify-content-center">
+      <p class="letter-spacing-3px uppercase c-tertiary">Torréfaction artisanale</p><h1 class="m-0">L'art du café en grains</h1>
+      <p class="font-size-150em">Sélectionnés à la source, torréfiés dans notre atelier.</p>
+      <a href="#" class="c-white uppercase font-size-150em text-decoration-none b-quaternary p-15px">Découvrir nos cafés</a></div></div>
+  <button class="slider-arrow slider-arrow-prev cursor-pointer">❮</button><button class="slider-arrow slider-arrow-next cursor-pointer">❯</button>
+  <div class="slider-dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div></div></section><section class="explore_section p-bottom-50px"><div class="h-200px flex flex-direction-column justify-content-center align-items-center">
+  <p class="c-tertiary font-size-150em m-0 slider-eyebrow m-10px">Nos cafés en grain</p><h2 class="c-secondary m-0">Trouvez le café qui vous ressemble</h2></div>
+  <div class="flex justify-content-space-evenly m-left-50px m-right-50px"><div class="selection-card flex flex-direction-column align-items-center"><img class="selection-card-img block" src="../../../frontend/src/assets/icons/selection/specialty.svg" alt="">
+      <h3 class="c-secondary uppercase m-0 m-bottom-10px">Cafés de spécialité</h3><p class="c-secondary m-0 m-bottom-20px">Une gamme de cafés d'exception issus de petites productions aux profils gustatifs remarquables.</p><a class="selection-card-btn" href="#">Découvrir</a></div><div class="selection-card flex flex-direction-column align-items-center"><img class="selection-card-img block" src="../../../frontend/src/assets/icons/selection/bio.svg" alt="">
+      <h3 class="c-secondary uppercase m-0 m-bottom-10px">Cafés bio</h3><p class="c-secondary m-0 m-bottom-20px">Notre sélection de café en grain bio est certifiée biologique par le label Ecocert afin de vous garantir une agriculture respectueuse de l'environnement.</p><a class="selection-card-btn" href="#">Découvrir</a></div><div class="selection-card flex flex-direction-column align-items-center"><img class="selection-card-img block" src="../../../frontend/src/assets/icons/selection/coffee.svg" alt="">
+      <h3 class="c-secondary uppercase m-0 m-bottom-10px">Cafés italiens</h3><p class="c-secondary m-0 m-bottom-20px">Les meilleurs cafés en grain italiens pour transformer votre rituel quotidien en un moment d'exception.</p><a class="selection-card-btn" href="#">Découvrir</a></div></div></section></div></body></html>
