@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wireframes — Le temps d'une tasse</title>
+<style>
+  /* Palette du site traduite en gris :
+     primary (beige) -> --g1 | secondary (brun foncé) -> --g6 | tertiary (brun) -> --g5
+     quaternary (vert) -> --g5d | fifth (brun très foncé) -> --g7 */
+  :root {
+    --g0: #ffffff; --g1: #f3f3f3; --g2: #e3e3e3; --g3: #cdcdcd; --g4: #a9a9a9;
+    --g5: #7a7a7a; --g5d: #555555; --g6: #333333; --g7: #1e1e1e;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Arial, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px; background: #b9b9b9; font-family: var(--sans); font-size: 12px; color: var(--g6); }
+  h1, h2, h3, h4, h5, p, ul { margin: 0; padding: 0; }
+  ul { list-style: none; }
+  .doc-title { font-size: 26px; color: var(--g7); }
+  .doc-intro { margin: 6px 0 24px; font-size: 14px; }
+  .doc-section { font-size: 20px; color: var(--g7); margin: 40px 0 18px; padding-bottom: 8px; border-bottom: 2px solid var(--g5); }
+  .doc-label { font-size: 13px; font-weight: bold; color: var(--g7); margin: 22px 0 6px; letter-spacing: .04em; }
+  .frame { position: relative; overflow: hidden; background: var(--g1); border: 1px solid var(--g5); }
+  .frame.d { width: 1440px; }
+  .frame.m { width: 375px; }
+  .row { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+
+  /* ---------- briques ---------- */
+  .img { position: relative; background: var(--g3); color: var(--g5); display: flex; align-items: center; justify-content: center; font-size: 13px;
+         background-image: linear-gradient(to top right, transparent calc(50% - 1px), var(--g4) 50%, transparent calc(50% + 1px)),
+                           linear-gradient(to bottom right, transparent calc(50% - 1px), var(--g4) 50%, transparent calc(50% + 1px)); }
+  .img > span { position: relative; z-index: 1; }
+  .serif { font-family: var(--serif); font-weight: 400; }
+  .upper { text-transform: uppercase; }
+  .ico { display: inline-block; vertical-align: middle; }
+
+  /* ---------- TopBanner ---------- */
+  .top-banner { background: var(--g5d); color: var(--g1); text-align: center; padding: 10px 12px; font-size: 13px; letter-spacing: .02em; }
+
+  /* ---------- NavBar ---------- */
+  .navBar { position: relative; background: var(--g1); padding: 5px 50px; display: grid;
+            grid-template-columns: minmax(220px, 1fr) minmax(0, 640px) minmax(220px, 1fr);
+            grid-template-areas: "logo search actions" "menu menu menu"; column-gap: 40px; align-items: center; z-index: 5; }
+  .navBar .logo { position: absolute; left: 50px; top: 50%; transform: translateY(-50%); grid-area: logo; }
+  .logo-img { height: 120px; width: 213px; background: var(--g3); color: var(--g5); display: flex; align-items: center; justify-content: center; font-size: 13px; letter-spacing: .05em; }
+  .searchBar { grid-area: search; display: flex; align-items: center; background: rgba(0,0,0,.08); border-radius: 30px; padding: 0 20px; }
+  .searchBar span { flex: 1; padding: 16px 0; font-size: 13px; color: var(--g5); }
+  .navBar-actions { grid-area: actions; justify-self: end; display: flex; flex-direction: column; align-items: center; }
+  .navBar-actions p { font-size: 15px; color: var(--g5); white-space: nowrap; margin: 15px 0; min-height: 1px; }
+  .icons { display: flex; gap: 30px; align-items: center; }
+  .basket { position: relative; display: inline-flex; }
+  .basket-badge { position: absolute; top: 0; right: -10px; padding: 3px 5px; font-size: 10px; color: var(--g1); background: var(--g5d); border-radius: 50%; }
+  .menu { grid-area: menu; justify-self: center; padding: 20px 60px; }
+  .menu ul { display: flex; gap: 40px; font-size: 15px; color: var(--g6); }
+  .menu li { position: relative; }
+  .menu li.on::after { content: ""; position: absolute; left: 0; bottom: -4px; width: 100%; height: 1.5px; background: var(--g5d); }
+
+  /* sous-menu desktop */
+  .submenu-wrap { position: absolute; left: 0; top: 100%; transform: translateX(-20%); width: max-content; padding-top: 25px; z-index: 30; }
+  .submenu-panel { background: var(--g1); display: flex; gap: 100px; padding: 10px 40px; border: 1px solid var(--g3); box-shadow: 0 6px 14px rgba(0,0,0,.12); }
+  .submenu-panel h4 { font-size: 12px; color: var(--g6); display: inline-block; font-weight: bold; margin: 10px 0 4px; }
+  .submenu-panel p { padding: 8px 0; font-size: 12px; color: var(--g6); }
+
+  /* ---------- Slider ---------- */
+  .slider { position: relative; height: 500px; background: #8a8a8a; overflow: hidden; }
+  .slider .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.15) 50%, transparent 80%); z-index: 1; }
+  .slider .photo { position: absolute; inset: 0; }
+  .slider-text { position: absolute; top: 50%; left: 10%; transform: translateY(-50%); max-width: 500px; z-index: 2; color: #fff; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+  .slider-text .eyebrow { letter-spacing: 3px; text-transform: uppercase; color: var(--g3); font-size: 12px; margin-bottom: 10px; }
+  .slider-text h1 { font-size: 48px; line-height: 1.15; margin-bottom: 14px; font-family: var(--serif); font-weight: 400; }
+  .slider-text p.txt { font-size: 18px; margin-bottom: 18px; }
+  .slider-text .cta { background: var(--g5d); color: #fff; text-transform: uppercase; font-size: 18px; padding: 15px; }
+  .slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 45px; height: 45px; border: 1px solid #fff; border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; z-index: 2; }
+  .slider-arrow.prev { left: 30px; } .slider-arrow.next { right: 30px; }
+  .slider-dots { position: absolute; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
+  .slider-dots i { width: 30px; height: 2px; background: rgba(255,255,255,.4); }
+  .slider-dots i.on { background: #fff; }
+
+  /* ---------- Accueil : sélection ---------- */
+  .explore { background: var(--g1); padding-bottom: 50px; }
+  .explore .head { height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .eyebrow-t { color: var(--g5); font-size: 18px; margin: 10px; }
+  .explore h2 { font-size: 36px; color: var(--g6); font-family: var(--serif); font-weight: 400; }
+  .explore .cards { display: flex; justify-content: space-evenly; margin: 0 50px; }
+  .selection-card { width: 280px; background: var(--g0); border: 1px solid var(--g3); border-radius: 24px; box-shadow: 0 4px 20px rgba(0,0,0,.08); padding: 40px 30px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .selection-card .blob { width: 180px; height: 180px; margin-bottom: 15px; border-radius: 50%; background: var(--g2); border: 1px solid var(--g3); display: flex; align-items: center; justify-content: center; color: var(--g5); font-size: 11px; }
+  .selection-card h3 { font-size: 15px; text-transform: uppercase; color: var(--g6); margin-bottom: 10px; }
+  .selection-card p { font-size: 12px; line-height: 1.4; color: var(--g6); margin-bottom: 20px; }
+  .selection-card .btn { background: var(--g5d); color: #fff; font-weight: bold; padding: 14px 32px; border-radius: 30px; font-size: 12px; }
+
+  /* ---------- Accueil : coups de coeur ---------- */
+  .selection-client { background: var(--g6); padding: 60px 0; display: flex; flex-direction: column; align-items: center; }
+  .selection-client .eyebrow-t { color: var(--g4); }
+  .selection-client > h2 { color: var(--g1); font-size: 36px; font-family: var(--serif); font-weight: 400; }
+  .selection-client .list { display: flex; justify-content: space-between; gap: 30px; margin: 40px 50px 0; width: calc(100% - 100px); }
+  .selection-client .item { flex: 1 1 0; max-width: 300px; min-width: 0; background: var(--g1); }
+  .selection-client .item .product-card__body { padding: 18px 16px 16px; }
+  .selection-client .more { margin-top: 50px; padding: 16px 40px; border: 1px solid var(--g3); color: var(--g1); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; }
+
+  /* ---------- Accueil : histoire ---------- */
+  .history { display: flex; height: 550px; background: var(--g1); }
+  .history .left { flex: 1; display: flex; position: relative; margin-right: 20px; justify-content: flex-end; }
+  .history .left .img { height: 100%; width: 80%; }
+  .foundedIn { position: absolute; bottom: 30px; right: 30px; background: var(--g1); border: 1px solid rgba(255,255,255,.6); text-align: center; padding: 20px; color: var(--g6); z-index: 2; }
+  .foundedIn b { display: block; font-size: 24px; font-weight: normal; }
+  .history .right { flex: 1; display: flex; flex-direction: column; margin: 0 80px 0 20px; align-self: center; gap: 20px; }
+  .history h5 { font-size: 15px; letter-spacing: 3px; color: var(--g6); font-weight: bold; text-transform: uppercase; }
+  .history h2 { font-size: 36px; color: var(--g6); font-family: var(--serif); font-weight: 400; line-height: 1.2; }
+  .history h2 i { font-style: italic; }
+  .history .rule { width: 60px; border-bottom: 2px solid var(--g6); }
+  .history .txt p { font-size: 15px; color: var(--g6); text-align: justify; margin-bottom: 14px; line-height: 1.4; }
+  .history .hr { border-top: 1px solid var(--g6); }
+  .history .stats { display: flex; justify-content: space-evenly; font-size: 15px; color: var(--g6); }
+  .history .stats div { display: flex; flex-direction: column; align-items: center; }
+  .history .stats b { font-size: 18px; font-weight: normal; }
+
+  /* ---------- TrustBadges ---------- */
+  .trustBadges { background: var(--g5d); height: 250px; display: flex; justify-content: space-evenly; align-items: center; color: var(--g1); }
+  .trustBadges .tb { width: 300px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .trustBadges .tb .tico { width: 50px; height: 50px; border: 2px solid var(--g2); border-radius: 50%; margin-bottom: 14px; }
+  .trustBadges .tb p { font-size: 12px; margin: 0; }
+  .trustBadges .tb p.t { font-size: 18px; margin-bottom: 14px; }
+  .trustBadges .sep { height: 150px; border-right: 1px solid var(--g1); }
+
+  /* ---------- Footer ---------- */
+  .site-footer { background: var(--g1); color: var(--g6); padding: 30px; }
+  .footer-top { display: flex; flex-wrap: wrap; justify-content: space-between; padding-right: 50px; }
+  .footer-brand { display: flex; gap: 20px; align-items: center; }
+  .footer-brand .logo-f { width: 110px; height: 150px; background: var(--g3); color: var(--g5); display: flex; align-items: center; justify-content: center; font-size: 12px; }
+  .footer-text { font-size: 12px; line-height: 1.4; }
+  .footer-socials { display: flex; gap: 20px; margin-top: 10px; }
+  .footer-socials i { width: 17px; height: 17px; border: 1.5px solid var(--g6); border-radius: 4px; display: block; }
+  .footer-nav p.t, .footer-newsletter p.t { letter-spacing: 3px; text-transform: uppercase; font-size: 10px; color: var(--g5); margin-bottom: 14px; }
+  .footer-nav ul { display: flex; flex-direction: column; gap: 12px; font-size: 12px; }
+  .footer-newsletter { max-width: 300px; display: flex; flex-direction: column; }
+  .footer-newsletter .in { margin-top: 20px; border: 1px solid var(--g5); padding: 10px; font-size: 12px; color: var(--g5); }
+  .footer-newsletter .go { margin-top: 10px; background: var(--g5d); color: #fff; text-transform: uppercase; letter-spacing: 1px; padding: 12px; text-align: center; font-size: 12px; }
+  .footer-divider { border-top: 1px solid var(--g5); margin: 40px 0 20px; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; color: var(--g5); font-size: 12px; }
+  .footer-payments { display: flex; gap: 15px; }
+
+  /* ---------- Page catégorie ---------- */
+  .product-header { position: relative; min-height: 420px; display: flex; align-items: center; padding-inline: 40px; overflow: hidden; background: #8a8a8a; }
+  .product-header .photo { position: absolute; inset: 0; }
+  .product-header::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,20,20,.9) 0%, rgba(20,20,20,.65) 55%, rgba(20,20,20,.45) 100%); z-index: 1; }
+  .product-header__content { position: relative; z-index: 2; max-width: 720px; padding: 0 30px; color: var(--g1); }
+  .product-header__subtitle { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: var(--g3); margin-bottom: 15px; font-weight: normal; }
+  .product-header__title { font-family: var(--serif); font-weight: 400; font-size: 60px; line-height: 1.1; margin-bottom: 20px; }
+  .product-header__description { font-size: 19px; line-height: 1.7; color: rgba(243,243,243,.85); }
+  .product-header2 { display: flex; gap: 80px; margin: 100px 40px 60px; }
+  .product-header2 .l { margin-left: 50px; flex: none; }
+  .product-header2__subtitle { font-size: 14px; letter-spacing: 3px; text-transform: uppercase; color: var(--g5d); margin-bottom: 15px; font-weight: normal; }
+  .product-header2__title { font-family: var(--serif); font-weight: 400; font-size: 36px; line-height: 1.1; color: var(--g6); }
+  .product-header2__description { font-size: 19px; line-height: 1.7; color: var(--g6); margin-right: 50px; }
+  .product-filter { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 20px 40px; padding: 25px 0; border-top: 1px solid rgba(0,0,0,.2); border-bottom: 1px solid rgba(0,0,0,.2); }
+  .product-filter + .product-filter { border-top: 0; padding-top: 0; margin-top: 0; }
+  .product-filter__label { margin-right: 10px; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; color: var(--g5); }
+  .product-filter__button { padding: 12px 22px; border: 1px solid rgba(0,0,0,.25); color: var(--g6); font-size: 15px; white-space: nowrap; background: transparent; }
+  .product-filter__button.on { background: var(--g5d); border-color: var(--g5d); color: var(--g1); }
+  .product-filter__count { margin-left: auto; font-size: 14px; color: var(--g5); }
+  .product-page { padding: 40px 50px; }
+  .product-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 60px; }
+  .product-footer { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; padding: 70px 40px; background: var(--g6); }
+  .product-footer__item { display: flex; align-items: flex-start; gap: 20px; }
+  .product-footer__number { font-family: var(--serif); font-style: italic; font-size: 36px; line-height: 1; color: var(--g4); }
+  .product-footer__title { font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; color: var(--g1); margin-bottom: 8px; }
+  .product-footer__subtitle { font-size: 17px; line-height: 1.7; color: rgba(243,243,243,.75); }
+
+  /* ---------- Carte produit ---------- */
+  .product-card__media { position: relative; overflow: hidden; aspect-ratio: 4 / 5; }
+  .product-card__media .img { width: 100%; height: 100%; }
+  .product-card__badge { position: absolute; top: 20px; left: 0; right: 30%; padding: 10px; background: var(--g1); color: var(--g5d); font-size: 13px; letter-spacing: 2px; text-transform: uppercase; z-index: 2; }
+  .product-card__actions { position: absolute; left: 0; right: 0; bottom: 0; background: rgba(30,30,30,.85); color: var(--g1); text-align: center; padding: 20px 10px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; z-index: 2; }
+  .product-card__body { padding: 18px 2px 0; }
+  .product-card__chips { display: flex; gap: 20px; }
+  .product-card__chips > div { display: flex; flex-direction: column; align-items: center; }
+  .product-card__chips b { font-size: 12px; margin-bottom: 5px; }
+  .chip { width: fit-content; padding: 7px 10px; border-radius: 12px; color: var(--g1); font-size: 12px; margin-bottom: 12px; }
+  .chip.o { background: var(--g6); } .chip.r { background: var(--g5d); }
+  .product-card__brand { margin: 0 0 8px; letter-spacing: 2px; text-transform: uppercase; color: var(--g5d); font-size: 12px; }
+  .product-card__name { margin: 0 0 15px; font-family: var(--serif); font-weight: 400; font-size: 24px; line-height: 1.2; color: var(--g7); height: 2.4em; overflow: hidden; }
+  .product-card__description { color: var(--g5); font-size: 12px; line-height: 1.4; height: 2.8em; overflow: hidden; margin-bottom: 12px; }
+  .product-card__footer { display: flex; justify-content: space-between; align-items: baseline; padding-top: 10px; border-top: 1px solid rgba(0,0,0,.2); }
+  .product-card__price { font-family: var(--serif); font-size: 24px; color: var(--g6); }
+  .product-card__weight { font-size: 14px; color: var(--g5); }
+
+  /* ---------- Fiche produit ---------- */
+  .product-detail { margin: 20px 200px; padding: 20px 50px 60px; color: var(--g6); }
+  .breadcrumb { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 25px; font-size: 13px; color: var(--g5); }
+  .breadcrumb b { font-weight: normal; color: var(--g7); }
+  .pd-layout { display: grid; grid-template-columns: minmax(0, 480px) minmax(0, 1fr); gap: 65px; align-items: start; }
+  .pd-wrapper { position: relative; aspect-ratio: 4 / 5; }
+  .pd-wrapper .img { width: 100%; height: 100%; }
+  .pd-badge { position: absolute; top: 16px; left: 16px; padding: 8px 14px; background: var(--g1); color: var(--g5d); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; z-index: 2; }
+  .pd-caption { margin-top: 12px; text-align: center; font-size: 12px; color: var(--g5); }
+  .pd-eyebrow { margin-bottom: 10px; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: var(--g5); }
+  .pd-title { margin-bottom: 14px; font-family: var(--serif); font-weight: 400; font-size: 48px; line-height: 1.1; color: var(--g7); }
+  .pd-rule { width: 40px; margin: 22px 0; border-top: 1px solid var(--g5d); }
+  .pd-description { margin-bottom: 24px; font-size: 18px; line-height: 1.7; }
+  .pd-row { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0 0; border-top: 1px solid rgba(0,0,0,.2); font-size: 14px; }
+  .pd-row .lbl { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+  .pd-buy { display: flex; justify-content: space-between; align-items: center; padding: 18px 0 22px; border-bottom: 1px solid rgba(0,0,0,.2); }
+  .pd-price { font-family: var(--serif); font-size: 36px; margin-bottom: 4px; color: var(--g6); }
+  .pd-stock { font-size: 12px; color: var(--g5d); }
+  .qty { display: inline-flex; align-items: center; border: 1px solid rgba(0,0,0,.3); }
+  .qty .b { width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--g6); }
+  .qty .n { min-width: 50px; text-align: center; font-size: 16px; }
+  .pd-cart { width: 100%; margin-top: 22px; padding: 20px; background: var(--g5d); color: var(--g1); font-size: 14px; letter-spacing: 3px; text-transform: uppercase; text-align: center; }
+  .pd-reassurance { margin: 14px 0 24px; text-align: center; font-size: 12px; color: var(--g5); }
+  .accordion { padding: 20px 0; border-bottom: 1px solid rgba(0,0,0,.2); }
+  .accordion .s { display: flex; justify-content: space-between; align-items: center; font-size: 16px; }
+  .accordion .s::after { content: "×"; color: var(--g5); }
+  .accordion p { margin-top: 16px; font-size: 14px; line-height: 1.7; color: var(--g5); }
+
+  /* ---------- Panier ---------- */
+  .overlay { position: absolute; inset: 0; background: rgba(30,30,30,.45); z-index: 50; display: flex; justify-content: flex-end; }
+  .cart-drawer { width: min(480px, 100%); height: 100%; display: flex; flex-direction: column; background: var(--g1); color: var(--g6); box-shadow: -8px 0 30px rgba(0,0,0,.2); }
+  .cart-drawer__header { display: flex; justify-content: space-between; align-items: flex-start; padding: 28px 28px 22px; background: var(--g6); color: var(--g1); }
+  .cart-drawer__header h2 { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: 29px; margin-bottom: 6px; }
+  .cart-drawer__count { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--g3); }
+  .cart-shipping { padding: 16px 28px 18px; background: var(--g2); }
+  .cart-shipping p { margin-bottom: 10px; font-size: 14px; }
+  .cart-shipping__bar { height: 4px; border-radius: 2px; background: rgba(0,0,0,.15); overflow: hidden; }
+  .cart-shipping__fill { height: 100%; width: 85%; background: var(--g5d); }
+  .cart-drawer__list { flex: 1; padding: 20px 28px; }
+  .cart-item { display: grid; grid-template-columns: 80px 1fr auto; gap: 16px; margin-bottom: 14px; padding: 14px; background: #fff; }
+  .cart-item .img { width: 80px; height: 100px; }
+  .cart-item__origin { margin-bottom: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--g4); }
+  .cart-item__name { font-family: var(--serif); font-size: 20px; }
+  .cart-item__weight { margin-bottom: 10px; color: var(--g4); font-size: 13px; }
+  .cart-item .qty .b { width: 32px; height: 32px; font-size: 17px; }
+  .cart-item .qty .n { min-width: 40px; font-size: 15px; }
+  .cart-item__side { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; }
+  .cart-item__price { font-family: var(--serif); font-size: 18px; }
+  .cart-drawer__footer { padding: 12px 28px 14px; background: var(--g1); border-top: 1px solid rgba(0,0,0,.3); }
+  .cart-drawer__line { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 14px; }
+  .cart-drawer__footer hr { margin: 8px 0; border: none; border-top: 1px solid rgba(0,0,0,.25); }
+  .cart-drawer__total { align-items: baseline; font-family: var(--serif); }
+  .cart-drawer__total b { font-size: 18px; font-weight: normal; }
+  .cart-drawer__checkout { margin-top: 8px; padding: 12px; background: var(--g6); color: var(--g1); text-align: center; font-size: 13px; letter-spacing: 3px; text-transform: uppercase; }
+  .cart-drawer__continue { margin: 10px auto 0; text-align: center; font-size: 13px; text-decoration: underline; }
+  .cart-drawer__empty { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px 28px; text-align: center; color: var(--g5); }
+  .cart-drawer__empty p { margin-bottom: 20px; font-size: 18px; }
+  .cart-drawer__empty .cart-drawer__checkout { width: 100%; font-size: 13px; }
+
+  /* ---------- Modales ---------- */
+  .auth-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.5); backdrop-filter: blur(8px); z-index: 50; display: flex; align-items: center; justify-content: center; }
+  .auth-modal { position: relative; background: var(--g1); width: 480px; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+  .auth-close { position: absolute; top: 10px; right: 10px; padding: 10px; color: var(--g4); font-size: 15px; z-index: 3; }
+  .auth-header { background: var(--g6); text-align: center; padding: 50px 50px 0; }
+  .auth-header h2 { color: var(--g1); font-size: 30px; font-family: var(--serif); font-weight: 400; }
+  .auth-header p { letter-spacing: 1px; text-transform: uppercase; font-size: 12px; color: var(--g4); margin-top: 10px; }
+  .auth-tabs { display: flex; justify-content: center; gap: 40px; margin-top: 20px; padding-bottom: 14px; }
+  .auth-tabs span { text-transform: uppercase; letter-spacing: 1px; color: var(--g1); opacity: .5; font-size: 13px; }
+  .auth-tabs span.on { opacity: 1; }
+  .auth-body { background: var(--g1); padding: 40px; }
+  .auth-form { display: flex; flex-direction: column; gap: 20px; }
+  .auth-form label { display: block; letter-spacing: 1px; text-transform: uppercase; font-size: 10px; color: var(--g5); margin-bottom: 5px; }
+  .auth-input { background: #fff; padding: 10px; color: var(--g4); font-size: 13px; position: relative; }
+  .auth-input .eye { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); }
+  .auth-submit { align-self: center; width: 60%; background: var(--g5d); color: #fff; text-transform: uppercase; letter-spacing: 1px; padding: 15px; text-align: center; font-size: 13px; }
+  .auth-switch { text-align: center; font-size: 10px; }
+  .auth-switch u { color: var(--g5); }
+  .two { display: flex; gap: 20px; } .two > div { flex: 1; }
+
+  .account-modal { position: relative; width: 80%; height: 80%; background: var(--g1); display: flex; flex-direction: column; overflow: hidden; }
+  .account-modal h3.welcome { text-align: center; font-size: 24px; color: var(--g5); margin: 22px 0 10px; font-weight: bold; }
+  .side-menu { display: flex; flex: 1; min-height: 0; }
+  .sidebar { flex: 25%; }
+  .sidebar ul { font-size: 15px; color: var(--g6); margin-right: 20px; }
+  .sidebar li { display: flex; align-items: center; padding: 10px; margin-top: 30px; }
+  .sidebar li i { width: 19px; height: 19px; border: 1.5px solid currentColor; border-radius: 50%; margin-right: 15px; display: block; flex: none; }
+  .sidebar li.on { background: var(--g6); color: var(--g1); }
+  .account-content { flex: 75%; padding-right: 20px; overflow: hidden; }
+  .content-header { display: flex; justify-content: space-between; }
+  .content-header h3 { font-size: 24px; color: var(--g6); margin: 0 0 5px; }
+  .content-header .sub { font-size: 15px; color: var(--g6); padding-bottom: 20px; }
+  .content-header .edit { align-self: center; margin-right: 50px; padding: 10px; display: flex; gap: 10px; color: var(--g6); font-size: 13px; }
+  .profile-summary { display: flex; align-items: center; margin: 20px 0; }
+  .avatar { background: var(--g5d); color: var(--g1); font-size: 18px; padding: 15px; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; flex: none; }
+  .profile-name { margin: 10px; display: flex; flex-direction: column; gap: 5px; }
+  .profile-name p:first-child { font-size: 18px; }
+  .profile-name p:last-child { color: var(--g5); font-size: 12px; }
+  .divider { border: 0; border-top: 1px solid rgba(0,0,0,.2); margin: 0; }
+  .info-grid { margin: 20px 0; }
+  .info-grid .r { display: flex; margin-bottom: 20px; }
+  .info-field { flex: 1; display: flex; flex-direction: column; }
+  .info-field label { color: var(--g5); font-size: 12px; text-transform: uppercase; }
+  .info-field p { padding: 5px 0; font-size: 14px; color: var(--g6); }
+
+  /* ---------- Mobile (≤ 600 px) ---------- */
+  .m .top-banner { font-size: 12px; padding: 9px 12px; }
+  .m .navBar { padding: 8px 16px; grid-template-columns: auto 1fr auto; grid-template-areas: "burger logo actions" "search search search" "menu menu menu"; column-gap: 12px; row-gap: 8px; }
+  .m .navBar .logo { position: static; transform: none; justify-self: center; }
+  .m .logo-img { height: 48px; width: 85px; font-size: 10px; }
+  .burger { grid-area: burger; display: flex; padding: 6px; }
+  .m .navBar-actions p { display: none; }
+  .m .icons { gap: 18px; }
+  .m .searchBar span { padding: 12px 0; }
+  .m .menu { display: block; justify-self: stretch; padding: 0 0 8px; border-top: 1px solid rgba(0,0,0,.15); }
+  .m .menu ul { flex-direction: column; gap: 0; }
+  .m .menu li { padding: 14px 4px; font-size: 14px; border-bottom: 1px solid rgba(0,0,0,.1); }
+  .m .menu li.on::after { display: none; }
+  .submenu-inline { padding: 8px 0 8px 16px; }
+  .submenu-inline__group { margin-bottom: 14px; }
+  .submenu-inline__group h4 { margin: 0; font-size: 12px; }
+  .submenu-inline__group p { padding: 4px 0; font-size: 12px; }
+  .m .slider { height: 380px; }
+  .m .slider-text { left: 8%; right: 8%; max-width: none; }
+  .m .slider-text h1 { font-size: 24px; }
+  .m .slider-text p.txt { font-size: 13px; margin-bottom: 10px; }
+  .m .slider-text .cta { font-size: 13px; padding: 10px 14px; }
+  .m .slider-arrow { display: none; }
+  .m .explore .head { height: auto; padding: 40px 20px 30px; }
+  .m .explore h2 { font-size: 24px; }
+  .m .explore .cards { flex-direction: column; align-items: center; gap: 24px; margin: 0 20px; }
+  .m .selection-card { width: 100%; max-width: 340px; }
+  .m .selection-client { padding: 50px 0; }
+  .m .selection-client > h2 { font-size: 24px; text-align: center; padding: 0 20px; }
+  .m .selection-client .list { margin: 24px 0 0; padding: 0 20px 10px; width: 100%; justify-content: flex-start; overflow: hidden; gap: 30px; }
+  .m .selection-client .item { flex: 0 0 220px; }
+  .m .selection-client .more { margin-top: 30px; font-size: 12px; padding: 14px 24px; }
+  .m .history { flex-direction: column; height: auto; }
+  .m .history .left { flex: none; margin: 0; height: 240px; justify-content: center; }
+  .m .history .left .img { width: 100%; }
+  .m .foundedIn { bottom: 16px; right: 16px; padding: 14px; }
+  .m .history .right { margin: 0; padding: 30px 20px 40px; align-self: stretch; }
+  .m .history h2 { font-size: 24px; }
+  .m .trustBadges { flex-direction: column; height: auto; padding: 40px 20px; gap: 28px; }
+  .m .trustBadges .tb { width: 100%; max-width: 340px; }
+  .m .footer-top { flex-direction: column; gap: 32px; padding-right: 0; }
+  .m .footer-brand { flex-wrap: wrap; }
+  .m .footer-newsletter { max-width: none; }
+  .m .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+  .m .footer-payments { flex-wrap: wrap; justify-content: center; }
+  .m .footer-divider { margin: 32px 0 16px; }
+  .m .product-header { min-height: 300px; padding: 0 20px; }
+  .m .product-header__content { padding: 40px 0; }
+  .m .product-header__title { font-size: 31px; }
+  .m .product-header__description { font-size: 15px; }
+  .m .product-header2 { flex-direction: column; gap: 16px; margin: 30px 20px; }
+  .m .product-header2 .l { margin: 0; }
+  .m .product-header2__title { font-size: 24px; }
+  .m .product-header2__description { font-size: 15px; margin: 0; }
+  .m .product-filter { margin: 0 20px; padding: 18px 0; gap: 10px; }
+  .m .product-filter + .product-filter { margin-top: 0; }
+  .m .product-filter__button { padding: 10px 14px; font-size: 14px; }
+  .m .product-filter__count { margin-left: 0; width: 100%; }
+  .m .product-page { padding: 30px 20px; }
+  .m .product-grid { grid-template-columns: 1fr; gap: 40px 24px; }
+  .m .product-card__media { aspect-ratio: 1 / 1; }
+  .m .product-footer { grid-template-columns: 1fr; padding: 50px 20px; }
+  .m .product-footer__number { font-size: 29px; }
+  .m .product-detail { margin: 10px 0; padding: 16px 16px 32px; }
+  .m .pd-layout { grid-template-columns: 1fr; gap: 30px; }
+  .m .pd-title { font-size: 29px; }
+  .m .pd-price { font-size: 29px; }
+  .m .pd-cart { padding: 18px; }
+  .m .pd-buy { gap: 16px; flex-wrap: wrap; }
+  .m .cart-drawer__header { padding: 20px 16px 16px; }
+  .m .cart-drawer__header h2 { font-size: 24px; }
+  .m .cart-shipping { padding: 12px 16px 14px; }
+  .m .cart-drawer__list { padding: 14px 16px; }
+  .m .cart-item { padding: 12px; gap: 12px; grid-template-columns: 64px 1fr auto; }
+  .m .cart-item .img { width: 64px; height: 80px; }
+  .m .cart-item__name { font-size: 17px; }
+  .m .cart-drawer__footer { padding: 12px 16px 16px; }
+  .m .cart-drawer__empty { padding: 32px 16px; }
+  .m .auth-modal { width: 92%; }
+  .m .auth-header { padding: 40px 20px 0; }
+  .m .auth-header h2 { font-size: 24px; }
+  .m .auth-body { padding: 24px 20px; }
+  .m .account-modal { width: 94%; height: 92%; }
+  .m .account-modal h3.welcome { font-size: 18px; margin: 18px 40px 10px; }
+  .m .side-menu { flex-direction: column; }
+  .m .sidebar { flex: none; }
+  .m .sidebar ul { display: flex; gap: 8px; margin: 0 0 12px; padding: 0 12px; overflow: hidden; font-size: 11px; }
+  .m .sidebar li { margin-top: 0; white-space: nowrap; padding: 10px; }
+  .m .sidebar li i { width: 14px; height: 14px; margin-right: 8px; }
+  .m .account-content { padding: 0 16px 24px; flex: 1; }
+  .m .content-header h3 { font-size: 20px; }
+  .m .content-header .sub { font-size: 12px; }
+  .m .content-header .edit { margin-right: 0; }
+  .m .info-grid .r { flex-direction: column; gap: 14px; }
+</style>
+</head>
+<body>
+
+<h1 class="doc-title">Wireframes — Le temps d'une tasse</h1>
+<p class="doc-intro">Maquettes statiques en niveaux de gris, calquées sur le code du frontend (mise en page, textes, sous-menus, filtres, panier, modales). Desktop : 1440 px. Mobile : 375 px (≤ 600 px).</p>
+
+<h2 class="doc-section">Desktop</h2>
+<div id="desk"></div>
+<h2 class="doc-section">Mobile</h2>
+<div id="mob"></div>
+
+<script>
+/* ======================= données du site ======================= */
+const MENU = ["Café", "Thé & Infusion", "Machines", "Accessoires", "Qui sommes-nous ?"];
+const SUBMENUS = {
+  "Café": [
+    ["Nos cafés grains", ["Café en grain grand cru","Café en grain biologique","Café en grain décaféiné","Café en grain italien","Café en grain vert"]],
+    ["Nos cafés moulus", ["Café moulu grand cru","Café moulu biologique","Café moulu décaféiné","Café moulu italien","Chicorée"]],
+    ["Nos cafés par origine", ["Cafés d’Italie","Cafés d’Afrique","Cafés d’Amérique centrale","Cafés d’Amérique du Sud"]],
+  ],
+  "Thé & Infusion": [
+    ["Nos thés", ["Thé en vrac","Thé vert","Thé noir","Thé rouge","Thé en sachet"]],
+    ["Nos infusions", ["Infusion en vrac","Infusion aux herbes","Infusion aux fleurs","Infusion fruits et épices","Infusion en sachet"]],
+    ["Nos marques", ["Kusmi Tea","Palais des Thés","Yogi Tea","Twinings","Lipton"]],
+  ],
+  "Machines": [["Voir toutes nos machines", ["Machine à grain","Machine à expresso","Cafetière italienne","Cafetière à piston","Cafetière électrique"]]],
+  "Accessoires": [["Voir tous nos accessoires", ["Accessoires café","Accessoires thé","Moulin à café","Bouilloire","Théière"]]],
+};
+
+/* ======================= icônes ======================= */
+const userIco = `<svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"><circle cx="12" cy="8" r="4.2"/><path d="M4 21c0-4.6 3.6-7.4 8-7.4s8 2.8 8 7.4"/></svg>`;
+const basketIco = `<svg class="ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.6"><path d="M2.5 9.5h19l-2 11h-15z"/><path d="M7 9.5l4-6M17 9.5l-4-6"/><path d="M9 13v4M12 13v4M15 13v4"/></svg>`;
+const searchIco = `<svg class="ico" width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5L21 21"/></svg>`;
+const burgerIco = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg>`;
+const closeIco = (s = 28) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14M19 5L5 19"/></svg>`;
+const trashX = closeIco(18);
+
+/* ======================= composants ======================= */
+const topBanner = () => `<div class="top-banner">Livraison offerte dès 35 € d'achat · Torréfaction artisanale française</div>`;
+
+function submenuHTML(label, inline) {
+  const groups = SUBMENUS[label] || [];
+  if (inline) {
+    return `<div class="submenu-inline">${groups.map(([t, subs]) =>
+      `<div class="submenu-inline__group"><h4>${t}</h4>${subs.map(s => `<p>${s}</p>`).join("")}</div>`).join("")}</div>`;
+  }
+  return `<div class="submenu-wrap"><div class="submenu-panel">${groups.map(([t, subs]) =>
+    `<div><h4>${t}</h4>${subs.map(s => `<p>${s}</p>`).join("")}</div>`).join("")}</div></div>`;
+}
+
+function navBar({mobile = false, open = null, expanded = null, welcome = "", count = 2, menuVisible = true} = {}) {
+  const logo = `<div class="logo"><div class="logo-img">LOGO</div></div>`;
+  const search = `<div class="searchBar"><span>Rechercher...</span>${searchIco}</div>`;
+  const actions = `<div class="navBar-actions"><p>${welcome}</p><div class="icons">${userIco}<span class="basket">${basketIco}${count ? `<span class="basket-badge">${count}</span>` : ""}</span></div></div>`;
+  const items = MENU.map(l => {
+    const isOpen = !mobile && open === l;
+    const isExp = mobile && expanded === l;
+    return `<li class="${isOpen ? "on" : ""}">${l}${isOpen ? submenuHTML(l, false) : ""}${isExp ? submenuHTML(l, true) : ""}</li>`;
+  }).join("");
+  const menu = menuVisible ? `<div class="menu"><ul>${items}</ul></div>` : "";
+  if (mobile) {
+    return `<div class="navBar"><div class="burger">${menuVisible ? closeIco(28) : burgerIco}</div>${logo}${actions}${search}${menu}</div>`;
+  }
+  return `<div class="navBar">${logo}${search}${actions}${menu}</div>`;
+}
+
+const productCard = ({badge = "Café en grain grand cru", hover = false} = {}) => `
+  <article class="product-card">
+    <div class="product-card__media"><div class="img"><span>Image produit</span></div>
+      <span class="product-card__badge">${badge}</span>
+      ${hover ? `<div class="product-card__actions">Ajouter au panier</div>` : ""}
+    </div>
+    <div class="product-card__body">
+      <div class="product-card__chips">
+        <div><b>Origine</b><span class="chip o">Éthiopie</span></div>
+        <div><b>Torréfaction</b><span class="chip r">moyenne</span></div>
+      </div>
+      <p class="product-card__brand">Marque</p>
+      <h2 class="product-card__name">Nom du produit sur une ou deux lignes</h2>
+      <p class="product-card__description">Description du produit limitée à deux lignes, le reste est coupé par des points de suspension.</p>
+      <div class="product-card__footer"><p class="product-card__price">12,90 €</p><p class="product-card__weight">250 g</p></div>
+    </div>
+  </article>`;
+
+const trustBadges = (mobile) => {
+  const items = [
+    ["Paiement sécurisé", "Transactions SSL 256 bits. Visa, Mastercard, PayPal, Amex acceptés."],
+    ["Livraison gratuite dès 35 €", "Expédition offerte en France métropolitaine. Colissimo 48h."],
+    ["Traçabilité & fraîcheur", "Grains torréfiés sous 48h. Origine, altitude et profil aromatique garantis."],
+  ];
+  return `<section class="trustBadges">${items.map(([t, p], i) =>
+    `<div class="tb"><div class="tico"></div><p class="t">${t}</p><p>${p}</p></div>${!mobile && i < 2 ? `<div class="sep"></div>` : ""}`).join("")}</section>`;
+};
+
+const footer = () => `
+  <footer class="site-footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="logo-f">LOGO</div>
+        <div><p class="footer-text" style="width:200px;margin-top:20px;">Brûlerie artisanale en Provence. Grains sélectionnés à la source, torréfiés avec soin, livrés dans leur fraîcheur.</p>
+          <div class="footer-socials"><i></i><i></i><i></i><i></i></div></div>
+      </div>
+      <nav class="footer-nav"><p class="t">Boutique</p><ul><li>Café grain</li><li>Café moulu</li><li>Thé</li><li>Infusions</li><li>Accessoires</li><li>Machines</li></ul></nav>
+      <nav class="footer-nav"><p class="t">Informations</p><ul><li>Notre brûlerie</li><li>Contact</li><li>FAQ</li><li>Mentions légales</li><li>CGV</li></ul></nav>
+      <div class="footer-newsletter"><p class="t">Restez informé</p>
+        <p class="footer-text">Nouveaux arrivages, événements brûlerie, offres exclusives — directement dans votre boîte.</p>
+        <div class="in">votre@email.fr</div><div class="go">S'abonner</div></div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom"><p>© 2024 Le temps d'une tasse — Tous droits réservés</p>
+      <div class="footer-payments"><span>Visa</span><span>Mastercard</span><span>PayPal</span><span>Amex</span></div></div>
+  </footer>`;
+
+/* ======================= pages ======================= */
+const slider = () => `
+  <section class="slider"><div class="photo"><div class="img" style="width:100%;height:100%;opacity:.55"><span>Image du slide</span></div></div><div class="shade"></div>
+    <div class="slider-text"><p class="eyebrow">Torréfaction artisanale</p><h1>L'art du café en grains</h1>
+      <p class="txt">Sélectionnés à la source, torréfiés dans notre atelier.</p><span class="cta">Découvrir nos cafés</span></div>
+    <div class="slider-arrow prev">❮</div><div class="slider-arrow next">❯</div>
+    <div class="slider-dots"><i class="on"></i><i></i><i></i></div></section>`;
+
+const SELECTIONS = [
+  ["Cafés de spécialité", "Une gamme de cafés d'exception issus de petites productions aux profils gustatifs remarquables."],
+  ["Cafés bio", "Notre sélection de café en grain bio est certifiée biologique par le label Ecocert afin de vous garantir une agriculture respectueuse de l'environnement."],
+  ["Cafés italiens", "Les meilleurs cafés en grain italiens pour transformer votre rituel quotidien en un moment d'exception."],
+];
+const explore = () => `
+  <section class="explore"><div class="head"><p class="eyebrow-t">Nos cafés en grain</p><h2>Trouvez le café qui vous ressemble</h2></div>
+    <div class="cards">${SELECTIONS.map(([t, d]) => `<div class="selection-card"><div class="blob">icône</div><h3>${t}</h3><p>${d}</p><span class="btn">Découvrir</span></div>`).join("")}</div></section>`;
+
+const coupsDeCoeur = () => `
+  <section class="selection-client"><p class="eyebrow-t">Notre sélection</p><h2>Nos coups de cœur du moment</h2>
+    <div class="list">${Array.from({length: 5}, () => `<div class="item">${productCard()}</div>`).join("")}</div>
+    <span class="more">Voir tous nos cafés</span></section>`;
+
+const history = () => `
+  <section class="history">
+    <div class="left"><div class="img"><span>Image torréfaction</span></div><div class="foundedIn"><b>1998</b><span class="upper">Fondée en</span></div></div>
+    <div class="right"><h5>Notre Histoire</h5><h2>Découvrir <br><i>la brûlerie</i></h2><div class="rule"></div>
+      <div class="txt">
+        <p>Depuis 1998, nous sélectionnons les meilleurs grains aux quatre coins du monde — des hauts plateaux éthiopiens aux vallées colombiennes, des jardins de thé japonais aux forêts de Ceylan.</p>
+        <p>Notre brûlerie artisanale, installée en Provence, travaille en petits lots pour préserver toute la complexité aromatique de chaque origine. Chaque torréfaction est pensée, ajustée, et approuvée par nos maîtres torréfacteurs.</p>
+        <p>Nous croyons que le café est bien plus qu'une boisson : c'est un moment, une parenthèse, un rituel. Chaque sachet que vous recevez quitte notre atelier dans les 48 heures suivant la torréfaction.</p></div>
+      <div class="hr"></div>
+      <div class="stats"><div><b>26</b><span>Origines</span></div><div><b>48h</b><span>Après torréfaction</span></div><div><b>100%</b><span>Arabica tracé</span></div></div></div>
+  </section>`;
+
+const pageHome = () => `${slider()}${explore()}${coupsDeCoeur()}${history()}`;
+
+const filterBar = (label, options, activeIdx, count) => `
+  <div class="product-filter"><span class="product-filter__label">${label}</span>
+    ${options.map((o, i) => `<span class="product-filter__button ${i === activeIdx ? "on" : ""}">${o[0].toUpperCase() + o.slice(1)}</span>`).join("")}
+    ${count ? `<span class="product-filter__count">${count}</span>` : ""}</div>`;
+
+const pageCategory = (cards) => `
+  <header class="product-header"><div class="photo"><div class="img" style="width:100%;height:100%;opacity:.6"><span>Image de la catégorie (en fond)</span></div></div>
+    <div class="product-header__content"><h4 class="product-header__subtitle">La boutique café</h4><h1 class="product-header__title">Café en grains</h1>
+      <p class="product-header__description">Des cafés de spécialité sélectionnés à la source puis torréfiés en petits lots, pour révéler le caractère singulier de chaque terroir.</p></div></header>
+  <div class="product-header2"><div class="l"><h4 class="product-header2__subtitle">Fraîchement torréfiés</h4><h1 class="product-header2__title">Trouvez le grain qui vous ressemble</h1></div>
+    <p class="product-header2__description">Fruité et délicat, rond et gourmand ou puissant et corsé : explorez nos origines pures. Chaque sachet indique le terroir, l'altitude et le profil aromatique pour vous guider simplement vers votre prochaine tasse.</p></div>
+  <div>${filterBar("Catégorie", ["toutes","café en grain grand cru","café en grain biologique","café en grain décaféiné","café en grain italien","café en grain vert"], 0)}
+       ${filterBar("Torréfaction", ["toutes","moyenne","foncée","vert (non torréfié)"], 0, "8 produit(s)")}</div>
+  <main class="product-page"><section class="product-grid">${Array.from({length: cards}, (_, i) => productCard({hover: i === 0})).join("")}</section></main>
+  <footer class="product-footer">
+    ${[["Torréfié chaque semaine","En petits lots dans notre atelier provençal."],["Expédié sous 48 h","Pour préserver toute la fraîcheur aromatique."],["À votre écoute","Nos torréfacteurs vous conseillent selon vos goûts."]]
+      .map(([t, s], i) => `<div class="product-footer__item"><span class="product-footer__number">0${i + 1}</span><div><h3 class="product-footer__title">${t}</h3><p class="product-footer__subtitle">${s}</p></div></div>`).join("")}</footer>`;
+
+const pageProduct = () => `
+  <section class="product-detail">
+    <nav class="breadcrumb"><span>La boutique</span><span>/</span><span>Café en grain</span><span>/</span><b>Nom du produit</b></nav>
+    <div class="pd-layout">
+      <figure style="margin:0"><div class="pd-wrapper"><div class="img"><span>Image produit</span></div><span class="pd-badge">moyenne</span></div>
+        <figcaption class="pd-caption">Sélectionné et préparé avec soin dans notre atelier en Provence</figcaption></figure>
+      <div>
+        <p class="pd-eyebrow">Éthiopie</p>
+        <h1 class="pd-title">Nom du produit</h1>
+        <div class="pd-rule"></div>
+        <p class="pd-description">Description du produit : texte de présentation du café, de son origine et de ses notes en tasse, affiché en plusieurs lignes.</p>
+        <div class="pd-row"><span class="lbl">Conditionnement</span><span>250 g</span></div>
+        <div class="pd-buy"><div><p class="pd-price">12,90 €</p><p class="pd-stock">En stock · expédié sous 48 h</p></div>
+          <div class="qty"><span class="b">−</span><span class="n">1</span><span class="b">+</span></div></div>
+        <div class="pd-cart">Ajouter au panier</div>
+        <p class="pd-reassurance">Livraison offerte dès 35 € · paiement sécurisé</p>
+        <div class="accordion"><div class="s">Détails du produit</div><p>Éthiopie. Conditionné avec soin pour préserver toutes ses qualités jusqu'à votre tasse.</p></div>
+        <div class="accordion"><div class="s">Livraison &amp; retours</div><p>Expédition sous 48 heures. Livraison offerte en France métropolitaine dès 35 € et retours possibles sous 14 jours.</p></div>
+      </div>
+    </div>
+  </section>`;
+
+/* ======================= panier ======================= */
+const cartItem = (qty, price) => `
+  <li class="cart-item"><div class="img"></div>
+    <div><p class="cart-item__origin">Éthiopie</p><p class="cart-item__name">Nom du produit</p><p class="cart-item__weight">250 g</p>
+      <div class="qty"><span class="b">−</span><span class="n">${qty}</span><span class="b">+</span></div></div>
+    <div class="cart-item__side">${trashX}<p class="cart-item__price">${price}</p></div></li>`;
+
+const cartDrawer = ({empty = false} = {}) => `
+  <div class="overlay"><aside class="cart-drawer">
+    <header class="cart-drawer__header"><div><h2>Mon panier</h2>${empty ? "" : `<p class="cart-drawer__count">2 articles</p>`}</div>${closeIco(26)}</header>
+    ${empty ? `<div class="cart-drawer__empty"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#7a7a7a" stroke-width="1.2"><path d="M2.5 9.5h19l-2 11h-15z"/><path d="M7 9.5l4-6M17 9.5l-4-6"/></svg>
+        <p style="margin-top:20px">Votre panier est vide.</p><p>Découvrez notre sélection et trouvez votre prochaine pause préférée.</p><div class="cart-drawer__checkout">Découvrez la boutique</div></div>`
+    : `<div class="cart-shipping"><p>Plus que <b>5,30 €</b> pour la livraison offerte</p><div class="cart-shipping__bar"><div class="cart-shipping__fill"></div></div></div>
+    <ul class="cart-drawer__list">${cartItem(1, "12,90 €")}${cartItem(1, "16,80 €")}</ul>
+    <footer class="cart-drawer__footer">
+      <p class="cart-drawer__line"><span>Sous-total</span><span>29,70 €</span></p>
+      <p class="cart-drawer__line"><span>Livraison</span><span>Calculée à l'étape suivante</span></p><hr>
+      <p class="cart-drawer__line cart-drawer__total"><span>Total</span><b>29,70 €</b></p>
+      <div class="cart-drawer__checkout">Passer la commande</div><div class="cart-drawer__continue">Continuer mes achats</div></footer>`}
+  </aside></div>`;
+
+/* ======================= modales ======================= */
+const authModal = (mode) => {
+  const login = `<form class="auth-form">
+      <div><label>Adresse e-mail</label><div class="auth-input">votre@email.com</div></div>
+      <div><label>Mot de passe</label><div class="auth-input">••••••••••<span class="eye">👁</span></div></div>
+      <div class="auth-submit">Se connecter</div>
+      <p class="auth-switch">Pas encore de compte ? <u>Créer un compte</u></p></form>`;
+  const field = (l, v) => `<div><label>${l}</label><div class="auth-input">${v}</div></div>`;
+  const register = `<form class="auth-form">
+      <div class="two">${field("Prénom*", "Marie")}${field("Nom*", "Dupont")}</div>
+      ${field("Adresse e-mail*", "votre@email.com")}${field("Téléphone", "06 12 34 56 78")}${field("Date de naissance", "jj/mm/aaaa")}
+      <div><label>Mot de passe*</label><div class="auth-input">&nbsp;<span class="eye">👁</span></div></div>
+      ${field("Confirmer le mot de passe *", "&nbsp;")}
+      <div class="auth-submit">S'inscrire</div>
+      <p class="auth-switch">Déjà un compte ? <u>Se connecter</u></p></form>`;
+  return `<div class="auth-overlay"><div class="auth-modal"><span class="auth-close">✕</span>
+    <div class="auth-header"><h2>${mode === "login" ? "Bon retour parmi nous" : "Rejoignez-nous"}</h2>
+      <p>${mode === "login" ? "Connectez-vous à votre compte" : "Créez votre compte"}</p>
+      <div class="auth-tabs"><span class="${mode === "login" ? "on" : ""}">Login</span><span class="${mode === "register" ? "on" : ""}">Register</span></div></div>
+    <div class="auth-body">${mode === "login" ? login : register}</div></div></div>`;
+};
+
+const accountModal = () => `
+  <div class="auth-overlay"><div class="account-modal"><span class="auth-close" style="font-size:18px;padding:15px">✕</span>
+    <h3 class="welcome">Bienvenue Marie Dupont</h3>
+    <div class="side-menu">
+      <div class="sidebar"><ul><li class="on"><i></i>Mes informations</li><li><i></i>Mes adresses</li><li><i></i>Mes achats</li><li><i></i>Sécurité</li><li><i></i>Se déconnecter</li></ul></div>
+      <div class="account-content">
+        <div class="content-header"><div><h3>Mes informations</h3><p class="sub">Gérez votre profil personnel</p></div><div class="edit"><span>✎</span><span>Modifier</span></div></div>
+        <div class="profile-summary"><div class="avatar">MD</div><div class="profile-name"><p>Marie Dupont</p><p>Client depuis le 12/03/2024</p></div></div>
+        <hr class="divider">
+        <div class="info-grid">
+          <div class="r"><div class="info-field"><label>Prénom</label><p>Marie</p></div><div class="info-field"><label>Nom</label><p>Dupont</p></div></div>
+          <div class="r"><div class="info-field"><label>Adresse e-mail</label><p>marie.dupont@email.com</p></div><div class="info-field"><label>Téléphone</label><p>06 12 34 56 78</p></div></div>
+          <div class="info-field" style="max-width:50%"><label>Date de naissance</label><p>14/05/1990</p></div>
+        </div>
+        <hr class="divider">
+      </div>
+    </div></div></div>`;
+
+/* ======================= assemblage des frames ======================= */
+function add(name, label, cls, html, height) {
+  const style = height ? `style="height:${height}px"` : "";
+  return `<div class="doc-label">${label}</div><div class="frame ${cls}" data-name="${name}" ${style}>${html}</div>`;
+}
+const page = (mobile, body, navOpts) => `${topBanner()}${navBar({mobile, ...navOpts})}${body}${trustBadges(mobile)}${footer()}`;
+const backdrop = (mobile) => `${topBanner()}${navBar({mobile, menuVisible: !mobile})}${slider()}`;
+
+let desk = "";
+desk += add("desktop-01-accueil", "01 — ACCUEIL ( / )", "d", page(false, pageHome()));
+desk += add("desktop-02-categorie", "02 — CATÉGORIE ( /collection-cafe-grain ) — sous-menu « Café » ouvert au survol", "d", page(false, pageCategory(8), {open: "Café"}));
+desk += add("desktop-03-fiche-produit", "03 — FICHE PRODUIT ( /produit/:id )", "d", page(false, pageProduct()));
+desk += add("desktop-04-panier", "04 — PANIER (panneau latéral)", "d", `${backdrop(false)}${cartDrawer()}`, 900);
+desk += add("desktop-04bis-panier-vide", "04 bis — PANIER VIDE", "d", `${backdrop(false)}${cartDrawer({empty: true})}`, 900);
+desk += add("desktop-05-connexion", "05 — CONNEXION (modale)", "d", `${backdrop(false)}${authModal("login")}`, 900);
+desk += add("desktop-05bis-inscription", "05 bis — INSCRIPTION (modale)", "d", `${backdrop(false)}${authModal("register")}`, 900);
+desk += add("desktop-06-espace-client", "06 — ESPACE CLIENT (modale, utilisateur connecté)", "d", `${topBanner()}${navBar({welcome: "Bienvenue Marie"})}${slider()}${accountModal()}`, 900);
+desk += add("desktop-07-sous-menus", "07 — SOUS-MENUS (survol) : Thé &amp; Infusion · Machines · Accessoires", "d",
+  ["Thé & Infusion", "Machines", "Accessoires"].map(l => `${navBar({open: l})}<div style="height:260px"></div>`).join(`<div style="border-top:1px dashed var(--g4)"></div>`));
+document.getElementById("desk").innerHTML = desk;
+
+let mob = '<div class="row">';
+const mcell = (name, label, html, h) => `<div>${add(name, label, "m", html, h)}</div>`;
+mob += mcell("mobile-01-accueil", "M01 — ACCUEIL", page(true, pageHome(), {menuVisible: false}));
+mob += mcell("mobile-02-menu-burger", "M02 — MENU BURGER (Café déplié)", `${topBanner()}${navBar({mobile: true, expanded: "Café"})}${slider()}`, 900);
+mob += mcell("mobile-03-categorie", "M03 — CATÉGORIE", page(true, pageCategory(4), {menuVisible: false}));
+mob += mcell("mobile-04-fiche-produit", "M04 — FICHE PRODUIT", page(true, pageProduct(), {menuVisible: false}));
+mob += mcell("mobile-05-panier", "M05 — PANIER", `${backdrop(true)}${cartDrawer()}`, 720);
+mob += mcell("mobile-06-panier-vide", "M06 — PANIER VIDE", `${backdrop(true)}${cartDrawer({empty: true})}`, 720);
+mob += mcell("mobile-07-connexion", "M07 — CONNEXION", `${backdrop(true)}${authModal("login")}`, 720);
+mob += mcell("mobile-07bis-inscription", "M07 bis — INSCRIPTION", `${backdrop(true)}${authModal("register")}`, 900);
+mob += mcell("mobile-08-espace-client", "M08 — ESPACE CLIENT", `${topBanner()}${navBar({mobile: true, menuVisible: false, welcome: "Bienvenue Marie"})}${slider()}${accountModal()}`, 720);
+mob += "</div>";
+document.getElementById("mob").innerHTML = mob;
+</script>
+</body>
+</html>
