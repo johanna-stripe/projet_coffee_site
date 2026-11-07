@@ -8,9 +8,6 @@ import {comparePassword, hashPassword} from "./helper/passwordUtiles.js";
 import {generateToken} from "./helper/tokenUtiles.js";
 
 //=================REGISTER===================
-// À l'inscription on crée :
-//  - le compte dans users (username, email, password)
-//  - la fiche perso dans customer (first_name, last_name, phone, birth_date)
 export const registerUser = async (userData) => {
     const {first_name, last_name, phone, birth_date, password} = userData
     // le formulaire envoie encore "user_email" : on accepte les 2 noms

@@ -60,4 +60,8 @@ Pour permettre à un invité de commander sans compte, il faudrait :
 - une route de commande sans `authenticate` ;
 - un panier gardé dans le navigateur (`localStorage`) avant la commande.
 
-Décision actuelle : compte obligatoire pour le panier. L'invité reste une amélioration possible, `user_id` reste donc nullable.
+Décision actuelle : compte obligatoire pour le panier, pour deux raisons :
+1. **Sécurité** : `authenticate` + `checkCustomerOwner` garantissent qu'une cliente ne touche qu'à son propre panier. Un invité demanderait une route sans authentification et un autre moyen de la protéger.
+2. **Stockage** : le panier vit en base (`cart` → `customer`), il est donc rattaché à une personne identifiée.
+
+L'invité reste une amélioration possible, `user_id` reste donc nullable.

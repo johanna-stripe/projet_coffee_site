@@ -1,0 +1,158 @@
+/* ====================== MES ACHATS ====================== */
+
+.purchase-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.purchase-error {
+    color: #b3261e;
+    margin-bottom: 15px;
+}
+
+.purchase-card {
+    background: white;
+}
+
+/* ---------- En-tête cliquable ---------- */
+.purchase-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font: inherit;
+    color: var(--color-secondary);
+    text-align: left;
+}
+
+.purchase-header-left,
+.purchase-header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.purchase-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1em;
+}
+
+.purchase-date {
+    font-size: 0.85em;
+    color: var(--color-tertiary);
+}
+
+.purchase-total {
+    font-size: 1.05em;
+}
+
+.purchase-chevron {
+    transition: transform 0.2s ease;
+}
+
+.purchase-chevron.open {
+    transform: rotate(180deg);
+}
+
+/* ---------- Badges de statut ---------- */
+.purchase-status {
+    font-size: 0.7em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+}
+
+.purchase-status-delivered,
+.purchase-status-paid {
+    background: #dde5e0;
+    color: var(--color-quaternary);
+}
+
+.purchase-status-shipped {
+    background: #e6eefc;
+    color: #2a52be;
+}
+
+.purchase-status-pending {
+    background: #f6ead2;
+    color: var(--color-tertiary);
+}
+
+.purchase-status-cancelled {
+    background: #f6dcda;
+    color: #b3261e;
+}
+
+/* ---------- Détail déplié ---------- */
+.purchase-body {
+    border-top: 1px solid #eee;
+    padding: 15px 20px 18px;
+}
+
+.purchase-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 8px 0;
+}
+
+.purchase-item-qty {
+    background: var(--color-primary);
+    min-width: 24px;
+    text-align: center;
+    padding: 2px 6px;
+    font-size: 0.85em;
+}
+
+.purchase-item-name {
+    flex: 1;
+}
+
+.purchase-empty {
+    margin: 0;
+    font-size: 0.9em;
+    color: var(--color-tertiary);
+}
+
+.purchase-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+}
+
+.purchase-actions {
+    display: flex;
+    gap: 18px;
+}
+
+.purchase-link {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    font-size: 0.85em;
+    color: var(--color-quaternary);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.purchase-link:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.purchases-header {
+    margin-bottom: 25px;
+}

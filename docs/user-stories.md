@@ -31,7 +31,7 @@ Profils : voir [profils-et-authentification.md](profils-et-authentification.md).
 | V10 | En tant que visiteur, je veux être redirigé vers la connexion si je tente d'accéder au panier ou à mes commandes afin de comprendre qu'un compte est nécessaire. | M | 🔒 Les routes protégées renvoient 401 sans jeton valide. |
 | V11 | En tant que visiteur, je veux réinitialiser mon mot de passe oublié afin de récupérer l'accès à mon compte. | S | 🔒 Lien à usage unique, expirant (ex. 1 h), envoyé par email. 🔒 Réponse identique que l'email existe ou non. |
 | V12 | En tant que visiteur, je veux accepter ou refuser les cookies et consulter les mentions légales / la politique de confidentialité afin de maîtriser mes données (RGPD). | S | Consentement recueilli avant tout cookie non essentiel. |
-| V13 | En tant que visiteur, je veux commander sans créer de compte (invité) afin d'aller plus vite. | C | Décision actuelle : compte obligatoire (voir point ouvert dans les docs). |
+| V13 | En tant que visiteur, je veux commander sans créer de compte (invité) afin d'aller plus vite. | C | Décision actuelle : compte obligatoire (sécurité du panier et panier stocké en base, voir point ouvert dans les docs). |
 
 ---
 
