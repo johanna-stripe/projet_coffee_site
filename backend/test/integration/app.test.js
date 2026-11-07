@@ -37,8 +37,8 @@ describe('API', () => {
     }));
 
     test('Verify authenticate with User Mocked', async () => {
-        //Arrange
 
+        //Arrange
         const fakeUser = {
             user_id: 1,
             first_name: "admin",
@@ -47,7 +47,6 @@ describe('API', () => {
             role: "ADMIN",
             is_active: true
         };
-
         getByIdUser.mockResolvedValue(fakeUser)
 
         const token = jwt.sign(

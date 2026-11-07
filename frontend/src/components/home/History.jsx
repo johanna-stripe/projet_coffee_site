@@ -3,7 +3,7 @@ import torrefaction from '../../assets/images/history/torefaction.jpg';
 
 const History = () => {
     return (
-        <section className="flex h-550px"
+        <section className="flex history"
         id="brulerie"
         >
             <div className="flex-1 flex position-relative m-right-20px justify-content-right">
@@ -18,11 +18,11 @@ const History = () => {
                 </div>
             </div>
 
-            <div className="flex-1 flex flex-direction-column m-left-20px m-right-80px align-self-center gap-20px">
+            <div className="flex-1 flex flex-direction-column m-left-20px history-text align-self-center gap-20px">
                 <h5 className="m-0 c-secondary font-size-125em letter-spacing-3px">Notre Histoire</h5>
                 <h2 className="m-0 font-size-3em">
                     Découvrir <br/>
-                    <span className="font-italique">la brûlerie</span>
+                    <span className="history-accent">la brûlerie</span>
                 </h2>
                 <div className="w-60px b-bottom-2px-c-secondary m-0"></div>
                 <div>
@@ -41,6 +41,13 @@ const History = () => {
                         Nous croyons que le café est bien plus qu'une boisson : c'est un moment, une
                         parenthèse, un rituel. Chaque sachet que vous recevez quitte notre atelier dans les
                         48 heures suivant la torréfaction.
+                    </p>
+
+                    <p className="font-size-15px c-secondary text-align-justify">
+                        Nous travaillons main dans la main avec des producteurs que nous connaissons par leur
+                        nom, dans le respect de la terre et de ceux qui la cultivent. Du choix de la parcelle
+                        à la tasse, chaque étape est suivie avec la même exigence, pour vous offrir un café
+                        sincère, traçable et pleinement savoureux.
                     </p>
                 </div>
 

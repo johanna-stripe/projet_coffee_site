@@ -3,8 +3,23 @@ import { FaInstagram } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { FaPinterest } from "react-icons/fa";
 import { FaTiktok } from "react-icons/fa";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { CLIENT_PATHS } from "../../routes/paths.js";
 
 const Footer = () => {
+    const navigate = useNavigate();
+    const { pathname } = useLocation();
+
+    // Sur l'accueil on fait défiler jusqu'à la section ; ailleurs on revient d'abord à l'accueil
+    const goToSection = (e, id) => {
+        e.preventDefault();
+        if (pathname === CLIENT_PATHS.home) {
+            document.getElementById(id)?.scrollIntoView({behavior: "smooth", block: "start"});
+        } else {
+            navigate(CLIENT_PATHS.home, {state: {scrollTo: id}});
+        }
+    };
+
     return (
         <footer className="site-footer b-primary c-secondary p-30px">
             <div className="footer-top flex flex-wrap justify-content-space-between p-right-50px">
@@ -36,12 +51,12 @@ const Footer = () => {
                 <nav className="footer-nav flex flex-direction-column">
                     <p className="letter-spacing-3px uppercase font-size-085em c-tertiary">Boutique</p>
                     <ul className="footer-links list-none p-0 m-0 flex flex-direction-column gap-12px">
-                        <li><a href="#" className="c-secondary text-decoration-none">Café grain</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Café moulu</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Thé</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Infusions</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Accessoires</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Machines</a></li>
+                        <li><Link to={CLIENT_PATHS.cafeGrain} className="c-secondary text-decoration-none">Café grain</Link></li>
+                        <li><Link to={CLIENT_PATHS.cafeMoulu} className="c-secondary text-decoration-none">Café moulu</Link></li>
+                        <li><Link to={CLIENT_PATHS.the} className="c-secondary text-decoration-none">Thé</Link></li>
+                        <li><Link to={CLIENT_PATHS.infusion} className="c-secondary text-decoration-none">Infusions</Link></li>
+                        <li><Link to={CLIENT_PATHS.machines} className="c-secondary text-decoration-none">Machines</Link></li>
+                        <li><Link to={CLIENT_PATHS.accessoires} className="c-secondary text-decoration-none">Accessoires</Link></li>
                     </ul>
                 </nav>
 
@@ -49,11 +64,10 @@ const Footer = () => {
                 <nav className="footer-nav flex flex-direction-column">
                     <p className="letter-spacing-3px uppercase font-size-085em c-tertiary">Informations</p>
                     <ul className="footer-links list-none p-0 m-0 flex flex-direction-column gap-12px">
-                        <li><a href="#" className="c-secondary text-decoration-none">Notre brûlerie</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Contact</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">FAQ</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">Mentions légales</a></li>
-                        <li><a href="#" className="c-secondary text-decoration-none">CGV</a></li>
+                        <li><a href="#brulerie" onClick={(e) => goToSection(e, "brulerie")} className="c-secondary text-decoration-none">Notre brûlerie</a></li>
+                        <li><a href="#contact" onClick={(e) => goToSection(e, "contact")} className="c-secondary text-decoration-none">Contact</a></li>
+                        <li><Link to={CLIENT_PATHS.mentionsLegales} className="c-secondary text-decoration-none">Mentions légales</Link></li>
+                        <li><Link to={CLIENT_PATHS.cgv} className="c-secondary text-decoration-none">CGV</Link></li>
                     </ul>
                 </nav>
 

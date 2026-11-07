@@ -1,7 +1,6 @@
 import {describe, expect, jest, test} from "@jest/globals"
 import {authorizeRole} from "../../security/middleware/roleMiddleware.js";
 
-
 describe('authorizeRole', () => {
 
     //Test 1 : User not authenticated
@@ -18,7 +17,8 @@ describe('authorizeRole', () => {
             middleware(req, res, next) //le même nb de paramètres
         }).toThrow('User not authenticated') //exactement le même message
 
-        expect(next).not.toHaveBeenCalled() //s'assurer que next n'a pas été appelé car on test le premier throw de la fonction authorizeRole, donc on veut pas que ça next.
+        expect(next).not.toHaveBeenCalled() //s'assurer que next n'a pas été appelé car on test le premier throw de la
+        // fonction authorizeRole, donc on veut pas que ça next.
     });
 
     //Test 2 : User with denied access
@@ -39,7 +39,8 @@ describe('authorizeRole', () => {
             middleware(req, res, next) //le même nb de paramètres
         }).toThrow('Access Denied') //exactement le même message
 
-        expect(next).not.toHaveBeenCalled() //s'assurer que next n'a pas été appelé car on test le premier throw de la fonction authorizeRole, donc on veut pas que ça next.
+        expect(next).not.toHaveBeenCalled() //s'assurer que next n'a pas été appelé car on test le premier throw de la
+        // fonction authorizeRole, donc on veut pas que ça next.
     });
 
     //Test 3 : returns authorized user

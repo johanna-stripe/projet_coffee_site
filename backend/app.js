@@ -16,6 +16,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import brandRoutes from "./routes/brandRoutes.js";
 import authRoutes from "./security/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 //=============DEMARRAGE DU SERVEUR===============
 const app = express();
@@ -53,6 +54,7 @@ const authLimiter = rateLimit({
 })
 app.use('/api/v1/auth/login', authLimiter);
 app.use('/api/v1/auth/register', authLimiter);
+app.use("/api/v1/contact", authLimiter);
 
 app.use(cookieParser())
 
@@ -72,6 +74,7 @@ app.use('/api/v1/brand', brandRoutes)
 
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/users', userRoutes)
+app.use("/api/v1/contact", contactRoutes)
 
 export default app;
 

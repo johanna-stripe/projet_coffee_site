@@ -21,3 +21,13 @@ export const formatDateISO = (dateString) => {
     const d = new Date(dateString)
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
 }
+
+// Pour l'affichage long : "12 septembre 2024"
+export const formatDateLong = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).toLocaleDateString('fr-FR', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+};

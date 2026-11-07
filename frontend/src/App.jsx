@@ -11,7 +11,11 @@ import ProductDetailPage from "./pages/ProductDetailPage.jsx";
 import TrustBadges from "./components/layout/TrustBadges.jsx";
 import TopBanner from "./components/layout/TopBanner.jsx";
 import ScrollToTop from "./components/layout/ScrollToTop.jsx";
+import AdminRoute from "./components/auth/AdminRoute.jsx";
 import React from "react";
+import MentionsLegales from "./pages/MentionsLegales.jsx";
+import Cgv from "./pages/Cgv.jsx";
+import CookieBanner from "./components/layout/CookieBanner.jsx";
 
 
 export default function App() {
@@ -24,7 +28,9 @@ export default function App() {
                     <NavBar/>
                     {/* mettre la nav bar ici comme ça elle engloble toutes les routes */}
                     <Routes>
-                        <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>
+                        <Route element={<AdminRoute/>}>
+                            <Route path={CLIENT_PATHS.admin} element={<h1>Admin</h1>}/>
+                        </Route>                        <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>
                         {CATEGORIES.map((cat => (
                             <Route
                                 key={cat.id}
@@ -34,10 +40,13 @@ export default function App() {
                             />
                         )))}
                         <Route path={CLIENT_PATHS.product} element={<ProductDetailPage/>}/>
+                        <Route path={CLIENT_PATHS.mentionsLegales} element={<MentionsLegales/>}/>
+                        <Route path={CLIENT_PATHS.cgv} element={<Cgv/>}/>
                     </Routes>
                     <TrustBadges/>
                     <Footer/>
                     <CartDrawer/>
+                    <CookieBanner/>
                 </CartProvider>
             </AuthProvider>
         </BrowserRouter>

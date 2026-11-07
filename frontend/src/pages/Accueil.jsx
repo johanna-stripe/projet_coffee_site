@@ -1,5 +1,6 @@
 //================= IMPORTS=====================
-import React from "react";
+import React, {useEffect} from "react";
+import {useLocation} from "react-router-dom";
 import '../style/accueil.css';
 
 //=================CHILDREN IMPORTS=====================
@@ -9,6 +10,7 @@ import Slider from "../components/home/Slider.jsx";
 import Selection from "../components/home/Selection.jsx";
 import SelectionClient from "../components/home/SelectionClient.jsx";
 import History from "../components/home/History.jsx";
+import Contact from "../components/home/Contact.jsx";
 import TrustBadges from "../components/layout/TrustBadges.jsx";
 
 //=================IMAGES IMPORTS=====================
@@ -82,6 +84,15 @@ const selections = [
 
 //Accueil est un composant fonction : une fonction JS qui retourne du JSX (l'équivalent React du HTML).
 const Accueil = () => {
+    const {state} = useLocation();
+
+    // Arrivée depuis une autre page (ex : lien Contact du footer) : on défile jusqu'à la section demandée
+    useEffect(() => {
+        if (state?.scrollTo) {
+            document.getElementById(state.scrollTo)?.scrollIntoView({behavior: "smooth", block: "start"});
+        }
+    }, [state]);
+
     return (
         <>
             <Slider slides={slides}/>
@@ -90,6 +101,7 @@ const Accueil = () => {
             <Selection selections={selections}/>
             <SelectionClient/>
             <History/>
+            <Contact/>
         </>
     );
 };

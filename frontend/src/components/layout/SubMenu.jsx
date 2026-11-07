@@ -5,7 +5,7 @@ import '../../style/subMenu.css'
 const subMenus = [
     {
         categoryParent :"café",
-        category: "Café grain",
+        category: "Nos cafés grains",
         path: CLIENT_PATHS.cafeGrain,
         subCategories: [
             "Café en grain grand cru",
@@ -17,7 +17,7 @@ const subMenus = [
     },
     {
         categoryParent :"café",
-        category: "Café moulu",
+        category: "Nos cafés moulus",
         path: CLIENT_PATHS.cafeMoulu,
         subCategories: [
             "Café moulu grand cru",
@@ -65,13 +65,14 @@ const subMenus = [
         categoryParent :"thé & infusions",
         category: "Nos marques",
         subCategories: [
-            "Marque thé 1",
-            "Marque thé 2",
-            "Marque thé 3",
-            "Marque thé 4",
-            "Marque thé 5",
+            "Kusmi Tea",
+            "Palais des Thés",
+            "Yogi Tea",
+            "Twinings",
+            "Lipton",
         ]
     },
+
     {
         categoryParent :"machines",
         category: "Voir toutes nos machines",

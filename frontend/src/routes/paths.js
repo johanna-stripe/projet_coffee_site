@@ -10,6 +10,8 @@ export const CLIENT_PATHS = {
     machines: '/collection-machines',
     product: '/produit/:id', // pattern de la route (App.jsx)
     quiSommesNous: '/qui-sommes-nous',
+    mentionsLegales: '/mentions-legales',
+    cgv: '/cgv',
     login: '/login',
     register: '/register',
     admin: '/admin'
