@@ -9,6 +9,7 @@ import Slider from "../components/home/Slider.jsx";
 import Selection from "../components/home/Selection.jsx";
 import SelectionClient from "../components/home/SelectionClient.jsx";
 import History from "../components/home/History.jsx";
+import Contact from "../components/home/Contact.jsx";
 import TrustBadges from "../components/layout/TrustBadges.jsx";
 
 //=================IMAGES IMPORTS=====================
@@ -90,6 +91,7 @@ const Accueil = () => {
             <Selection selections={selections}/>
             <SelectionClient/>
             <History/>
+            <Contact/>
         </>
     );
 };

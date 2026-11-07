@@ -162,6 +162,10 @@
 
 
 /*******************History*****************/
+.history { height: 800px; }
+.history-text { margin-right: 220px; }
+.history-accent { font-family: "Playfair Display", serif; font-style: italic; font-weight: 400; }
+
 .foundedIn{
     bottom: 30px;
     right: 30px;
