@@ -1,5 +1,6 @@
 //================= IMPORTS=====================
-import React from "react";
+import React, {useEffect} from "react";
+import {useLocation} from "react-router-dom";
 import '../style/accueil.css';
 
 //=================CHILDREN IMPORTS=====================
@@ -83,6 +84,15 @@ const selections = [
 
 //Accueil est un composant fonction : une fonction JS qui retourne du JSX (l'équivalent React du HTML).
 const Accueil = () => {
+    const {state} = useLocation();
+
+    // Arrivée depuis une autre page (ex : lien Contact du footer) : on défile jusqu'à la section demandée
+    useEffect(() => {
+        if (state?.scrollTo) {
+            document.getElementById(state.scrollTo)?.scrollIntoView({behavior: "smooth", block: "start"});
+        }
+    }, [state]);
+
     return (
         <>
             <Slider slides={slides}/>
