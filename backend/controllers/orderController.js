@@ -1,6 +1,7 @@
 //==============IMPORTS==================
 import {
     //GET
+    getAllOrdersList,
     getOrderByCustomerId,
     getOrderDetailByOrderId,
     //POST
@@ -9,6 +10,21 @@ import {
     modifyOrderByPatch,
 } from "../services/orderService.js";
 import {createNewCategory} from "../services/categoriesService.js";
+
+
+//==================GET ALL ORDERS (ADMIN)=====================
+export const getAllOrders = async (req, res) => {
+    try {
+        const results = await getAllOrdersList()
+        return res.json({
+            message: 'Orders found successfully',
+            results
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
+    }
+}
 
 
 //==================GET CUSTOMER ORDER BY CUSTOMER ID=====================

@@ -4,23 +4,25 @@ import {FaInfoCircle} from "react-icons/fa";
 import {FaAddressBook} from "react-icons/fa";
 import {FaShoppingCart} from "react-icons/fa";
 import {FaLock} from "react-icons/fa";
+import {FaUserShield} from "react-icons/fa";
 import {RiLogoutBoxRLine} from "react-icons/ri";
 
 import "../../style/authModal.css"
 import "../../style/userAccount.css"
 import {useAuth} from "../../context/AuthContext.jsx";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import UserInformations from "./UserInformation.jsx";
 import UserAddresses from "./UserAddresses.jsx";
 import UserPurchases from "./UserPuscharses.jsx";
 import UserSecurity from "./UserSecurity.jsx";
+import {CLIENT_PATHS} from "../../routes/paths.js";
 
 
 const UserAccount = ({isOpen, onClose}) => {
 
     if (!isOpen) return null;
 
-    const {user, logout} = useAuth()
+    const {user, logout, isAdmin} = useAuth()
     const [mode, setMode] = useState("UserInformation")
     const [userAccount, setUserAccount] = useState(user)
     const navigate = useNavigate()
@@ -85,6 +87,15 @@ const UserAccount = ({isOpen, onClose}) => {
                                 <span><FaLock size={19} alt="security"
                                               className={`menu-icon m-right-15px ${mode === "UserSecurity" ? "active" : ""}`}/></span> Sécurité
                             </li>
+                            {isAdmin && (
+                                <li className="menu-item flex align-items-center p-10px m-top-30px cursor-pointer">
+                                    <Link to={CLIENT_PATHS.admin} onClick={onClose}
+                                          className="flex align-items-center">
+                                        <span><FaUserShield size={19} alt="admin"
+                                                            className="menu-icon m-right-15px"/></span> Administration
+                                    </Link>
+                                </li>
+                            )}
                             <li className="menu-item logout flex align-items-center p-10px m-top-30px cursor-pointer"
                                 onClick={handleLogout}>
                                 <span><RiLogoutBoxRLine size={19} alt="logout"

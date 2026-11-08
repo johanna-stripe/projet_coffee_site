@@ -3,6 +3,7 @@ import db from '../config/database.js'
 
 import {
     //GET
+    FIND_ALL_ORDERS,
     FIND_ORDER_BY_CUSTOMER_ID,
     FIND_ORDER_DETAIL_BY_ORDER_ID,
     //POST
@@ -10,6 +11,13 @@ import {
     //PATCH
     PATCH_ORDER,
 } from "../constantes/orderDBConstantes.js";
+
+
+//==================GET ALL ORDERS=====================
+export const findAllOrders = async () => {
+    const [results] = await db.query(FIND_ALL_ORDERS)
+    return results
+}
 
 
 //==================GET CUSTOMER ORDER BY CUSTOMER ID=====================

@@ -14,7 +14,10 @@ export const CLIENT_PATHS = {
     cgv: '/cgv',
     login: '/login',
     register: '/register',
-    admin: '/admin'
+    admin: '/admin',
+    adminProducts: '/admin/produits',
+    adminOrders: '/admin/commandes',
+    adminUsers: '/admin/utilisateurs',
 }
 
 // lien vers la fiche d'un produit : productPath(27) → '/produit/27'

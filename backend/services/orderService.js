@@ -1,6 +1,7 @@
 //==============IMPORTS==================
 import {
     //GET
+    findAllOrders,
     findOrderByCustomerId,
     findOrderDetailByOrderId,
     //POST
@@ -13,6 +14,23 @@ import {
     normalizeText,
     errorBuilder
 } from "../private methods/privateMethods.js";
+
+//==================GET ALL ORDERS=====================
+export const getAllOrdersList = async () => {
+    const rows = await findAllOrders()
+    // pas d'erreur 404 si vide : pour l'admin, "aucune commande" est une liste vide
+    return rows.map(row => ({
+        order_id: row.order_id,
+        order_number: row.order_number,
+        order_date: row.order_date,
+        order_status: row.order_status,
+        order_total_price: row.order_total_price,
+        customer_id: row.customer_id,
+        first_name: row.first_name,
+        last_name: row.last_name,
+    }))
+}
+
 
 //==================GET CUSTOMER ORDER BY CUSTOMER ID=====================
 export const getOrderByCustomerId = async (customerId) => {

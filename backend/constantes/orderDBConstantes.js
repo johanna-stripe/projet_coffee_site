@@ -1,4 +1,18 @@
 //==================GET ORDER=====================
+export const FIND_ALL_ORDERS = `
+    SELECT o.order_id,
+           o.order_number,
+           o.order_date,
+           o.order_status,
+           o.order_total_price,
+           c.customer_id,
+           c.first_name,
+           c.last_name
+    FROM \`order\` o
+             JOIN customer c ON c.customer_id = o.customer_id
+    ORDER BY o.order_date DESC
+`
+
 export const FIND_ORDER_BY_CUSTOMER_ID = `
     SELECT c.customer_id,
            o.order_id,

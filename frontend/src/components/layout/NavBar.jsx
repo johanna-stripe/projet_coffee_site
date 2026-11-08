@@ -23,6 +23,7 @@ const NavBar = () => {
     const [menuOpen, setMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [navHeight, setNavHeight] = useState(0) // hauteur de la barre complète, gardée en réserve quand elle passe en fixed
+    const [isHovered, setIsHovered] = useState(false) // survol de la barre : elle se redéplie (menu + sous-menus visibles)
     const scrolledRef = useRef(false)
     // Sous 900px : menu burger, sous-menus en accordéon au clic (pas de survol sur écran tactile)
     const isMobile = useMediaQuery("(max-width: 900px)")
@@ -86,13 +87,17 @@ const NavBar = () => {
     }
 
     // version compacte uniquement sur ordinateur : le mobile a déjà sa barre réduite
-    const isCompact = isScrolled && !isMobile
+    // fixée en haut dès qu'on a scrollé (même dépliée au survol), réduite seulement si on ne la survole pas
+    const isFixed = isScrolled && !isMobile
+    const isCompact = isFixed && !isHovered
 
     return (
         <>
-            {isCompact && <div style={{height: navHeight}} aria-hidden="true"/>}
+            {isFixed && <div style={{height: navHeight}} aria-hidden="true"/>}
             <div ref={navRef}
-                 className={`navBar p-top-5px p-bottom-5px ${isCompact ? "navBar--scrolled" : ""}`}>
+                 onMouseEnter={() => setIsHovered(true)}
+                 onMouseLeave={() => setIsHovered(false)}
+                 className={`navBar p-top-5px p-bottom-5px ${isFixed ? "navBar--fixed" : ""} ${isCompact ? "navBar--scrolled" : ""}`}>
                 <button
                     type="button"
                     className="navBar-burger"

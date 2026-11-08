@@ -1,0 +1,49 @@
+/* ====================== ESPACE ADMIN ====================== */
+
+.admin-layout {
+    display: flex;
+    min-height: 60vh;
+}
+
+.admin-sidebar {
+    width: 240px;
+    padding: 28px 16px;
+    background: var(--color-primary);
+    border-right: 1px solid #e0d6cc;
+}
+
+.admin-title {
+    margin-bottom: 24px;
+    padding: 0 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--color-secondary);
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-nav a {
+    padding: 10px 12px;
+    text-decoration: none;
+    color: var(--color-secondary);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.admin-nav a:hover {
+    background: #e6dcc6;
+}
+
+.admin-nav a.active {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.admin-content {
+    flex: 1;
+    min-width: 0;               /* laisse le tableau défiler au lieu d'élargir la page */
+    padding: 16px 40px 32px;
+}
