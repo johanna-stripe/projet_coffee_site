@@ -19,6 +19,8 @@ const formatPrice = (value) =>
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState('');
+    const [selectedOrder, setSelectedOrder] = useState(null);   // le détail de la commande ouverte
+    const [detailError, setDetailError] = useState('');
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -36,6 +38,16 @@ const AdminOrders = () => {
         }
         fetchOrders()
     }, []);
+
+    const openOrder = async (orderId) => {
+        try {
+            const response = await api.get(`/order/detail/${orderId}`)
+            setSelectedOrder(response.data.results)
+            setDetailError('')
+        } catch (err) {
+            setDetailError(err.response?.data?.message || 'Impossible de charger la commande');
+        }
+    };
 
     return (
         <div className="admin-orders">
@@ -57,6 +69,7 @@ const AdminOrders = () => {
                         <th>N° commande</th>
                         <th>Date</th>
                         <th>Client</th>
+                        <th>Contact</th>
                         <th>Statut</th>
                         <th>Total</th>
                     </tr>
@@ -65,10 +78,13 @@ const AdminOrders = () => {
                     {orders.map(order => {
                         const status = STATUS[order.order_status] || {label: order.order_status, className: ''};
                         return (
-                        <tr key={order.order_id}>
+                        <tr key={order.order_id}
+                        onClick={()=>{openOrder(order.order_id)}}
+                            className="admin-row-clickable">
                             <td className="admin-order-number">{order.order_number}</td>
                             <td>{new Date(order.order_date).toLocaleDateString('fr-FR')}</td>
                             <td>{order.first_name} {order.last_name}</td>
+                            <td>{order.phone} {order.customer_email}</td>
                             <td><span className={`purchase-status ${status.className}`}>{status.label}</span></td>
                             <td className="admin-order-total">{formatPrice(order.order_total_price)}</td>
                         </tr>
@@ -78,6 +94,58 @@ const AdminOrders = () => {
                 </table>
                 </div>
             )}
+            {detailError && <p className="purchase-error">{detailError}</p>}
+
+            {selectedOrder && (() => {
+                const detailStatus = STATUS[selectedOrder.order_status] || {label: selectedOrder.order_status, className: ''};
+                const itemsTotal = selectedOrder.items.reduce((sum, item) => sum + item.quantity * Number(item.unit_price), 0);
+                return (
+                <div className="admin-order-detail">
+                    <div className="admin-order-detail-head">
+                        <div>
+                            <h4 className="admin-order-detail-title">Commande {selectedOrder.order_number}</h4>
+                            <span className={`purchase-status ${detailStatus.className}`}>{detailStatus.label}</span>
+                        </div>
+                        <button type="button" className="admin-order-detail-close" aria-label="Fermer"
+                                onClick={() => setSelectedOrder(null)}>✕</button>
+                    </div>
+
+                    <dl className="admin-order-detail-info">
+                        <div>
+                            <dt>Date</dt>
+                            <dd>{new Date(selectedOrder.order_date).toLocaleDateString('fr-FR')}</dd>
+                        </div>
+                        <div>
+                            <dt>Paiement</dt>
+                            <dd>{selectedOrder.payment_method || '-'}</dd>
+                        </div>
+                        <div>
+                            <dt>Frais de port</dt>
+                            <dd>{formatPrice(selectedOrder.shipping_cost)}</dd>
+                        </div>
+                    </dl>
+
+                    <h5 className="admin-order-detail-subtitle">Articles</h5>
+                    {selectedOrder.items.length === 0 ? (
+                        <p className="purchase-empty">Aucun article enregistré pour cette commande.</p>
+                    ) : (
+                        <ul className="admin-order-items">
+                            {selectedOrder.items.map(item => (
+                                <li key={item.product_id} className="admin-order-item">
+                                    <span className="purchase-item-qty">{item.quantity}</span>
+                                    <span className="purchase-item-name">{item.product_name}</span>
+                                    <span>{formatPrice(item.unit_price)}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+
+                    {selectedOrder.items.length > 0 && (
+                        <p className="admin-order-detail-total">Articles : {formatPrice(itemsTotal)}</p>
+                    )}
+                </div>
+                )
+            })()}
         </div>
     )
 

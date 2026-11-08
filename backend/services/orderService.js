@@ -7,7 +7,7 @@ import {
     //POST
     createANewOrder,
     //PATCH
-    modifyByPatchOrder,
+    modifyByPatchOrder, findOrderItemsByOrderId,
 } from "../models/orderModel.js";
 
 import {
@@ -48,18 +48,20 @@ export const getOrderByCustomerId = async (customerId) => {
 
 //==================GET ORDER DETAIL BY ORDER ID=====================
 export const getOrderDetailByOrderId = async (orderId) => {
-    const rows = await findOrderDetailByOrderId(orderId)
-    if (!rows || rows.length === 0) throw errorBuilder('Not found', 404)
+    const order = await findOrderDetailByOrderId(orderId)
+    if (!order) throw errorBuilder('Not found', 404)
+    const items = await findOrderItemsByOrderId(orderId)
     return {
-        order_id: rows[0].order_id,
-        customer_id: rows[0].customer_id,
-        shipping_address_id: rows[0].shipping_address_id,
-        billing_address_id: rows[0].billing_address_id,
-        order_number: rows[0].order_number,
-        order_date: rows[0].order_date,
-        order_status: rows[0].order_status,
-        payment_method: rows[0].payment_method,
-        shipping_cost: rows[0].shipping_cost
+        order_id: order.order_id,
+        customer_id: order.customer_id,
+        shipping_address_id: order.shipping_address_id,
+        billing_address_id: order.billing_address_id,
+        order_number: order.order_number,
+        order_date: order.order_date,
+        order_status: order.order_status,
+        payment_method: order.payment_method,
+        shipping_cost: order.shipping_cost,
+        items: items
     }
 }
 

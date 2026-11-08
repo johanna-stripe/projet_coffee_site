@@ -31,6 +31,16 @@ export const FIND_ORDER_DETAIL_BY_ORDER_ID = `
     WHERE o.order_id = ?
 `
 
+export const FIND_ORDER_ITEMS_BY_ORDER_ID = `
+    SELECT oi.product_id,
+           p.product_name,
+           oi.quantity,
+           oi.unit_price
+    FROM order_item oi
+             JOIN product p ON p.product_id = oi.product_id
+    WHERE oi.order_id = ?
+`
+
 //==================POST ORDER=====================
 export const CREATE_NEW_ORDER = `
     INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number, 

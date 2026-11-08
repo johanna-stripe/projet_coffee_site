@@ -2,14 +2,11 @@
 import db from '../config/database.js'
 
 import {
-    //GET
     FIND_ALL_ORDERS,
     FIND_ORDER_BY_CUSTOMER_ID,
     FIND_ORDER_DETAIL_BY_ORDER_ID,
-    //POST
     CREATE_NEW_ORDER,
-    //PATCH
-    PATCH_ORDER,
+    PATCH_ORDER, FIND_ORDER_ITEMS_BY_ORDER_ID,
 } from "../constantes/orderDBConstantes.js";
 
 
@@ -33,6 +30,11 @@ export const findOrderDetailByOrderId = async (orderId) => {
     return results[0] ?? null
 }
 
+//===================GET ORDER ITEMS==================================
+export const findOrderItemsByOrderId = async (orderId) => {
+    const [results] = await db.query(FIND_ORDER_ITEMS_BY_ORDER_ID, [orderId])
+    return results
+}
 
 //==================POST ORDER=====================
 export const createANewOrder = async(customerId, values)=>{
