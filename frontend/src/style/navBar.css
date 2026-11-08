@@ -35,7 +35,7 @@
    = logo réduit + recherche + icônes, sans la ligne du menu */
 @media (min-width: 901px) {
     /* fixed + placeholder dans NavBar.jsx : la barre peut rétrécir sans décaler le contenu de la page */
-    .navBar.navBar--scrolled { position: fixed; top: 0; left: 0; right: 0; box-sizing: border-box; }
+    .navBar.navBar--fixed { position: fixed; top: 0; left: 0; right: 0; box-sizing: border-box; }
     .navBar.navBar--scrolled { min-height: 84px; } /* le logo est en absolute : la barre doit rester plus haute que lui */
     .navBar.navBar--scrolled .menu { display: none; }
     .navBar.navBar--scrolled .logo img { height: 74px; }

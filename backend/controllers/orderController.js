@@ -1,6 +1,7 @@
 //==============IMPORTS==================
 import {
     //GET
+    getAllOrdersList,
     getOrderByCustomerId,
     getOrderDetailByOrderId,
     //POST
@@ -9,6 +10,21 @@ import {
     modifyOrderByPatch,
 } from "../services/orderService.js";
 import {createNewCategory} from "../services/categoriesService.js";
+
+
+//==================GET ALL ORDERS (ADMIN)=====================
+export const getAllOrders = async (req, res) => {
+    try {
+        const results = await getAllOrdersList()
+        return res.json({
+            message: 'Orders found successfully',
+            results
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(error.statusCode || 500).json({message: error.message || 'Internal Server error'})
+    }
+}
 
 
 //==================GET CUSTOMER ORDER BY CUSTOMER ID=====================
@@ -68,20 +84,19 @@ export const createOrder = async(req,res)=>{
             return res.status(400).json({error: 'Customer id is required'})
         }
 
+        // un client ne peut commander que pour lui-même (l'admin peut tout faire)
+        if (req.user.role !== 'ADMIN' && Number(req.user.customer_id) !== Number(customerId)) {
+            return res.status(403).json({error: 'Forbidden'})
+        }
+
         if (!req.body) {
             return res.status(400).json({error: 'Order details are required'})
         }
 
         const results = await createNewOrder(customerId, req.body)
-        if (!results || results.affectedRows === 0) {
-            return res.status(404).json({error: 'Order could not be created'})
-        }
         return res.status(201).json({
             message: 'Order created successfully',
-            data: {
-                id: results.insertId,
-                ...req.body
-            }
+            results
         })
 
     } catch (error) {
@@ -101,7 +116,7 @@ export const patchOrder = async (req, res) => {
         }
 
         const results = await modifyOrderByPatch(orderId,req.body)
-        if(!results) return res.status(404).json({error:'Order could not be modified'})
+        if(!results || results.affectedRows === 0) return res.status(404).json({error:'Order could not be modified'})
 
         return res.json({
             orderId,

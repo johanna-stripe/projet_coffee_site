@@ -3,6 +3,7 @@ import express from "express";
 
 import{
     //GET
+    getAllOrders,
     getOrderByCustomer,
     getOrderDetail,
     //POST
@@ -22,6 +23,9 @@ export default router
 // ==================CRUD OPERATIONS===================
 
 //===================GET========================
+//Lister toutes les commandes de tous les clients (admin) - avant '/:customer_id' pour ne pas être confondue avec lui
+router.get('/', authenticate, authorizeRole('ADMIN'), getAllOrders)
+
 //Lister toutes les commandes d'un client
 router.get('/:customer_id', authenticate, getOrderByCustomer)
 
