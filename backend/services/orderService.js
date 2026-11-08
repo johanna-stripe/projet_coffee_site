@@ -5,10 +5,12 @@ import {
     findOrderByCustomerId,
     findOrderDetailByOrderId,
     //POST
-    createANewOrder,
+    createOrderWithItems,
     //PATCH
     modifyByPatchOrder, findOrderItemsByOrderId,
 } from "../models/orderModel.js";
+
+import {findCartByCustomerId, findProductsInCart} from "../models/cartModel.js";
 
 import {
     normalizeText,
@@ -28,6 +30,8 @@ export const getAllOrdersList = async () => {
         customer_id: row.customer_id,
         first_name: row.first_name,
         last_name: row.last_name,
+        customer_email: row.customer_email,
+        phone: row.phone,
     }))
 }
 
@@ -66,28 +70,45 @@ export const getOrderDetailByOrderId = async (orderId) => {
 }
 
 //==================POST ORDER=====================
-export const createNewOrder = async (customerId, orderData) => {
-    const {
-        shipping_address_id,
-        billing_address_id,
-        order_number,
-        order_total_price,
-        order_status,
-        payment_method,
-        shipping_cost
-    } = orderData
+const FREE_SHIPPING_THRESHOLD = 35   // livraison gratuite à partir de 35 € d'achats
+const SHIPPING_FEE = 4.90
 
-    const values = [
+const roundPrice = (value) => Math.round(value * 100) / 100
+
+// Le client n'envoie que les adresses et le moyen de paiement.
+// Les articles, le total, les frais de port et le statut sont décidés par le serveur.
+export const createNewOrder = async (customerId, orderData) => {
+    const {shipping_address_id, billing_address_id, payment_method} = orderData
+    if (!shipping_address_id || !billing_address_id || !payment_method) {
+        throw errorBuilder('Shipping address, billing address and payment method are required', 400)
+    }
+
+    const cart = await findCartByCustomerId(customerId)
+    if (!cart) throw errorBuilder('Cart is empty', 400)
+    const items = await findProductsInCart(cart.cart_id)
+    if (!items || items.length === 0) throw errorBuilder('Cart is empty', 400)
+
+    const subtotal = roundPrice(items.reduce((sum, item) => sum + item.quantity * Number(item.price), 0))
+    const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
+    const totalPrice = roundPrice(subtotal + shippingCost)
+
+    const orderValues = [
         shipping_address_id,
         billing_address_id,
-        order_number,
-        order_total_price,
-        order_status,
+        totalPrice,
+        'pending',
         payment_method,
-        shipping_cost
+        shippingCost
     ]
 
-    return await createANewOrder(customerId, values)
+    const {orderId, orderNumber} = await createOrderWithItems(customerId, cart.cart_id, orderValues, items)
+    return {
+        order_id: orderId,
+        order_number: orderNumber,
+        order_total_price: totalPrice,
+        shipping_cost: shippingCost,
+        order_status: 'pending'
+    }
 }
 
 //==================PATCH ORDER=====================

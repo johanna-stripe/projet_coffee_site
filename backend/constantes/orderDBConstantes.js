@@ -7,7 +7,9 @@ export const FIND_ALL_ORDERS = `
            o.order_total_price,
            c.customer_id,
            c.first_name,
-           c.last_name
+           c.last_name,
+           c.customer_email,
+           c.phone
     FROM \`order\` o
              JOIN customer c ON c.customer_id = o.customer_id
     ORDER BY o.order_date DESC
@@ -46,6 +48,39 @@ export const CREATE_NEW_ORDER = `
     INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number, 
                            order_total_price, order_status, payment_method, shipping_cost)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+`
+
+// Vérifie que les adresses demandées appartiennent bien au client
+export const FIND_CUSTOMER_ADDRESSES_BY_IDS = `
+    SELECT address_id
+    FROM customer_address
+    WHERE customer_id = ?
+      AND address_id IN (?)
+`
+
+export const UPDATE_ORDER_NUMBER = `
+    UPDATE \`order\`
+    SET order_number = ?
+    WHERE order_id = ?
+`
+
+export const CREATE_ORDER_ITEM = `
+    INSERT INTO order_item (order_id, product_id, quantity, unit_price)
+    VALUES (?, ?, ?, ?)
+`
+
+// "AND stock >= ?" : la vérification du stock et la décrémentation se font en UNE requête (pas de course entre deux clients)
+export const DECREASE_PRODUCT_STOCK = `
+    UPDATE product
+    SET stock = stock - ?
+    WHERE product_id = ?
+      AND stock >= ?
+`
+
+export const DELETE_CART_ITEMS_BY_CART_ID = `
+    DELETE
+    FROM cart_item
+    WHERE cart_id = ?
 `
 
 //==================PATCH ORDER=====================

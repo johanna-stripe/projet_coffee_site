@@ -84,20 +84,19 @@ export const createOrder = async(req,res)=>{
             return res.status(400).json({error: 'Customer id is required'})
         }
 
+        // un client ne peut commander que pour lui-même (l'admin peut tout faire)
+        if (req.user.role !== 'ADMIN' && Number(req.user.customer_id) !== Number(customerId)) {
+            return res.status(403).json({error: 'Forbidden'})
+        }
+
         if (!req.body) {
             return res.status(400).json({error: 'Order details are required'})
         }
 
         const results = await createNewOrder(customerId, req.body)
-        if (!results || results.affectedRows === 0) {
-            return res.status(404).json({error: 'Order could not be created'})
-        }
         return res.status(201).json({
             message: 'Order created successfully',
-            data: {
-                id: results.insertId,
-                ...req.body
-            }
+            results
         })
 
     } catch (error) {

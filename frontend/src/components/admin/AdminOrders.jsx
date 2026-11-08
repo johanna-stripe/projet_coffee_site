@@ -85,7 +85,8 @@ const AdminOrders = () => {
                         <th>N° commande</th>
                         <th>Date</th>
                         <th>Client</th>
-                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
                         <th>Statut</th>
                         <th>Total</th>
                     </tr>
@@ -100,7 +101,8 @@ const AdminOrders = () => {
                             <td className="admin-order-number">{order.order_number}</td>
                             <td>{new Date(order.order_date).toLocaleDateString('fr-FR')}</td>
                             <td>{order.first_name} {order.last_name}</td>
-                            <td>{order.phone} {order.customer_email}</td>
+                            <td>{order.customer_email}</td>
+                            <td>{order.phone}</td>
                             <td><span className={`purchase-status ${status.className}`}>{status.label}</span></td>
                             <td className="admin-order-total">{formatPrice(order.order_total_price)}</td>
                         </tr>
