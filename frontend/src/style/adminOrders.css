@@ -154,3 +154,12 @@
     text-align: right;
     font-weight: 600;
 }
+
+.admin-status-select {
+    padding: 6px 10px;
+    font: inherit;
+    color: var(--color-secondary);
+    background: var(--color-primary);
+    border: 1px solid #e0d6cc;
+    cursor: pointer;
+}

@@ -12,6 +12,8 @@ const STATUS = {
     cancelled: {label: 'Annulé', className: 'purchase-status-cancelled'},
 };
 
+const STATUS_OPTIONS = Object.keys(STATUS);
+
 const formatPrice = (value) =>
     value === undefined || value === null ? '-' : `${Number(value).toFixed(2)} €`;
 
@@ -46,6 +48,20 @@ const AdminOrders = () => {
             setDetailError('')
         } catch (err) {
             setDetailError(err.response?.data?.message || 'Impossible de charger la commande');
+        }
+    };
+
+    // Change le statut de la commande ouverte puis met à jour le panneau ET le tableau
+    const changeStatus = async (newStatus) => {
+        try {
+            await api.patch(`/order/${selectedOrder.order_id}`, {order_status: newStatus})
+            setSelectedOrder({...selectedOrder, order_status: newStatus})
+            setOrders(orders.map(order =>
+                order.order_id === selectedOrder.order_id ? {...order, order_status: newStatus} : order
+            ))
+            setDetailError('')
+        } catch (err) {
+            setDetailError(err.response?.data?.error || err.response?.data?.message || 'Impossible de modifier le statut');
         }
     };
 
@@ -111,6 +127,17 @@ const AdminOrders = () => {
                     </div>
 
                     <dl className="admin-order-detail-info">
+                        <div>
+                            <dt>Statut</dt>
+                            <dd>
+                                <select className="admin-status-select" value={selectedOrder.order_status}
+                                        onChange={(e) => changeStatus(e.target.value)}>
+                                    {STATUS_OPTIONS.map(key => (
+                                        <option key={key} value={key}>{STATUS[key].label}</option>
+                                    ))}
+                                </select>
+                            </dd>
+                        </div>
                         <div>
                             <dt>Date</dt>
                             <dd>{new Date(selectedOrder.order_date).toLocaleDateString('fr-FR')}</dd>

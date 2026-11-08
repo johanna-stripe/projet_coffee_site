@@ -117,7 +117,7 @@ export const patchOrder = async (req, res) => {
         }
 
         const results = await modifyOrderByPatch(orderId,req.body)
-        if(!results) return res.status(404).json({error:'Order could not be modified'})
+        if(!results || results.affectedRows === 0) return res.status(404).json({error:'Order could not be modified'})
 
         return res.json({
             orderId,

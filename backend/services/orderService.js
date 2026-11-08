@@ -92,7 +92,7 @@ export const createNewOrder = async (customerId, orderData) => {
 
 //==================PATCH ORDER=====================
 export const modifyOrderByPatch = async (orderId, changes) => {
-    const allowed_status = ['paid', 'pending', 'cancelled']
+    const allowed_status = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
     const allowed_changes = ['customer_id', 'shipping_address_id', 'billing_address_id', 'order_number', 'order_date', 'order_total_price', 'order_status', 'payment_method', 'shipping_cost']
     const fields_to_update = []
     const values_to_update = []
@@ -104,6 +104,9 @@ export const modifyOrderByPatch = async (orderId, changes) => {
         }
     })
     if (fields_to_update.length === 0) throw errorBuilder('No field to update', 400)
+    if (changes.order_status !== undefined && !allowed_status.includes(changes.order_status)) {
+        throw errorBuilder('Order status not valid', 400)
+    }
 
     values_to_update.push(orderId)
 
