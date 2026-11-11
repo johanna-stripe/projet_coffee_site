@@ -1,9 +1,9 @@
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {IoClose} from "react-icons/io5";
 import {PiBasket} from "react-icons/pi";
 import {useCart} from "../../context/CartContext.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
-import {productPath} from "../../routes/paths.js";
+import {CLIENT_PATHS, productPath} from "../../routes/paths.js";
 import "../../style/cartDrawer.css";
 
 const FREE_SHIPPING_THRESHOLD = 35 // livraison offerte dès 35 € (cf. fiche produit)
@@ -18,6 +18,7 @@ Structure : en-tête (titre + nombre d'articles) / liste des produits / pied (to
 const CartDrawer = () => {
     const {items, isCartOpen, closeCart, updateQuantity, removeItem, pendingItem, loginFromCart} = useCart()
     const {isAuthenticated} = useAuth()
+    const navigate = useNavigate()
 
     if (!isCartOpen) return null
 
@@ -152,7 +153,11 @@ const CartDrawer = () => {
                                 <strong>{formatPrice(subtotal)}</strong>
                             </p>
                             {/* le bouton sera branché quand la page de commande existera */}
-                            <button type="button" className="cart-drawer__checkout">Passer la commande</button>
+                            <button type="button" className="cart-drawer__checkout"
+                                    onClick={()=> {
+                                        closeCart()
+                                        navigate(CLIENT_PATHS.checkout)
+                                    }}>Passer la commande</button>
                             <button type="button" className="cart-drawer__continue" onClick={closeCart}>
                                 Continuer mes achats
                             </button>
