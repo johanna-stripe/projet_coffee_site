@@ -10,12 +10,14 @@ import {useEffect, useRef, useState} from "react";
 import {useAuth} from "../../context/AuthContext.jsx";
 import UserAccount from "../user/UserAccount.jsx";
 import SubMenu from "./SubMenu.jsx";
-import {Link} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import {CLIENT_PATHS} from "../../routes/paths.js";
 import {useCart} from "../../context/CartContext.jsx";
 
 const NavBar = () => {
     const navRef = useRef(null)
+    const navigate = useNavigate()
+    const {pathname, state: locationState} = useLocation()
     const [subMenuPos, setSubMenuPos] = useState({top: 0, gap: 0})
     const [activeCategory, setActiveCategory] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
@@ -73,7 +75,12 @@ const NavBar = () => {
 
     const handleItemClick = (item) => {
         if (item.targetId) {
-            scrollToSection(item.targetId)
+            if (pathname === CLIENT_PATHS.home) {
+                scrollToSection(item.targetId)
+            } else {
+                // la section est sur l'accueil : on y va d'abord, le défilement se fait à l'arrivée (voir le useEffect plus bas)
+                navigate(CLIENT_PATHS.home, {state: {scrollTo: item.targetId}})
+            }
             closeMenu()
         } else if (isMobile && item.category) {
             setActiveCategory((prev) => (prev === item.category ? null : item.category))
@@ -84,6 +91,14 @@ const NavBar = () => {
         document.getElementById(id)?.scrollIntoView({behavior: "smooth", block: "start"})
         //?. optional chaining --> si ce qui est à gauche existe, continue ; sinon, arrête-toi sans erreur
     }
+
+    // Arrivée sur l'accueil depuis une autre page avec une section à atteindre (ex : « Qui sommes-nous ? »)
+    useEffect(() => {
+        if (pathname === CLIENT_PATHS.home && locationState?.scrollTo) {
+            scrollToSection(locationState.scrollTo)
+            navigate(pathname, {replace: true, state: null})   // on efface la demande : un F5 ne refait pas défiler
+        }
+    }, [pathname, locationState])
 
     // version compacte uniquement sur ordinateur : le mobile a déjà sa barre réduite
     // fixée en haut dès qu'on a scrollé (même dépliée au survol), réduite seulement si on ne la survole pas
