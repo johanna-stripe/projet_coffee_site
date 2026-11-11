@@ -46,8 +46,8 @@ export const FIND_ORDER_ITEMS_BY_ORDER_ID = `
 //==================POST ORDER=====================
 export const CREATE_NEW_ORDER = `
     INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number,
-                           order_total_price, order_status, payment_method, shipping_cost)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                           order_total_price, order_status, payment_method, shipping_method, shipping_cost)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `
 
 // Vérifie que les adresses demandées appartiennent bien au client

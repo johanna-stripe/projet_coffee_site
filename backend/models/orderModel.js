@@ -49,9 +49,9 @@ export const findOrderItemsByOrderId = async (orderId) => {
 
 //==================POST ORDER + ARTICLES (transaction)=====================
 // Tout passe ensemble ou rien : commande, numéro, articles, stock et vidage du panier.
-// orderValues = [shipping_address_id, billing_address_id, order_total_price, order_status, payment_method, shipping_cost]
+// orderValues = [shipping_address_id, billing_address_id, order_total_price, order_status, payment_method, shipping_method, shipping_cost]
 export const createOrderWithItems = async (customerId, cartId, orderValues, items) => {
-    const [shippingAddressId, billingAddressId, totalPrice, status, paymentMethod, shippingCost] = orderValues
+    const [shippingAddressId, billingAddressId, totalPrice, status, paymentMethod, shippingMethod, shippingCost] = orderValues
     const connection = await db.getConnection()
     try {
         await connection.beginTransaction()
@@ -65,7 +65,7 @@ export const createOrderWithItems = async (customerId, cartId, orderValues, item
         const tempNumber = `TMP-${randomUUID().replaceAll('-', '').slice(0, 16)}`
         const [order] = await connection.query(CREATE_NEW_ORDER, [
             customerId, shippingAddressId, billingAddressId, tempNumber,
-            totalPrice, status, paymentMethod, shippingCost
+            totalPrice, status, paymentMethod, shippingMethod, shippingCost
         ])
         const orderId = order.insertId
 

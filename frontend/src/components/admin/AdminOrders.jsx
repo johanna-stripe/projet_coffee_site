@@ -15,6 +15,8 @@ const STATUS = {
 
 const STATUS_OPTIONS = Object.keys(STATUS);
 
+const SHIPPING_METHOD_LABELS = {standard: 'Standard', express: 'Express'};
+
 const formatPrice = (value) =>
     value === undefined || value === null ? '-' : `${Number(value).toFixed(2)} €`;
 
@@ -221,6 +223,10 @@ const AdminOrders = () => {
                         <div>
                             <dt>Paiement</dt>
                             <dd>{selectedOrder.payment_method || '-'}</dd>
+                        </div>
+                        <div>
+                            <dt>Livraison</dt>
+                            <dd>{SHIPPING_METHOD_LABELS[selectedOrder.shipping_method] || '-'}</dd>
                         </div>
                         <div>
                             <dt>Frais de port</dt>
