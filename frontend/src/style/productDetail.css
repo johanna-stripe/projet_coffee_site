@@ -169,6 +169,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; /* la quantité passe sous le prix si la place manque */
+    gap: 16px 24px;
     padding: 18px 0 22px;
     border-bottom: 1px solid rgba(64, 43, 33, 0.2);
 }
@@ -176,7 +178,8 @@
 .product-detail__price {
     margin: 0 0 4px;
     font-family: "Playfair Display", Georgia, serif;
-    font-size: 3em;
+    font-size: 2.4em;
+    white-space: nowrap;
     color: var(--color-secondary);
 }
 
@@ -193,6 +196,7 @@
 .product-detail__quantity {
     display: flex;
     align-items: center;
+    flex-shrink: 0; /* ne se compresse jamais */
     border: 1px solid rgba(64, 43, 33, 0.3);
 }
 
