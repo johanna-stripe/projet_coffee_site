@@ -106,7 +106,7 @@ export const updateUser = async (req, res) => {
             updates.birth_date = updates.birth_date.split('T')[0]
         }
 
-        const results = await modifyUser(userId, updates)
+        const results = await modifyUser(userId, updates, req.user.role === 'ADMIN')
         return res.json({message: 'User modified successfully', results})
 
     } catch (error) {

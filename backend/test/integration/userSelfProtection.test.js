@@ -115,4 +115,42 @@ describe('Protection de son propre compte (admin)', () => {
         // seule la colonne username est mise à jour : role et is_active sont ignorés
         expect(mockUpdateUserById).toHaveBeenCalledWith(['username'], ['nouveau', '2'])
     })
+
+    test("un admin peut corriger l'identifiant et la date d'inscription d'un autre utilisateur", async () => {
+        mockUpdateUserById.mockResolvedValue({affectedRows: 1})
+
+        const response = await request(app)
+            .patch(`/api/v1/users/update-user/${CUSTOMER.user_id}`)
+            .set('Cookie', cookieFor(ADMIN))
+            .send({username: ' nouvel-id ', created_at: '2026-01-15'})
+
+        expect(response.status).toBe(200)
+        expect(mockUpdateUserById).toHaveBeenCalledWith(['created_at', 'username'], ['2026-01-15', 'nouvel-id', '2'])
+    })
+
+    test("un client ne peut pas changer sa propre date d'inscription (champ ignoré)", async () => {
+        mockUpdateUserById.mockResolvedValue({affectedRows: 1})
+
+        const response = await request(app)
+            .patch(`/api/v1/users/update-user/${CUSTOMER.user_id}`)
+            .set('Cookie', cookieFor(CUSTOMER))
+            .send({username: 'nouveau', created_at: '2020-01-01'})
+
+        expect(response.status).toBe(200)
+        expect(mockUpdateUserById).toHaveBeenCalledWith(['username'], ['nouveau', '2'])
+    })
+
+    test.each([
+        ['date dans le futur', {created_at: '2999-01-01'}],
+        ['date invalide', {created_at: 'pas-une-date'}],
+        ['identifiant vide', {username: '   '}],
+    ])("un admin ne peut pas enregistrer : %s (400)", async (_label, body) => {
+        const response = await request(app)
+            .patch(`/api/v1/users/update-user/${CUSTOMER.user_id}`)
+            .set('Cookie', cookieFor(ADMIN))
+            .send(body)
+
+        expect(response.status).toBe(400)
+        expect(mockUpdateUserById).not.toHaveBeenCalled()
+    })
 })

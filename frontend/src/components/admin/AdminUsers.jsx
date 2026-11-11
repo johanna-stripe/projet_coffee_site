@@ -10,6 +10,13 @@ const PAGE_SIZE = 10;   // utilisateurs affichés par page
 
 const ROLE_LABELS = {ADMIN: 'Admin', USER: 'Client'};
 
+// Date au format attendu par <input type="date"> (AAAA-MM-JJ, en heure locale)
+const toInputDay = (value) => {
+    const date = new Date(value);
+    const pad = (n) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
 const EMPTY_NEW_USER = {first_name: '', last_name: '', username: '', email: '', phone: '', role: 'USER', password: ''};
 
 // Mot de passe temporaire de 12 caractères (sans 0/O/1/l/I pour éviter les confusions à la dictée)
@@ -30,6 +37,7 @@ const AdminUsers = () => {
     const [page, setPage] = useState(1);        // page affichée (1 = la première)
     const [selectedUser, setSelectedUser] = useState(null);   // le détail de l'utilisateur ouvert
     const [detailError, setDetailError] = useState('');
+    const [identity, setIdentity] = useState({username: '', created_at: ''});   // identifiant et date d'inscription en cours de saisie
     const [creating, setCreating] = useState(false);          // formulaire « ajouter un utilisateur » ouvert ou non
     const [newUser, setNewUser] = useState(EMPTY_NEW_USER);
     const [createError, setCreateError] = useState('');
@@ -139,6 +147,7 @@ const AdminUsers = () => {
             const response = await api.get(`/users/${userId}`)
             setCreating(false)   // un seul panneau à la fois
             setSelectedUser({...response.data.results, id: userId})
+            setIdentity({username: response.data.results.username, created_at: toInputDay(response.data.results.created_at)})
             setDetailError('')
         } catch (err) {
             setDetailError(err.response?.data?.message || err.response?.data?.error || "Impossible de charger l'utilisateur");
@@ -150,6 +159,24 @@ const AdminUsers = () => {
         setSelectedUser({...selectedUser, ...changes})
         setUsers(users.map(user => user.id === selectedUser.id ? {...user, ...changes} : user))
         setDetailError('')
+    };
+
+    // Enregistre l'identifiant et/ou la date d'inscription modifiés (seuls les champs changés sont envoyés)
+    const saveIdentity = async () => {
+        const changes = {}
+        if (identity.username.trim() !== selectedUser.username) changes.username = identity.username.trim()
+        if (identity.created_at !== toInputDay(selectedUser.created_at)) changes.created_at = identity.created_at
+        if (!identity.username.trim()) return setDetailError("L'identifiant ne peut pas être vide.")
+        if (!identity.created_at) return setDetailError("La date d'inscription est obligatoire.")
+        try {
+            await api.patch(`/users/update-user/${selectedUser.id}`, changes)
+            applyChange({
+                username: identity.username.trim(),
+                created_at: `${identity.created_at}T12:00:00`   // midi : évite qu'un décalage d'heure change le jour affiché
+            })
+        } catch (err) {
+            setDetailError(err.response?.data?.message || err.response?.data?.error || 'Impossible de modifier ces informations');
+        }
     };
 
     const changeRole = async (newRole) => {
@@ -346,6 +373,9 @@ const AdminUsers = () => {
 
             {selectedUser && (() => {
                 const fullName = [selectedUser.first_name, selectedUser.last_name].filter(Boolean).join(' ');
+                // le bouton « Enregistrer » n'apparaît que si l'identifiant ou la date a changé
+                const identityChanged = identity.username !== selectedUser.username
+                    || identity.created_at !== toInputDay(selectedUser.created_at);
                 const isSelf = Number(selectedUser.id) === Number(currentUser?.id);   // le panneau ouvert est mon propre compte
                 return (
                     <div className="admin-order-detail" ref={detailRef}>
@@ -397,7 +427,11 @@ const AdminUsers = () => {
                             <div className="admin-users-detail-break"/>
                             <div>
                                 <dt>Identifiant</dt>
-                                <dd>{selectedUser.username}</dd>
+                                <dd>
+                                    <input type="text" className="admin-users-input" aria-label="Identifiant"
+                                           value={identity.username}
+                                           onChange={(e) => setIdentity({...identity, username: e.target.value})}/>
+                                </dd>
                             </div>
                             <div>
                                 <dt>Email de connexion</dt>
@@ -417,8 +451,21 @@ const AdminUsers = () => {
                             </div>
                             <div>
                                 <dt>Inscrit le</dt>
-                                <dd>{new Date(selectedUser.created_at).toLocaleDateString('fr-FR')}</dd>
+                                <dd>
+                                    <input type="date" className="admin-users-input" aria-label="Date d'inscription"
+                                           max={toInputDay(new Date())}
+                                           value={identity.created_at}
+                                           onChange={(e) => setIdentity({...identity, created_at: e.target.value})}/>
+                                </dd>
                             </div>
+                            {identityChanged && (
+                                <div>
+                                    <dt>&nbsp;</dt>
+                                    <dd>
+                                        <button type="button" className="admin-users-action" onClick={saveIdentity}>Enregistrer</button>
+                                    </dd>
+                                </div>
+                            )}
                         </dl>
                         {isSelf && (
                             <p className="admin-users-self-note">
