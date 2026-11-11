@@ -158,3 +158,8 @@
         grid-column: 1 / -1;
     }
 }
+
+/* Au clic sur un produit, la page s'arrête sur le HAUT du panneau, sous la barre de navigation fixe */
+.admin-products-form {
+    scroll-margin-top: 110px;
+}

@@ -10,6 +10,12 @@
     padding: 28px 16px;
     background: var(--color-primary);
     border-right: 1px solid #e0d6cc;
+
+    /* le menu suit le scroll : collé sous la barre de navigation (84px une fois réduite au scroll) */
+    position: sticky;
+    top: 100px;
+    align-self: flex-start;     /* sans ça le menu s'étire sur toute la hauteur et ne peut pas « suivre » */
+    height: fit-content;
 }
 
 .admin-title {

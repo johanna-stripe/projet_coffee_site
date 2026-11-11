@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import api from "../../axios/axiosConfig.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import ConfirmModal from "./ConfirmModal.jsx";
@@ -20,6 +20,7 @@ const AdminUsers = () => {
     const [page, setPage] = useState(1);        // page affichée (1 = la première)
     const [selectedUser, setSelectedUser] = useState(null);   // le détail de l'utilisateur ouvert
     const [detailError, setDetailError] = useState('');
+    const detailRef = useRef(null);   // panneau de détail, pour y descendre au clic
     const [confirmDeactivate, setConfirmDeactivate] = useState(false);   // fenêtre « désactiver le compte ? » ouverte ou non
 
     // Minuscules + sans accents : "Éloïse" et "eloise" se trouvent mutuellement
@@ -61,6 +62,13 @@ const AdminUsers = () => {
         }
         fetchUsers()
     }, []);
+
+    // Dès qu'un utilisateur est ouvert (ou qu'on en ouvre un autre), on descend sur son détail
+    useEffect(() => {
+        if (selectedUser) {
+            detailRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }, [selectedUser?.id]);
 
     const openUser = async (userId) => {
         try {
@@ -207,7 +215,7 @@ const AdminUsers = () => {
                 const fullName = [selectedUser.first_name, selectedUser.last_name].filter(Boolean).join(' ');
                 const isSelf = Number(selectedUser.id) === Number(currentUser?.id);   // le panneau ouvert est mon propre compte
                 return (
-                    <div className="admin-order-detail">
+                    <div className="admin-order-detail" ref={detailRef}>
                         <div className="admin-order-detail-head">
                             <div>
                                 <h4 className="admin-order-detail-title">{fullName || selectedUser.username}</h4>

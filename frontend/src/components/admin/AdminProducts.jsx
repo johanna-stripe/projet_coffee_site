@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import api from "../../axios/axiosConfig.js";
 import ConfirmModal from "./ConfirmModal.jsx";
 import "../../style/adminOrders.css";   // classes communes : toolbar, recherche, tableau, pagination, panneau détail
@@ -59,6 +59,7 @@ const AdminProducts = () => {
     const [saving, setSaving] = useState(false);
     const [success, setSuccess] = useState('');
     const [confirmDelete, setConfirmDelete] = useState(false);
+    const panelRef = useRef(null);   // panneau création / modification, pour y descendre au clic
 
     // Minuscules + sans accents : "Éthiopie" et "ethiopie" se trouvent mutuellement
     const normalize = (text) => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -92,6 +93,11 @@ const AdminProducts = () => {
         return parent ? `${parent.category_name} › ${category.category_name}` : category.category_name;
     };
 
+    // Le filtre ne propose que les catégories qui contiennent au moins un produit
+    // (les catégories « parent » comme Café ou Thé n'ont pas de produit directement)
+    const usedCategoryIds = new Set(products.map(product => product.category_id));
+    const filterCategories = categories.filter(category => usedCategoryIds.has(category.category_id));
+
     // ---------- Liste : recherche + filtres + tri + pagination ----------
     const visibleProducts = products
         .filter(product => {
@@ -123,6 +129,13 @@ const AdminProducts = () => {
         setter(e.target.value);
         setPage(1);
     };
+
+    // Dès qu'un produit est ouvert (ou qu'on en ouvre un autre, ou une création), on descend sur le panneau
+    useEffect(() => {
+        if (editing !== null) {
+            panelRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'});
+        }
+    }, [editing]);
 
     // ---------- Panneau création / modification ----------
     const openCreate = () => {
@@ -276,7 +289,7 @@ const AdminProducts = () => {
                     <select className="admin-status-select" aria-label="Filtrer par catégorie"
                             value={categoryFilter} onChange={resetPageAnd(setCategoryFilter)}>
                         <option value="all">Toutes les catégories</option>
-                        {categories.map(category => (
+                        {filterCategories.map(category => (
                             <option key={category.category_id} value={category.category_id}>{categoryLabel(category)}</option>
                         ))}
                     </select>
@@ -357,7 +370,7 @@ const AdminProducts = () => {
             )}
 
             {editing !== null && (
-                <form className="admin-order-detail admin-products-form" onSubmit={saveProduct} noValidate>
+                <form className="admin-order-detail admin-products-form" ref={panelRef} onSubmit={saveProduct} noValidate>
                     <div className="admin-order-detail-head">
                         <div>
                             <h4 className="admin-order-detail-title">
