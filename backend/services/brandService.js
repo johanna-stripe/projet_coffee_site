@@ -83,6 +83,12 @@ Exemple : brand_name: "Leclerc" - si je relance avec Leclerc écrit pareil il va
 
 //==================DELETE BRAND=====================
 export const deleteBrandById = async (brandId) => {
+    const brand = await getBrandProductCount(brandId)
+    if (!brand) throw errorBuilder('Not found', 404)
+
+    // suppression refusée tant que des produits sont rattachés à la marque
+    if (brand.product_count > 0) throw errorBuilder('This brand still has products and cannot be deleted', 409)
+
     const result = await deleteByIdBrand(brandId)
     if (!result) throw errorBuilder('Not found',404)
     return result

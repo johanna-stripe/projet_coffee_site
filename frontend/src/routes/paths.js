@@ -19,6 +19,8 @@ export const CLIENT_PATHS = {
     register: '/register',
     admin: '/admin',
     adminProducts: '/admin/produits',
+    adminCategories: '/admin/categories',
+    adminBrands: '/admin/marques',
     adminOrders: '/admin/commandes',
     adminUsers: '/admin/utilisateurs',
 }

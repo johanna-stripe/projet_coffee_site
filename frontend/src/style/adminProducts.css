@@ -163,3 +163,14 @@
 .admin-products-form {
     scroll-margin-top: 110px;
 }
+
+/* ---------- Page catégories : sous-catégories décalées sous leur parent ---------- */
+.admin-categories-main {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.admin-categories-sub {
+    padding-left: 36px !important;
+    text-transform: capitalize;
+}

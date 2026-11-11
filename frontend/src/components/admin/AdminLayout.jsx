@@ -11,6 +11,8 @@ export default function AdminLayout() {
                 <nav className="admin-nav">
                     {/* NavLink ajoute automatiquement la classe "active" sur le lien de la page courante */}
                     <NavLink to={CLIENT_PATHS.adminProducts}>Produits</NavLink>
+                    <NavLink to={CLIENT_PATHS.adminCategories}>Catégories</NavLink>
+                    <NavLink to={CLIENT_PATHS.adminBrands}>Marques</NavLink>
                     <NavLink to={CLIENT_PATHS.adminOrders}>Commandes</NavLink>
                     <NavLink to={CLIENT_PATHS.adminUsers}>Utilisateurs</NavLink>
                 </nav>
