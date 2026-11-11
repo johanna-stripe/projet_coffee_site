@@ -176,7 +176,7 @@ const NavBar = () => {
                 </div>
 
                 <div className="navBar-actions flex flex-direction-column align-content-center">
-                    <p className="font-size-125em c-tertiary">
+                    <p className="font-size-135em c-tertiary">
                         {isAuthenticated ? `Bienvenue ${user.first_name}` : ""}</p>
                     <div className="icons flex gap-30px align-self-center">
                         <FaRegUser
