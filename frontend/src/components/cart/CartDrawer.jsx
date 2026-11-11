@@ -72,8 +72,12 @@ const CartDrawer = () => {
                         <PiBasket size={56} className="cart-drawer__empty-icon" aria-hidden="true"/>
                         <p>Votre panier est vide.</p>
                         <p className="c-secondary">Découvrez notre sélection et trouvez votre prochaine pause préférée.</p>
-                        {/* le panneau est par-dessus la page : le fermer ramène l'utilisateur là où il était */}
-                        <button type="button" className="cart-drawer__checkout" onClick={closeCart}>
+                        {/* on ferme le panneau puis on va à l'accueil (fermer seul laissait l'utilisateur sur la page en cours) */}
+                        <button type="button" className="cart-drawer__checkout"
+                                onClick={() => {
+                                    closeCart()
+                                    navigate(CLIENT_PATHS.home)
+                                }}>
                             Découvrez la boutique
                         </button>
                     </div>
