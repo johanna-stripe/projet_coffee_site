@@ -114,7 +114,7 @@ export const createNewOrder = async (customerId, orderData) => {
 //==================PATCH ORDER=====================
 export const modifyOrderByPatch = async (orderId, changes) => {
     const allowed_status = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
-    const allowed_changes = ['customer_id', 'shipping_address_id', 'billing_address_id', 'order_number', 'order_date', 'order_total_price', 'order_status', 'payment_method', 'shipping_cost']
+    const allowed_changes = ['customer_id', 'shipping_address_id', 'billing_address_id', 'order_date', 'order_total_price', 'order_status', 'payment_method', 'shipping_cost']
     const fields_to_update = []
     const values_to_update = []
 

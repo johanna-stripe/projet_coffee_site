@@ -7,7 +7,7 @@ import {
     FIND_ORDER_DETAIL_BY_ORDER_ID,
     CREATE_NEW_ORDER,
     FIND_CUSTOMER_ADDRESSES_BY_IDS,
-    UPDATE_ORDER_NUMBER,
+    FIND_ORDER_NUMBER,
     CREATE_ORDER_ITEM,
     DECREASE_PRODUCT_STOCK,
     DELETE_CART_ITEMS_BY_CART_ID,
@@ -60,16 +60,15 @@ export const createOrderWithItems = async (customerId, cartId, orderValues, item
         const [addresses] = await connection.query(FIND_CUSTOMER_ADDRESSES_BY_IDS, [customerId, addressIds])
         if (addresses.length !== addressIds.length) throw errorBuilder('Address not valid', 400)
 
-        // b. la commande, avec un numéro provisoire (remplacé juste après)
+        // b. la commande : le numéro CMD-<année>-<n°> est posé par le trigger de la base
         const [order] = await connection.query(CREATE_NEW_ORDER, [
-            customerId, shippingAddressId, billingAddressId, 'TMP',
+            customerId, shippingAddressId, billingAddressId,
             totalPrice, status, paymentMethod, shippingCost
         ])
         const orderId = order.insertId
 
-        // c. le vrai numéro : CMD-<année>-<order_id sur 4 chiffres>
-        const orderNumber = `CMD-${new Date().getFullYear()}-${String(orderId).padStart(4, '0')}`
-        await connection.query(UPDATE_ORDER_NUMBER, [orderNumber, orderId])
+        // c. on relit le numéro généré
+        const [[{order_number: orderNumber}]] = await connection.query(FIND_ORDER_NUMBER, [orderId])
 
         // d. pour chaque article : stock puis ligne de commande
         for (const item of items) {
