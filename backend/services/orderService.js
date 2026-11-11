@@ -64,6 +64,7 @@ export const getOrderDetailByOrderId = async (orderId) => {
         order_date: order.order_date,
         order_status: order.order_status,
         payment_method: order.payment_method,
+        shipping_method: order.shipping_method,
         shipping_cost: order.shipping_cost,
         items: items
     }
@@ -72,6 +73,8 @@ export const getOrderDetailByOrderId = async (orderId) => {
 //==================POST ORDER=====================
 const FREE_SHIPPING_THRESHOLD = 35   // livraison gratuite à partir de 35 € d'achats
 const SHIPPING_FEE = 4.90
+const EXPRESS_SHIPPING_FEE = 8.90   // livraison express : toujours payante, même au-dessus de 35 €
+const SHIPPING_METHODS = ['standard', 'express']
 
 const roundPrice = (value) => Math.round(value * 100) / 100
 
@@ -79,6 +82,10 @@ const roundPrice = (value) => Math.round(value * 100) / 100
 // Les articles, le total, les frais de port et le statut sont décidés par le serveur.
 export const createNewOrder = async (customerId, orderData) => {
     const {shipping_address_id, billing_address_id, payment_method} = orderData
+    const shipping_method = orderData.shipping_method || 'standard'   // standard par défaut
+    if (!SHIPPING_METHODS.includes(shipping_method)) {
+        throw errorBuilder('Shipping method not valid', 400)
+    }
     if (!shipping_address_id || !billing_address_id || !payment_method) {
         throw errorBuilder('Shipping address, billing address and payment method are required', 400)
     }
@@ -89,7 +96,10 @@ export const createNewOrder = async (customerId, orderData) => {
     if (!items || items.length === 0) throw errorBuilder('Cart is empty', 400)
 
     const subtotal = roundPrice(items.reduce((sum, item) => sum + item.quantity * Number(item.price), 0))
-    const shippingCost = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE
+    // la gratuité dès 35 € ne concerne que la livraison standard
+    const shippingCost = shipping_method === 'express'
+        ? EXPRESS_SHIPPING_FEE
+        : (subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FEE)
     const totalPrice = roundPrice(subtotal + shippingCost)
 
     const orderValues = [
@@ -98,6 +108,7 @@ export const createNewOrder = async (customerId, orderData) => {
         totalPrice,
         'pending',
         payment_method,
+        shipping_method,
         shippingCost
     ]
 
@@ -106,6 +117,7 @@ export const createNewOrder = async (customerId, orderData) => {
         order_id: orderId,
         order_number: orderNumber,
         order_total_price: totalPrice,
+        shipping_method,
         shipping_cost: shippingCost,
         order_status: 'pending'
     }
@@ -114,7 +126,7 @@ export const createNewOrder = async (customerId, orderData) => {
 //==================PATCH ORDER=====================
 export const modifyOrderByPatch = async (orderId, changes) => {
     const allowed_status = ['pending', 'paid', 'shipped', 'delivered', 'cancelled']
-    const allowed_changes = ['customer_id', 'shipping_address_id', 'billing_address_id', 'order_number', 'order_date', 'order_total_price', 'order_status', 'payment_method', 'shipping_cost']
+    const allowed_changes = ['customer_id', 'shipping_address_id', 'billing_address_id', 'order_date', 'order_total_price', 'order_status', 'payment_method', 'shipping_method', 'shipping_cost']
     const fields_to_update = []
     const values_to_update = []
 
@@ -131,7 +143,7 @@ export const modifyOrderByPatch = async (orderId, changes) => {
 
     values_to_update.push(orderId)
 
-    return await modifyByPatchOrder(fields_to_update, values_to_update)
+    return await modifyByPatchOrder(fields_to_update, values_to_update, changes.order_status)
 }
 
 

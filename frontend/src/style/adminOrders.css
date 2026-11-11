@@ -8,6 +8,33 @@
     margin-top: 0;              /* retire la marge par défaut du titre, qui s'ajoutait au padding */
 }
 
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-toolbar .admin-status-select {
+    padding: 10px 14px;
+}
+
+.admin-search {
+    box-sizing: border-box;
+    flex: 1 1 280px;
+    max-width: 420px;
+    padding: 10px 14px;
+    font: inherit;
+    color: var(--color-secondary);
+    background: white;
+    border: 1px solid #e0d6cc;
+}
+
+.admin-search:focus {
+    outline: none;
+    border-color: var(--color-tertiary);
+}
+
 .admin-table-wrapper {
     overflow-x: auto;           /* petit écran : le tableau défile au lieu de déborder */
     background: white;
@@ -162,4 +189,102 @@
     background: var(--color-primary);
     border: 1px solid #e0d6cc;
     cursor: pointer;
+}
+
+
+/* ====================== FENÊTRE DE CONFIRMATION ====================== */
+
+.confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.confirm-modal {
+    position: relative;
+    width: 100%;
+    max-width: 460px;
+    background: var(--color-primary);
+}
+
+.confirm-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px 10px;
+    background: none;
+    border: none;
+    color: var(--color-tertiary);
+    font-size: 1.2em;
+    cursor: pointer;
+}
+
+.confirm-close:hover {
+    color: var(--color-primary);
+}
+
+.confirm-header {
+    padding: 36px 40px 24px;
+    background: var(--color-secondary);
+    text-align: center;
+}
+
+.confirm-title {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 400;
+    color: var(--color-primary);
+}
+
+.confirm-body {
+    padding: 28px 40px 36px;
+    text-align: center;
+}
+
+.confirm-message {
+    margin: 0 0 28px;
+    font-size: 1.15em;
+    line-height: 1.5;
+    color: var(--color-secondary);
+}
+
+.confirm-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.confirm-btn {
+    padding: 12px 26px;
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.confirm-btn-cancel {
+    background: transparent;
+    color: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+}
+
+.confirm-btn-cancel:hover {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.confirm-btn-danger {
+    background: #b3261e;
+    color: white;
+    border: 1px solid #b3261e;
+}
+
+.confirm-btn-danger:hover {
+    background: #8f1e18;
+    border-color: #8f1e18;
 }

@@ -45,9 +45,9 @@ export const FIND_ORDER_ITEMS_BY_ORDER_ID = `
 
 //==================POST ORDER=====================
 export const CREATE_NEW_ORDER = `
-    INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number, 
-                           order_total_price, order_status, payment_method, shipping_cost)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number,
+                           order_total_price, order_status, payment_method, shipping_method, shipping_cost)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 `
 
 // Vérifie que les adresses demandées appartiennent bien au client
@@ -75,6 +75,26 @@ export const DECREASE_PRODUCT_STOCK = `
     SET stock = stock - ?
     WHERE product_id = ?
       AND stock >= ?
+`
+
+// "FOR UPDATE" : verrouille la commande le temps de la transaction (deux annulations simultanées ne remettent pas le stock deux fois)
+export const FIND_ORDER_STATUS_FOR_UPDATE = `
+    SELECT order_status
+    FROM \`order\`
+    WHERE order_id = ?
+    FOR UPDATE
+`
+
+export const FIND_ORDER_ITEMS_FOR_RESTOCK = `
+    SELECT product_id, quantity
+    FROM order_item
+    WHERE order_id = ?
+`
+
+export const INCREASE_PRODUCT_STOCK = `
+    UPDATE product
+    SET stock = stock + ?
+    WHERE product_id = ?
 `
 
 export const DELETE_CART_ITEMS_BY_CART_ID = `

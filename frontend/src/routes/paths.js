@@ -12,6 +12,8 @@ export const CLIENT_PATHS = {
     quiSommesNous: '/qui-sommes-nous',
     mentionsLegales: '/mentions-legales',
     cgv: '/cgv',
+    checkout: '/commande',
+    orderConfirmation: '/commande/confirmation',
     login: '/login',
     register: '/register',
     admin: '/admin',

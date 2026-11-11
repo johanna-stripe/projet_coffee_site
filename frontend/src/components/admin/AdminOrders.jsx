@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import api from "../../axios/axiosConfig.js";
 import "../../style/userPurchases.css";   // réutilise les badges de statut (purchase-status-*)
 import "../../style/adminOrders.css";
+import ConfirmModal from "./ConfirmModal.jsx";
 
 // Libellé + couleur du badge selon order_status (même logique que "Mes achats")
 const STATUS = {
@@ -14,6 +15,8 @@ const STATUS = {
 
 const STATUS_OPTIONS = Object.keys(STATUS);
 
+const SHIPPING_METHOD_LABELS = {standard: 'Standard', express: 'Express'};
+
 const formatPrice = (value) =>
     value === undefined || value === null ? '-' : `${Number(value).toFixed(2)} €`;
 
@@ -23,6 +26,39 @@ const AdminOrders = () => {
     const [error, setError] = useState('');
     const [selectedOrder, setSelectedOrder] = useState(null);   // le détail de la commande ouverte
     const [detailError, setDetailError] = useState('');
+    const [confirmCancel, setConfirmCancel] = useState(false);   // fenêtre « annuler la commande ? » ouverte ou non
+    const [search, setSearch] = useState('');                    // texte tapé dans la recherche par n° de commande
+
+    const [statusFilter, setStatusFilter] = useState('all');     // 'all' ou une clé de STATUS
+    const [sortBy, setSortBy] = useState('date-desc');           // critère de tri choisi
+
+    // Minuscules + sans accents : "Éloïse" et "eloise" se trouvent mutuellement
+    const normalize = (text) => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+
+    // Filtre sur le numéro, le nom du client (prénom + nom, dans les deux sens) ou son email :
+    // "0012", "cmd-2026", "dupont", "marie dup", "dupont marie" ...
+    // puis sur le statut, puis tri. filter() renvoie un nouveau tableau : sort() ne modifie donc pas l'état `orders`.
+    const visibleOrders = orders
+        .filter(order => {
+            const words = normalize(search).split(/\s+/).filter(Boolean);   // chaque mot tapé doit se retrouver quelque part
+            const haystack = normalize(
+                `${order.order_number} ${order.first_name} ${order.last_name} ${order.last_name} ${order.first_name} ${order.customer_email}`
+            );
+            return words.every(word => haystack.includes(word));
+        })
+        .filter(order => statusFilter === 'all' || order.order_status === statusFilter)
+        .sort((a, b) => {
+            switch (sortBy) {
+                case 'date-asc':
+                    return new Date(a.order_date) - new Date(b.order_date);
+                case 'total-desc':
+                    return Number(b.order_total_price) - Number(a.order_total_price);
+                case 'total-asc':
+                    return Number(a.order_total_price) - Number(b.order_total_price);
+                default:   // 'date-desc'
+                    return new Date(b.order_date) - new Date(a.order_date);
+            }
+        });
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -52,6 +88,15 @@ const AdminOrders = () => {
     };
 
     // Change le statut de la commande ouverte puis met à jour le panneau ET le tableau
+    // Choix dans le select : l'annulation passe d'abord par la fenêtre de confirmation
+    const handleStatusSelect = (newStatus) => {
+        if (newStatus === 'cancelled') {
+            setConfirmCancel(true)   // le select est contrôlé : il reste sur l'ancien statut tant qu'on n'a pas confirmé
+        } else {
+            changeStatus(newStatus)
+        }
+    };
+
     const changeStatus = async (newStatus) => {
         try {
             await api.patch(`/order/${selectedOrder.order_id}`, {order_status: newStatus})
@@ -78,6 +123,34 @@ const AdminOrders = () => {
             )}
 
             {orders.length > 0 && (
+                <div className="admin-toolbar">
+                    <input type="search" className="admin-search" placeholder="Rechercher un n° de commande ou un client"
+                           aria-label="Rechercher une commande par numéro ou par client"
+                           value={search} onChange={(e) => setSearch(e.target.value)}/>
+
+                    <select className="admin-status-select" aria-label="Filtrer par statut"
+                            value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                        <option value="all">Tous les statuts</option>
+                        {STATUS_OPTIONS.map(key => (
+                            <option key={key} value={key}>{STATUS[key].label}</option>
+                        ))}
+                    </select>
+
+                    <select className="admin-status-select" aria-label="Trier les commandes"
+                            value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                        <option value="date-desc">Plus récentes d'abord</option>
+                        <option value="date-asc">Plus anciennes d'abord</option>
+                        <option value="total-desc">Total décroissant</option>
+                        <option value="total-asc">Total croissant</option>
+                    </select>
+                </div>
+            )}
+
+            {orders.length > 0 && visibleOrders.length === 0 && (
+                <p className="font-size-125em c-secondary">Aucune commande ne correspond à votre recherche.</p>
+            )}
+
+            {visibleOrders.length > 0 && (
                 <div className="admin-table-wrapper">
                 <table className="admin-table">
                     <thead>
@@ -92,7 +165,7 @@ const AdminOrders = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {orders.map(order => {
+                    {visibleOrders.map(order => {
                         const status = STATUS[order.order_status] || {label: order.order_status, className: ''};
                         return (
                         <tr key={order.order_id}
@@ -133,9 +206,12 @@ const AdminOrders = () => {
                             <dt>Statut</dt>
                             <dd>
                                 <select className="admin-status-select" value={selectedOrder.order_status}
-                                        onChange={(e) => changeStatus(e.target.value)}>
+                                        onChange={(e) => handleStatusSelect(e.target.value)}>
                                     {STATUS_OPTIONS.map(key => (
-                                        <option key={key} value={key}>{STATUS[key].label}</option>
+                                        <option key={key} value={key}
+                                                disabled={selectedOrder.order_status === 'cancelled' && key !== 'cancelled'}>
+                                            {STATUS[key].label}
+                                        </option>
                                     ))}
                                 </select>
                             </dd>
@@ -147,6 +223,10 @@ const AdminOrders = () => {
                         <div>
                             <dt>Paiement</dt>
                             <dd>{selectedOrder.payment_method || '-'}</dd>
+                        </div>
+                        <div>
+                            <dt>Livraison</dt>
+                            <dd>{SHIPPING_METHOD_LABELS[selectedOrder.shipping_method] || '-'}</dd>
                         </div>
                         <div>
                             <dt>Frais de port</dt>
@@ -175,6 +255,22 @@ const AdminOrders = () => {
                 </div>
                 )
             })()}
+
+            <ConfirmModal
+                isOpen={confirmCancel && !!selectedOrder}
+                title="Annuler la commande"
+                message={<>
+                    Êtes-vous sûr de vouloir annuler <strong>la commande {selectedOrder?.order_number}</strong> ?
+                    Cette action est <strong>irréversible</strong> : le stock des articles sera remis en vente et la commande ne pourra plus être modifiée.
+                </>}
+                confirmLabel="Annuler la commande"
+                cancelLabel="Retour"
+                onCancel={() => setConfirmCancel(false)}
+                onConfirm={() => {
+                    setConfirmCancel(false)
+                    changeStatus('cancelled')
+                }}
+            />
         </div>
     )
 
