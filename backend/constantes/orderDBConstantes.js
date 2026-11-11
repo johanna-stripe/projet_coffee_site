@@ -45,9 +45,9 @@ export const FIND_ORDER_ITEMS_BY_ORDER_ID = `
 
 //==================POST ORDER=====================
 export const CREATE_NEW_ORDER = `
-    INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id,
+    INSERT INTO \`order\` (customer_id, shipping_address_id, billing_address_id, order_number,
                            order_total_price, order_status, payment_method, shipping_cost)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 `
 
 // Vérifie que les adresses demandées appartiennent bien au client
@@ -58,10 +58,9 @@ export const FIND_CUSTOMER_ADDRESSES_BY_IDS = `
       AND address_id IN (?)
 `
 
-// Le numéro est généré par le trigger trg_order_number de la base : on le relit après l'INSERT
-export const FIND_ORDER_NUMBER = `
-    SELECT order_number
-    FROM \`order\`
+export const UPDATE_ORDER_NUMBER = `
+    UPDATE \`order\`
+    SET order_number = ?
     WHERE order_id = ?
 `
 
