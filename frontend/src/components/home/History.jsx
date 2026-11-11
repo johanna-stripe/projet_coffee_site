@@ -53,17 +53,17 @@ const History = () => {
 
                 <div className="w-100 b-top-1px"></div>
 
-                <div className="flex justify-content-space-evenly">
+                <div className="flex justify-content-space-evenly history-stats">
                     <div className="flex flex-direction-column align-items-center">
-                        <span className="font-size-18px c-secondary">26</span>
+                        <span className="history-stat-value">26</span>
                         <span className="font-size-15px c-secondary">Origines</span>
                     </div>
                     <div className="flex flex-direction-column align-items-center">
-                        <span className="font-size-18px c-secondary">48h</span>
+                        <span className="history-stat-value">48h</span>
                         <span className="font-size-15px c-secondary">Après torréfaction</span>
                     </div>
                     <div className="flex flex-direction-column align-items-center">
-                        <span className="font-size-18px c-secondary">100%</span>
+                        <span className="history-stat-value">100%</span>
                         <span className="font-size-15px c-secondary">Arabica tracé</span>
                     </div>
                 </div>
