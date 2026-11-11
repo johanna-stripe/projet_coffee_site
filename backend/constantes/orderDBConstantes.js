@@ -77,6 +77,26 @@ export const DECREASE_PRODUCT_STOCK = `
       AND stock >= ?
 `
 
+// "FOR UPDATE" : verrouille la commande le temps de la transaction (deux annulations simultanées ne remettent pas le stock deux fois)
+export const FIND_ORDER_STATUS_FOR_UPDATE = `
+    SELECT order_status
+    FROM \`order\`
+    WHERE order_id = ?
+    FOR UPDATE
+`
+
+export const FIND_ORDER_ITEMS_FOR_RESTOCK = `
+    SELECT product_id, quantity
+    FROM order_item
+    WHERE order_id = ?
+`
+
+export const INCREASE_PRODUCT_STOCK = `
+    UPDATE product
+    SET stock = stock + ?
+    WHERE product_id = ?
+`
+
 export const DELETE_CART_ITEMS_BY_CART_ID = `
     DELETE
     FROM cart_item

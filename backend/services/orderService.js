@@ -131,7 +131,7 @@ export const modifyOrderByPatch = async (orderId, changes) => {
 
     values_to_update.push(orderId)
 
-    return await modifyByPatchOrder(fields_to_update, values_to_update)
+    return await modifyByPatchOrder(fields_to_update, values_to_update, changes.order_status)
 }
 
 
