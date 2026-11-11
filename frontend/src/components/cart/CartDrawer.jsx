@@ -6,7 +6,7 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import {CLIENT_PATHS, productPath} from "../../routes/paths.js";
 import "../../style/cartDrawer.css";
 
-const FREE_SHIPPING_THRESHOLD = 35 // livraison offerte dès 35 € (cf. fiche produit)
+const FREE_SHIPPING_THRESHOLD = 35 // livraison standard offerte dès 35 € (cf. fiche produit)
 
 const formatPrice = (price) =>
     Number(price).toLocaleString('fr-FR', {style: 'currency', currency: 'EUR'})
@@ -86,8 +86,8 @@ const CartDrawer = () => {
                         <div className="cart-shipping">
                             <p>
                                 {remaining > 0
-                                    ? <>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison offerte</>
-                                    : "Livraison offerte !"}
+                                    ? <>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison standard offerte</>
+                                    : "Livraison standard offerte !"}
                             </p>
                             <div
                                 className="cart-shipping__bar"
