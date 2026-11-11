@@ -4,10 +4,20 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import ConfirmModal from "./ConfirmModal.jsx";
 import "../../style/adminOrders.css";   // classes communes : toolbar, recherche, tableau, pagination
 import "../../style/adminUsers.css";
+import "../../style/adminProducts.css";   // champs de formulaire (admin-products-field / -grid) réutilisés pour la création
 
 const PAGE_SIZE = 10;   // utilisateurs affichés par page
 
 const ROLE_LABELS = {ADMIN: 'Admin', USER: 'Client'};
+
+const EMPTY_NEW_USER = {first_name: '', last_name: '', username: '', email: '', phone: '', role: 'USER', password: ''};
+
+// Mot de passe temporaire de 12 caractères (sans 0/O/1/l/I pour éviter les confusions à la dictée)
+const generatePassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    const randoms = crypto.getRandomValues(new Uint32Array(12));
+    return Array.from(randoms, n => chars[n % chars.length]).join('');
+};
 
 const AdminUsers = () => {
     const {user: currentUser} = useAuth()   // l'admin connecté : il ne peut pas modifier son propre compte
@@ -20,6 +30,12 @@ const AdminUsers = () => {
     const [page, setPage] = useState(1);        // page affichée (1 = la première)
     const [selectedUser, setSelectedUser] = useState(null);   // le détail de l'utilisateur ouvert
     const [detailError, setDetailError] = useState('');
+    const [creating, setCreating] = useState(false);          // formulaire « ajouter un utilisateur » ouvert ou non
+    const [newUser, setNewUser] = useState(EMPTY_NEW_USER);
+    const [createError, setCreateError] = useState('');
+    const [createSuccess, setCreateSuccess] = useState('');
+    const [saving, setSaving] = useState(false);
+    const createRef = useRef(null);
     const detailRef = useRef(null);   // panneau de détail, pour y descendre au clic
     const [confirmDeactivate, setConfirmDeactivate] = useState(false);   // fenêtre « désactiver le compte ? » ouverte ou non
 
@@ -46,22 +62,70 @@ const AdminUsers = () => {
     const currentPage = Math.min(page, totalPages);
     const pageUsers = visibleUsers.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await api.get('/users')
-                setUsers(response.data.results || [])
-                setError('')
-            } catch (err) {
-                if (err.response?.status === 404) {
-                    setUsers([]);
-                } else {
-                    setError(err.response?.data?.error || err.response?.data?.message || 'Impossible de charger les utilisateurs');
-                }
+    const fetchUsers = async () => {
+        try {
+            const response = await api.get('/users')
+            setUsers(response.data.results || [])
+            setError('')
+        } catch (err) {
+            if (err.response?.status === 404) {
+                setUsers([]);
+            } else {
+                setError(err.response?.data?.error || err.response?.data?.message || 'Impossible de charger les utilisateurs');
             }
         }
+    }
+
+    useEffect(() => {
         fetchUsers()
     }, []);
+
+    // À l'ouverture du formulaire de création, on descend dessus (comme pour le détail)
+    useEffect(() => {
+        if (creating) {
+            createRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }, [creating]);
+
+    const openCreate = () => {
+        setSelectedUser(null)
+        setNewUser(EMPTY_NEW_USER)
+        setCreateError('')
+        setCreateSuccess('')
+        setCreating(true)
+    };
+
+    const setNewField = (name) => (e) => setNewUser({...newUser, [name]: e.target.value});
+
+    const createUser = async (e) => {
+        e.preventDefault()
+        const email = newUser.email.trim()
+        const username = newUser.username.trim() || `${newUser.first_name} ${newUser.last_name}`.trim()
+
+        if (!newUser.first_name.trim() || !newUser.last_name.trim()) return setCreateError('Le prénom et le nom sont obligatoires.')
+        if (!/^\S+@\S+\.\S+$/.test(email)) return setCreateError("L'adresse email n'est pas valide.")
+        if (newUser.password.length < 8 || newUser.password.length > 16) return setCreateError('Le mot de passe doit contenir de 8 à 16 caractères.')
+
+        setSaving(true)
+        try {
+            await api.post('/users/newUser', {
+                first_name: newUser.first_name.trim(),
+                last_name: newUser.last_name.trim(),
+                username,
+                email,
+                phone: newUser.phone.trim() || undefined,
+                role: newUser.role,
+                password: newUser.password,
+            })
+            setCreateSuccess(`Compte créé pour ${username}. Transmettez-lui son mot de passe temporaire.`)
+            setCreating(false)
+            await fetchUsers()
+        } catch (err) {
+            setCreateError(err.response?.data?.message || err.response?.data?.error || "Impossible de créer l'utilisateur")
+        } finally {
+            setSaving(false)
+        }
+    };
 
     // Dès qu'un utilisateur est ouvert (ou qu'on en ouvre un autre), on descend sur son détail
     useEffect(() => {
@@ -73,6 +137,7 @@ const AdminUsers = () => {
     const openUser = async (userId) => {
         try {
             const response = await api.get(`/users/${userId}`)
+            setCreating(false)   // un seul panneau à la fois
             setSelectedUser({...response.data.results, id: userId})
             setDetailError('')
         } catch (err) {
@@ -108,9 +173,16 @@ const AdminUsers = () => {
     return (
         <div className="admin-users">
             <div className="admin-users-header">
-                <h3 className="font-size-2em c-secondary m-bottom-5px">Utilisateurs</h3>
-                <p className="font-size-125em subtitle c-secondary m-0">Tous les clients et utilisateurs de la boutique</p>
+                <div>
+                    <h3 className="font-size-2em c-secondary m-bottom-5px">Utilisateurs</h3>
+                    <p className="font-size-125em subtitle c-secondary m-0">Tous les clients et utilisateurs de la boutique</p>
+                </div>
+                <button type="button" className="admin-products-add" onClick={openCreate}>
+                    + Ajouter un utilisateur
+                </button>
             </div>
+
+            {createSuccess && <p className="admin-products-success" role="status">{createSuccess}</p>}
 
             {error && <p className="purchase-error">{error}</p>}
 
@@ -207,6 +279,67 @@ const AdminUsers = () => {
                         Suivant →
                     </button>
                 </nav>
+            )}
+
+            {creating && (
+                <form className="admin-order-detail" ref={createRef} onSubmit={createUser} noValidate>
+                    <div className="admin-order-detail-head">
+                        <h4 className="admin-order-detail-title">Nouvel utilisateur</h4>
+                        <button type="button" className="admin-order-detail-close" aria-label="Fermer"
+                                onClick={() => setCreating(false)}>✕</button>
+                    </div>
+
+                    <div className="admin-products-grid">
+                        <label className="admin-products-field">
+                            <span>Prénom *</span>
+                            <input type="text" value={newUser.first_name} onChange={setNewField('first_name')}/>
+                        </label>
+                        <label className="admin-products-field">
+                            <span>Nom *</span>
+                            <input type="text" value={newUser.last_name} onChange={setNewField('last_name')}/>
+                        </label>
+                        <label className="admin-products-field">
+                            <span>Identifiant</span>
+                            <input type="text" placeholder="Par défaut : prénom nom" value={newUser.username} onChange={setNewField('username')}/>
+                        </label>
+                        <label className="admin-products-field">
+                            <span>Email *</span>
+                            <input type="email" value={newUser.email} onChange={setNewField('email')}/>
+                        </label>
+                        <label className="admin-products-field">
+                            <span>Téléphone</span>
+                            <input type="tel" value={newUser.phone} onChange={setNewField('phone')}/>
+                        </label>
+                        <label className="admin-products-field">
+                            <span>Rôle</span>
+                            <select value={newUser.role} onChange={setNewField('role')}>
+                                {Object.keys(ROLE_LABELS).map(key => (
+                                    <option key={key} value={key}>{ROLE_LABELS[key]}</option>
+                                ))}
+                            </select>
+                        </label>
+                        <label className="admin-products-field admin-products-field-wide">
+                            <span>Mot de passe temporaire * (8 à 16 caractères)</span>
+                            <input type="text" autoComplete="off" value={newUser.password} onChange={setNewField('password')}/>
+                        </label>
+                        <div className="admin-products-field">
+                            <span>&nbsp;</span>
+                            <button type="button" className="admin-users-action"
+                                    onClick={() => setNewUser({...newUser, password: generatePassword()})}>
+                                Générer un mot de passe
+                            </button>
+                        </div>
+                    </div>
+
+                    {createError && <p className="purchase-error" role="alert">{createError}</p>}
+
+                    <div className="admin-products-actions">
+                        <button type="submit" className="admin-products-add" disabled={saving}>
+                            {saving ? 'Création…' : "Créer l'utilisateur"}
+                        </button>
+                        <button type="button" className="admin-users-action" onClick={() => setCreating(false)}>Annuler</button>
+                    </div>
+                </form>
             )}
 
             {detailError && <p className="purchase-error">{detailError}</p>}

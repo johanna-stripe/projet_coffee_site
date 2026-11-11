@@ -12,7 +12,7 @@ import {
     createANewCustomer,
     modifyCustomerByUserId,
 } from "../models/customerModel.js";
-import {errorBuilder} from "../private methods/privateMethods.js";
+import {errorBuilder, normalizeEmailAddress, normalizePhoneNumber} from "../private methods/privateMethods.js";
 import {hashPassword} from "../security/helper/passwordUtiles.js";
 
 
@@ -46,11 +46,22 @@ export const getUser = async (userId) => {
 // username, email, password obligatoires (table users)
 // first_name + last_name optionnels : s'ils sont fournis, on crée aussi la fiche customer
 export const createNewUser = async (userData) => {
-    const {username, email, password, role, first_name, last_name, phone, birth_date} = userData
+    const {password, role, first_name, last_name, phone, birth_date} = userData
 
-    if (!username || !email || !password) throw errorBuilder('Username, email and password are mandatory')
+    const username = typeof userData.username === 'string' ? userData.username.trim() : ''
+    if (!username || !userData.email || !password) throw errorBuilder('Username, email and password are mandatory')
 
-    if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
+    const email = normalizeEmailAddress(userData.email)   // lève une 400 si l'email n'est pas valide
+
+    if (typeof password !== 'string' || password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
+
+    // le rôle vient d'un formulaire : liste blanche, comme pour le changement de rôle
+    const allowedRoles = ['USER', 'ADMIN']
+    const finalRole = role || 'USER'
+    if (!allowedRoles.includes(finalRole)) throw errorBuilder('Invalid Role')
+
+    const cleanPhone = phone ? normalizePhoneNumber(phone) : ''
+    if (phone && !cleanPhone) throw errorBuilder('Phone number not valid')
 
     const existingUser = await findUserByEmail(email)
     if (existingUser) throw errorBuilder('User already exists', 409)
@@ -58,11 +69,11 @@ export const createNewUser = async (userData) => {
     const hashedPassword = await hashPassword(password)
 
     const customer = (first_name && last_name)
-        ? {first_name, last_name, customer_email: email, phone, birth_date}
+        ? {first_name: first_name.trim(), last_name: last_name.trim(), customer_email: email, phone: cleanPhone || null, birth_date}
         : null
 
     return await saveUserWithCustomer(
-        {username, email, password: hashedPassword, role: role || 'USER'},
+        {username, email, password: hashedPassword, role: finalRole},
         customer
     )
 }
