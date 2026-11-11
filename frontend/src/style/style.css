@@ -39,3 +39,20 @@ h3 {font-size: 1.25em}
 h4 {font-size: 1em}
 h5 {font-size: 0.75em}
 h6 {font-size: 0.5em}
+
+/* ===== Bandeau de réassurance (TrustBadges) : les blocs se partagent la largeur, titres sur une seule ligne ===== */
+.trust-badge {
+    flex: 1;
+    max-width: 420px;
+    padding: 0 12px;
+}
+
+.trust-badge__text {
+    max-width: 300px;   /* le texte est resserré : il tient sur 2 lignes, même si le bloc est plus large que lui */
+}
+
+@media (min-width: 1200px) {
+    .trust-badge__title {
+        white-space: nowrap;   /* « Livraison standard offerte dès 35 € » reste sur une ligne */
+    }
+}
