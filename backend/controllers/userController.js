@@ -79,6 +79,11 @@ export const updateUser = async (req, res) => {
         const userId = req.params.id
         if (!userId) return res.status(400).json({message: 'User Id is required'})
 
+        // Un utilisateur ne modifie que son propre compte (seul un admin peut modifier celui d'un autre)
+        if (Number(userId) !== req.user.id && req.user.role !== 'ADMIN') {
+            return res.status(403).json({message: 'Access Denied'})
+        }
+
         const updates = {...req.body}
 
         if (updates.new_password) {
@@ -101,7 +106,7 @@ export const updateUser = async (req, res) => {
             updates.birth_date = updates.birth_date.split('T')[0]
         }
 
-        const results = await modifyUser(userId, updates)
+        const results = await modifyUser(userId, updates, req.user.role === 'ADMIN')
         return res.json({message: 'User modified successfully', results})
 
     } catch (error) {
@@ -115,6 +120,9 @@ export const patchUserRole = async (req, res) => {
     try {
         const userId = req.params.id
         if (!userId) throw errorBuilder('User Id is required')
+
+        // Un admin ne peut pas changer son propre rôle (sinon il pourrait se retirer l'accès admin)
+        if (Number(userId) === req.user.id) throw errorBuilder('You cannot change your own role', 403)
 
         const role = req.body.role
         if (!req.body) throw errorBuilder('User role is required')
@@ -159,6 +167,9 @@ export const patchUserDeactivate = async (req, res) => {
     try {
         const userId = req.params.id
         if (!userId) throw errorBuilder('User Id is required')
+
+        // Un admin ne peut pas désactiver son propre compte (il ne pourrait plus se reconnecter)
+        if (Number(userId) === req.user.id) throw errorBuilder('You cannot deactivate your own account', 403)
 
         const results = await disableUser(userId)
         if (!results || results.affectedRows === 0) throw errorBuilder('User could not be deactivated')

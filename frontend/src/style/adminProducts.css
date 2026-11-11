@@ -1,0 +1,176 @@
+/* ====================== ADMIN : PRODUITS ====================== */
+/* Toolbar, recherche, tableau, pagination et panneau viennent de adminOrders.css (classes admin-*) */
+/* Badges rôle et boutons d'action viennent de adminUsers.css */
+
+.admin-products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.admin-products-header h3 {
+    margin-top: 0;              /* retire la marge par défaut du titre, qui s'ajoutait au padding */
+}
+
+/* ---------- Bouton principal ---------- */
+.admin-products-add {
+    padding: 10px 22px;
+    font: inherit;
+    font-size: 0.85em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    background: var(--color-secondary);
+    border: 1px solid var(--color-secondary);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.admin-products-add:hover:not(:disabled) {
+    opacity: 0.85;
+}
+
+.admin-products-add:disabled {
+    opacity: 0.5;
+    cursor: wait;
+}
+
+.admin-products-success {
+    margin: 0 0 16px;
+    padding: 10px 14px;
+    color: #2e6b3a;
+    background: #e3f1e5;
+}
+
+/* ---------- Tableau ---------- */
+.admin-products-thumb {
+    display: block;
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    background: #f1ebe4;
+}
+
+.admin-products-thumb-empty {
+    line-height: 44px;
+    text-align: center;
+    color: var(--color-tertiary);
+}
+
+.admin-products-stock {
+    white-space: nowrap;
+}
+
+.admin-products-stock-low,
+.admin-products-stock-out {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 0.8em;
+    border-radius: 999px;
+}
+
+.admin-products-stock-low {
+    color: #8a5a12;
+    background: #faedd2;
+}
+
+.admin-products-stock-out {
+    color: #8a2f2f;
+    background: #f6e1e1;
+}
+
+/* ---------- Formulaire ---------- */
+.admin-products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px 24px;
+    margin-bottom: 24px;
+}
+
+.admin-products-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.admin-products-field > span {
+    font-size: 0.7em;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+.admin-products-field-wide {
+    grid-column: span 2;
+}
+
+.admin-products-field-full {
+    grid-column: 1 / -1;
+}
+
+.admin-products-field input,
+.admin-products-field textarea,
+.admin-products-field select {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px 12px;
+    font: inherit;
+    color: var(--color-secondary);
+    background: white;
+    border: 1px solid #e0d6cc;
+}
+
+.admin-products-field textarea {
+    resize: vertical;
+}
+
+.admin-products-field input:focus,
+.admin-products-field textarea:focus,
+.admin-products-field select:focus {
+    outline: none;
+    border-color: var(--color-tertiary);
+}
+
+.admin-products-preview {
+    grid-column: 1 / -1;
+    max-width: 160px;
+    max-height: 160px;
+    object-fit: contain;
+    background: #f1ebe4;
+}
+
+.admin-products-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-products-delete {
+    margin-left: auto;          /* « Supprimer » à droite, loin de « Enregistrer » */
+}
+
+@media (max-width: 600px) {
+    .admin-products-field-wide {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Au clic sur un produit, la page s'arrête sur le HAUT du panneau, sous la barre de navigation fixe */
+.admin-products-form {
+    scroll-margin-top: 110px;
+}
+
+/* ---------- Page catégories : sous-catégories décalées sous leur parent ---------- */
+.admin-categories-main {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.admin-categories-sub {
+    padding-left: 36px !important;
+    text-transform: capitalize;
+}

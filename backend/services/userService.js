@@ -12,7 +12,7 @@ import {
     createANewCustomer,
     modifyCustomerByUserId,
 } from "../models/customerModel.js";
-import {errorBuilder} from "../private methods/privateMethods.js";
+import {errorBuilder, normalizeEmailAddress, normalizePhoneNumber} from "../private methods/privateMethods.js";
 import {hashPassword} from "../security/helper/passwordUtiles.js";
 
 
@@ -31,9 +31,14 @@ export const getUser = async (userId) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        is_active: user.is_active,
+        created_at: user.created_at,
         // infos venant de la table customer
         first_name: user.first_name,
         last_name: user.last_name,
+        customer_email: user.customer_email,
+        phone: user.phone,
+        birth_date: user.birth_date,
     }
 }
 
@@ -41,11 +46,22 @@ export const getUser = async (userId) => {
 // username, email, password obligatoires (table users)
 // first_name + last_name optionnels : s'ils sont fournis, on crée aussi la fiche customer
 export const createNewUser = async (userData) => {
-    const {username, email, password, role, first_name, last_name, phone, birth_date} = userData
+    const {password, role, first_name, last_name, phone, birth_date} = userData
 
-    if (!username || !email || !password) throw errorBuilder('Username, email and password are mandatory')
+    const username = typeof userData.username === 'string' ? userData.username.trim() : ''
+    if (!username || !userData.email || !password) throw errorBuilder('Username, email and password are mandatory')
 
-    if (password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
+    const email = normalizeEmailAddress(userData.email)   // lève une 400 si l'email n'est pas valide
+
+    if (typeof password !== 'string' || password.length < 8 || password.length > 16) throw errorBuilder('Your password should contain 8 to 16 characters')
+
+    // le rôle vient d'un formulaire : liste blanche, comme pour le changement de rôle
+    const allowedRoles = ['USER', 'ADMIN']
+    const finalRole = role || 'USER'
+    if (!allowedRoles.includes(finalRole)) throw errorBuilder('Invalid Role')
+
+    const cleanPhone = phone ? normalizePhoneNumber(phone) : ''
+    if (phone && !cleanPhone) throw errorBuilder('Phone number not valid')
 
     const existingUser = await findUserByEmail(email)
     if (existingUser) throw errorBuilder('User already exists', 409)
@@ -53,11 +69,11 @@ export const createNewUser = async (userData) => {
     const hashedPassword = await hashPassword(password)
 
     const customer = (first_name && last_name)
-        ? {first_name, last_name, customer_email: email, phone, birth_date}
+        ? {first_name: first_name.trim(), last_name: last_name.trim(), customer_email: email, phone: cleanPhone || null, birth_date}
         : null
 
     return await saveUserWithCustomer(
-        {username, email, password: hashedPassword, role: role || 'USER'},
+        {username, email, password: hashedPassword, role: finalRole},
         customer
     )
 }
@@ -66,7 +82,8 @@ export const createNewUser = async (userData) => {
 // Les champs reçus du front sont répartis entre les 2 tables :
 //  - users    : username, email, new_password
 //  - customer : first_name, last_name, phone, birth_date
-export const modifyUser = async (userId, updates) => {
+// isAdmin : seul un admin peut corriger la date d'inscription (un client qui l'enverrait est ignoré)
+export const modifyUser = async (userId, updates, isAdmin = false) => {
     const userFieldMap = {
         username: 'username',
         email: 'email',
@@ -82,6 +99,20 @@ export const modifyUser = async (userId, updates) => {
     //----- table users -----
     const userFields = []
     const userValues = []
+
+    if (updates.username !== undefined) {
+        updates = {...updates, username: typeof updates.username === 'string' ? updates.username.trim() : ''}
+        if (!updates.username) throw errorBuilder('Username cannot be empty', 400)
+    }
+
+    if (isAdmin && updates.created_at !== undefined) {
+        const day = String(updates.created_at).slice(0, 10)   // accepte « 2026-11-02 » ou une date ISO complète
+        const date = new Date(`${day}T12:00:00`)
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || Number.isNaN(date.getTime())) throw errorBuilder('Registration date not valid', 400)
+        if (date > new Date()) throw errorBuilder('Registration date cannot be in the future', 400)
+        userFields.push('created_at')
+        userValues.push(day)
+    }
     for (const [key, column] of Object.entries(userFieldMap)) {
         if (updates[key] === undefined) continue
         userFields.push(column)
@@ -106,7 +137,13 @@ export const modifyUser = async (userId, updates) => {
             const other = await findUserByEmail(updates.email)
             if (other && String(other.user_id) !== String(userId)) throw errorBuilder('The email already exists', 409)
         }
-        results.user = await updateUserById(userFields, [...userValues, userId])
+        try {
+            results.user = await updateUserById(userFields, [...userValues, userId])
+        } catch (error) {
+            // 1062 = doublon sur une colonne unique (identifiant ou email déjà pris)
+            if (error.errno === 1062) throw errorBuilder('This username or email is already used', 409)
+            throw error
+        }
     }
 
     if (customerFields.length > 0) {

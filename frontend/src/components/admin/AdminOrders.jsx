@@ -1,4 +1,5 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import {useSearchParams} from "react-router-dom";
 import api from "../../axios/axiosConfig.js";
 import "../../style/userPurchases.css";   // réutilise les badges de statut (purchase-status-*)
 import "../../style/adminOrders.css";
@@ -14,6 +15,9 @@ const STATUS = {
 };
 
 const STATUS_OPTIONS = Object.keys(STATUS);
+
+// Commandes qui comptent dans le chiffre d'affaires (même règle que le tableau de bord)
+const REVENUE_STATUSES = ['paid', 'shipped', 'delivered'];
 
 const PAGE_SIZE = 10;   // commandes affichées par page
 
@@ -31,9 +35,15 @@ const AdminOrders = () => {
     const [confirmCancel, setConfirmCancel] = useState(false);   // fenêtre « annuler la commande ? » ouverte ou non
     const [search, setSearch] = useState('');                    // texte tapé dans la recherche par n° de commande
 
-    const [statusFilter, setStatusFilter] = useState('all');     // 'all' ou une clé de STATUS
+    // ?commande=<id> (ouvre un détail) et ?statut=<clé de STATUS> (filtre) : liens venant du tableau de bord
+    const [searchParams] = useSearchParams();
+    const [statusFilter, setStatusFilter] = useState(
+        STATUS[searchParams.get('statut')] || searchParams.get('statut') === 'revenue' ? searchParams.get('statut') : 'all'
+    );     // 'all', une clé de STATUS ou 'revenue' (payé + expédié + livré)
+    const [periodFilter, setPeriodFilter] = useState(searchParams.get('periode') === 'mois' ? 'month' : 'all');   // 'all' ou 'month'
     const [sortBy, setSortBy] = useState('date-desc');           // critère de tri choisi
     const [page, setPage] = useState(1);                         // page affichée (1 = la première)
+    const detailRef = useRef(null);                              // panneau de détail, pour y descendre au clic
 
     // Minuscules + sans accents : "Éloïse" et "eloise" se trouvent mutuellement
     const normalize = (text) => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -49,7 +59,13 @@ const AdminOrders = () => {
             );
             return words.every(word => haystack.includes(word));
         })
-        .filter(order => statusFilter === 'all' || order.order_status === statusFilter)
+        .filter(order => statusFilter === 'all'
+            || (statusFilter === 'revenue' ? REVENUE_STATUSES.includes(order.order_status) : order.order_status === statusFilter))
+        .filter(order => {
+            if (periodFilter === 'all') return true;
+            const date = new Date(order.order_date), now = new Date();
+            return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+        })
         .sort((a, b) => {
             switch (sortBy) {
                 case 'date-asc':
@@ -86,6 +102,13 @@ const AdminOrders = () => {
         fetchOrders()
     }, []);
 
+    // Dès qu'une commande est ouverte (ou qu'on en ouvre une autre), on descend sur son détail
+    useEffect(() => {
+        if (selectedOrder) {
+            detailRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }, [selectedOrder?.order_id]);
+
     const openOrder = async (orderId) => {
         try {
             const response = await api.get(`/order/detail/${orderId}`)
@@ -95,6 +118,12 @@ const AdminOrders = () => {
             setDetailError(err.response?.data?.message || 'Impossible de charger la commande');
         }
     };
+
+    // Arrivée depuis le tableau de bord : on ouvre directement le détail de la commande demandée
+    useEffect(() => {
+        const orderId = searchParams.get('commande');
+        if (orderId) openOrder(orderId);
+    }, [searchParams]);
 
     // Change le statut de la commande ouverte puis met à jour le panneau ET le tableau
     // Choix dans le select : l'annulation passe d'abord par la fenêtre de confirmation
@@ -143,6 +172,13 @@ const AdminOrders = () => {
                         {STATUS_OPTIONS.map(key => (
                             <option key={key} value={key}>{STATUS[key].label}</option>
                         ))}
+                        <option value="revenue">Payé, expédié ou livré</option>
+                    </select>
+
+                    <select className="admin-status-select" aria-label="Filtrer par période"
+                            value={periodFilter} onChange={(e) => {setPeriodFilter(e.target.value); setPage(1)}}>
+                        <option value="all">Toutes les dates</option>
+                        <option value="month">Ce mois-ci</option>
                     </select>
 
                     <select className="admin-status-select" aria-label="Trier les commandes"
@@ -216,7 +252,7 @@ const AdminOrders = () => {
                 const detailStatus = STATUS[selectedOrder.order_status] || {label: selectedOrder.order_status, className: ''};
                 const itemsTotal = selectedOrder.items.reduce((sum, item) => sum + item.quantity * Number(item.unit_price), 0);
                 return (
-                <div className="admin-order-detail">
+                <div className="admin-order-detail" ref={detailRef}>
                     <div className="admin-order-detail-head">
                         <div>
                             <h4 className="admin-order-detail-title">Commande {selectedOrder.order_number}</h4>

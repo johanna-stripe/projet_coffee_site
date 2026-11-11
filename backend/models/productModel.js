@@ -13,10 +13,17 @@ import {
     CREATE_NEW_ACCESSORY,
     //PUT
     PUT_PRODUCT,
+    UPDATE_COFFEE_TEA_INFUSION,
+    UPDATE_MACHINE,
+    UPDATE_ACCESSORY,
     //PATCH
     PATCH_PRODUCT,
     //DELETE
     DELETE_PRODUCT_BY_ID,
+    DELETE_COFFEE_TEA_INFUSION_BY_PRODUCT_ID,
+    DELETE_MACHINE_BY_PRODUCT_ID,
+    DELETE_ACCESSORY_BY_PRODUCT_ID,
+    DELETE_CART_ITEMS_BY_PRODUCT_ID,
 } from "../constantes/productDBConstantes.js";
 
 //======================Remarques utiles=========================
@@ -98,6 +105,35 @@ export const modifyByPutProduct = async (productId, values) =>{
     return results
 }
 
+// Modifie le produit ET sa sous-table (café/machine/accessoire) en une seule transaction :
+// si une des deux requêtes échoue, rien n'est modifié (pas de produit à moitié à jour)
+export const modifyProductWithDetails = async (productId, values, productType, details) => {
+    const connection = await db.getConnection()
+    try {
+        await connection.beginTransaction()
+        const [results] = await connection.query(PUT_PRODUCT, [...values, productId])
+
+        if (productType === 'coffee/tea/infusion') {
+            const {origin, roast, intensity, weight} = details
+            await connection.query(UPDATE_COFFEE_TEA_INFUSION, [origin, roast, intensity, weight, productId])
+        } else if (productType === 'machine') {
+            const {pressure_power, tank_capacity, grinder} = details
+            await connection.query(UPDATE_MACHINE, [pressure_power, tank_capacity, grinder, productId])
+        } else if (productType === 'accessory') {
+            const {material, capacity, color} = details
+            await connection.query(UPDATE_ACCESSORY, [material, capacity, color, productId])
+        }
+
+        await connection.commit()
+        return results
+    } catch (error) {
+        await connection.rollback()
+        throw error
+    } finally {
+        connection.release()
+    }
+}
+
 //==========================PATCH PRODUCT============================
 export const modifyByPatchProduct = async (fields, values) => {
     const query = PATCH_PRODUCT(fields)
@@ -111,6 +147,21 @@ export const modifyByPatchProduct = async (fields, values) => {
 
 //======================DELETE PRODUCT==============================
 export const deleteByIdProduct = async (productId) => {
-    const [results] = await db.query(DELETE_PRODUCT_BY_ID, [productId])
-    return results
+    const connection = await db.getConnection()
+    try {
+        await connection.beginTransaction()
+        await connection.query(DELETE_CART_ITEMS_BY_PRODUCT_ID, [productId])
+        await connection.query(DELETE_COFFEE_TEA_INFUSION_BY_PRODUCT_ID, [productId])
+        await connection.query(DELETE_MACHINE_BY_PRODUCT_ID, [productId])
+        await connection.query(DELETE_ACCESSORY_BY_PRODUCT_ID, [productId])
+        const [results] = await connection.query(DELETE_PRODUCT_BY_ID, [productId])
+        await connection.commit()
+        return results
+    } catch (error) {
+        // tout est annulé (le panier et les sous-tables reviennent comme avant)
+        await connection.rollback()
+        throw error
+    } finally {
+        connection.release()
+    }
 }
