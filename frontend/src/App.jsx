@@ -21,6 +21,7 @@ import AdminOrders from "./components/admin/AdminOrders.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
+import AdminUsers from "./components/admin/AdminUsers.jsx";
 
 
 export default function App() {
@@ -38,7 +39,7 @@ export default function App() {
                                 <Route path={CLIENT_PATHS.admin} element={<Navigate to={CLIENT_PATHS.adminProducts} replace/>}/>
                                 <Route path={CLIENT_PATHS.adminProducts} element={<h1>Page produits</h1>}/>
                                 <Route path={CLIENT_PATHS.adminOrders} element={<AdminOrders/>}/>
-                                <Route path={CLIENT_PATHS.adminUsers} element={<h1>Page utilisateurs</h1>}/>
+                                <Route path={CLIENT_PATHS.adminUsers} element={<AdminUsers/>}/>
                             </Route>
                         </Route>
                         <Route path={CLIENT_PATHS.home} element={<Accueil/>}/>

@@ -31,9 +31,14 @@ export const getUser = async (userId) => {
         username: user.username,
         email: user.email,
         role: user.role,
+        is_active: user.is_active,
+        created_at: user.created_at,
         // infos venant de la table customer
         first_name: user.first_name,
         last_name: user.last_name,
+        customer_email: user.customer_email,
+        phone: user.phone,
+        birth_date: user.birth_date,
     }
 }
 
