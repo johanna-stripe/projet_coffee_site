@@ -11,7 +11,7 @@ import {
     createMachineDetails,
     createAccessoryDetails,
     //PUT
-    modifyByPutProduct,
+    modifyProductWithDetails,
     //PATCH
     modifyByPatchProduct,
     //DELETE
@@ -43,6 +43,9 @@ export const getProductInfoById = async (productId) => {
         brand_id: rows.brand_id,
         product_name: rows.product_name,
         product_description: rows.product_description,
+        product_image_url: rows.product_image_url,
+        category_name: rows.category_name,
+        brand_name: rows.brand_name,
         price: rows.price,
         stock: rows.stock,
     }
@@ -51,6 +54,7 @@ export const getProductInfoById = async (productId) => {
         //c'est un coffee/tea/infusions
         return {
             ...baseProduct,
+            product_type: 'coffee/tea/infusion',
             origin: rows.origin,
             roast: rows.roast,
             intensity: rows.intensity,
@@ -62,6 +66,7 @@ export const getProductInfoById = async (productId) => {
         //c'est une machine
         return {
             ...baseProduct,
+            product_type: 'machine',
             pressure_power: rows.pressure_power,
             tank_capacity: rows.tank_capacity,
             grinder: rows.grinder
@@ -72,6 +77,7 @@ export const getProductInfoById = async (productId) => {
         //c'est un accessoire
         return {
             ...baseProduct,
+            product_type: 'accessory',
             material: rows.material,
             capacity: rows.capacity,
             color: rows.color,
@@ -81,6 +87,73 @@ export const getProductInfoById = async (productId) => {
     }
 }
 
+
+//=========================VALIDATION PRODUIT==============================
+// Utilisée par la création ET la modification : mêmes règles aux deux endroits
+const NAME_MAX = 150
+const DESCRIPTION_MAX = 2000
+const URL_MAX = 500
+
+const toNumber = (value) => (value === '' || value === null || value === undefined) ? NaN : Number(value)
+
+// Renvoie les champs communs nettoyés, ou lève une erreur 400 claire
+const validateProductFields = (data) => {
+    const name = typeof data.product_name === 'string' ? data.product_name.trim() : ''
+    if (!name) throw errorBuilder('Product name is required', 400)
+    if (name.length > NAME_MAX) throw errorBuilder(`Product name must be at most ${NAME_MAX} characters`, 400)
+
+    const description = typeof data.product_description === 'string' ? data.product_description.trim() : ''
+    if (!description) throw errorBuilder('Product description is required', 400)
+    if (description.length > DESCRIPTION_MAX) throw errorBuilder(`Product description must be at most ${DESCRIPTION_MAX} characters`, 400)
+
+    const imageUrl = typeof data.product_image_url === 'string' ? data.product_image_url.trim() : ''
+    if (imageUrl.length > URL_MAX) throw errorBuilder('Image URL is too long', 400)
+    // une image est affichée dans <img src> : on n'accepte qu'un chemin du site ou une adresse http(s)
+    if (imageUrl && !/^(\/|https?:\/\/)/i.test(imageUrl)) throw errorBuilder('Image URL must start with / or http(s)://', 400)
+
+    const price = toNumber(data.price)
+    if (!Number.isFinite(price) || price < 0) throw errorBuilder('Price must be a number >= 0', 400)
+
+    const stock = toNumber(data.stock)
+    if (!Number.isInteger(stock) || stock < 0) throw errorBuilder('Stock must be a whole number >= 0', 400)
+
+    return {name, description, imageUrl: imageUrl || null, price, stock}
+}
+
+// Champs propres à chaque type de produit (colonnes des sous-tables)
+const cleanText = (value) => (typeof value === 'string' && value.trim() !== '') ? value.trim() : null
+const cleanNumber = (value, label) => {
+    if (value === '' || value === null || value === undefined) return null
+    const number = Number(value)
+    if (!Number.isFinite(number) || number < 0) throw errorBuilder(`${label} must be a number >= 0`, 400)
+    return number
+}
+
+const cleanDetails = (productType, data) => {
+    if (productType === 'coffee/tea/infusion') {
+        return {
+            origin: cleanText(data.origin),
+            roast: cleanText(data.roast),
+            intensity: cleanNumber(data.intensity, 'Intensity'),
+            weight: cleanNumber(data.weight, 'Weight')
+        }
+    }
+    if (productType === 'machine') {
+        return {
+            pressure_power: cleanText(data.pressure_power),
+            tank_capacity: cleanNumber(data.tank_capacity, 'Tank capacity'),
+            grinder: cleanText(data.grinder)
+        }
+    }
+    if (productType === 'accessory') {
+        return {
+            material: cleanText(data.material),
+            capacity: cleanNumber(data.capacity, 'Capacity'),
+            color: cleanText(data.color)
+        }
+    }
+    throw errorBuilder('Wrong product_type', 400)
+}
 
 //=========================POST NEW PRODUCT==============================
 /*
@@ -105,7 +178,7 @@ const resolveCategoryId = async (categoryId, categoryName) => {
     if (existing) return existing.category_id
     //si elle existe, on retourne directement son id existant
 
-    return await createCategory(cleanCategoryName)
+    return await createCategory([cleanCategoryName, null])
     //si elle existe pas, on la crée
 }
 
@@ -124,53 +197,32 @@ const resolveBrandId = async (brandId, brandName) => {
 
 // ***************************** Etape 2 : on crée le product ***************************
 export const createNewProduct = async (productData) => {
-    const {
-        product_name,
-        product_description,
-        product_image_url,
-        price,
-        stock,
-        product_type,
-        origin,
-        roast,
-        intensity,
-        weight,
-        pressure_power,
-        tank_capacity,
-        grinder,
-        material,
-        capacity,
-        color
-    } = productData
-    /*
-    l'objet ici correspond à la requête body JSON envoyée à Postman ici on a un objet destructuring : ça reviendrait à faire
-    const category_name = productData.category_name
-    const brand_name = productData.brand_name etc.....
-    */
+    const {product_type} = productData
 
-    const cleanProductName = normalizeText(product_name)
-    if (!cleanProductName) throw errorBuilder('Product name is required', 400)
-
-    const cleanProductDescription = normalizeText(product_description)
-    if (!cleanProductDescription) throw errorBuilder('Product description is required', 400)
+    const fields = validateProductFields(productData)
+    const details = cleanDetails(product_type, productData)
+    // (le type est vérifié par cleanDetails avant toute écriture en base)
 
     const category_id = await resolveCategoryId(productData.category_id, productData.category_name)
 
-    const brand_id = await resolveBrandId(productData.brand_id, productData.brand_name)
+    const brand_id = productData.brand_id || productData.brand_name
+        ? await resolveBrandId(productData.brand_id, productData.brand_name)
+        : null
+    // la marque est facultative (LEFT JOIN dans les requêtes)
 
     const values = [
-        category_id, //match la const ci-dessous pour trouver si la category existe déjà
-        brand_id, //pareil avec brand
-        cleanProductName,          // ← on utilise la version nettoyée
-        cleanProductDescription,    // pareil
-        product_image_url,
-        price,
-        stock
+        category_id,
+        brand_id,
+        fields.name,
+        fields.description,
+        fields.imageUrl,
+        fields.price,
+        fields.stock
     ]
     /*
     ici c'est les paramètres de createANewProduct :
     INSERT INTO product
-    (category_id, brand_id, product_name, product_description, poduct_image_url, price, stock)
+    (category_id, brand_id, product_name, product_description, product_image_url, price, stock)
     ils doivent correspondre parfaitement à la requête sql
    */
 
@@ -180,13 +232,11 @@ export const createNewProduct = async (productData) => {
 
     // Étape B : maintenant qu'on a le product_id, on insère dans la bonne sous-table
     if (product_type === 'coffee/tea/infusion') {
-        await createCoffeeTeaInfusionDetails(newProductId, {origin, roast, intensity, weight})
+        await createCoffeeTeaInfusionDetails(newProductId, details)
     } else if (product_type === 'machine') {
-        await createMachineDetails(newProductId, {pressure_power, tank_capacity, grinder})
-    } else if (product_type === 'accessory') {
-        await createAccessoryDetails(newProductId, {material, capacity, color})
+        await createMachineDetails(newProductId, details)
     } else {
-        throw errorBuilder('Wrong product_type', 400)
+        await createAccessoryDetails(newProductId, details)
     }
     return productResult
 }
@@ -194,34 +244,35 @@ export const createNewProduct = async (productData) => {
 
 //======================PUT PRODUCT=====================
 export const modifyProductByPut = async (productId, productValues) => {
-    const {category_id, brand_id, product_name, product_description, product_image, price, stock} = productValues
+    // le type (café / machine / accessoire) ne se change pas : on le relit en base
+    const existing = await getProductInfoById(productId)
 
-    const cleanProductName = normalizeText(product_name)
-    if (!cleanProductName) throw errorBuilder('Product name is required', 400)
+    const fields = validateProductFields(productValues)
+    const details = cleanDetails(existing.product_type, productValues)
 
-    const cleanProductDescription = normalizeText(product_description)
-    if (!cleanProductDescription) throw errorBuilder('Product description is required', 400)
+    const category_id = Number(productValues.category_id)
+    if (!Number.isInteger(category_id) || category_id <= 0) throw errorBuilder('Product category is required', 400)
 
-    //Add findProductByName
-    // const existing = await findCategoryByName(cleanProductName)
-    // if (existing && existing.product_id != productId) throw errorBuilder('Product already exists',400)
+    // marque facultative : vide = pas de marque
+    const brand_id = productValues.brand_id ? Number(productValues.brand_id) : null
+    if (brand_id !== null && (!Number.isInteger(brand_id) || brand_id <= 0)) throw errorBuilder('Invalid brand', 400)
 
     const values = [
         category_id,
         brand_id,
-        cleanProductName,
-        cleanProductDescription,
-        product_image,
-        price,
-        stock
+        fields.name,
+        fields.description,
+        fields.imageUrl,
+        fields.price,
+        fields.stock
     ]
 
-    return await modifyByPutProduct(productId, values)
+    return await modifyProductWithDetails(productId, values, existing.product_type, details)
 }
 
 //==========================PATCH PRODUCT============================
 export const modifyProductByPatch = async (productId, changes) => { //changes : les champs à mettre à jour
-    const allowed_updates = ['category_id', 'brand_id', 'product_name', 'product_description', 'price', 'stock']
+    const allowed_updates = ['category_id', 'brand_id', 'product_name', 'product_description', 'product_image_url', 'price', 'stock']
     const fields_to_update = [] //noms de colonnes à modifier
     const values_to_update = [] //valeurs correspondantes
 
@@ -236,6 +287,11 @@ export const modifyProductByPatch = async (productId, changes) => { //changes : 
     })
     if (fields_to_update.length === 0) throw errorBuilder('No field to update', 400)
 
+    // mêmes règles que pour la création sur les champs modifiés
+    if (changes.price !== undefined && !(toNumber(changes.price) >= 0)) throw errorBuilder('Price must be a number >= 0', 400)
+    if (changes.stock !== undefined && !(Number.isInteger(toNumber(changes.stock)) && toNumber(changes.stock) >= 0)) throw errorBuilder('Stock must be a whole number >= 0', 400)
+    if (changes.product_name !== undefined && (typeof changes.product_name !== 'string' || !changes.product_name.trim())) throw errorBuilder('Product name is required', 400)
+
     values_to_update.push(productId) //On ajoute productId à la fin du tableau des valeurs pour l'utiliser dans la clause WHERE id = ?
 
     return await modifyByPatchProduct(fields_to_update, values_to_update)
@@ -244,7 +300,13 @@ export const modifyProductByPatch = async (productId, changes) => { //changes : 
 
 //======================DELETE PRODUCT=====================
 export const deleteProductById = async (productId) => {
-    const result = await deleteByIdProduct(productId)
-    if (!result) throw errorBuilder('Not found', 404)
-    return result
+    try {
+        return await deleteByIdProduct(productId)
+    } catch (error) {
+        // 1451 = clé étrangère : le produit figure dans une commande passée (order_item)
+        if (error.errno === 1451) {
+            throw errorBuilder('This product is part of past orders and cannot be deleted. Set its stock to 0 instead.', 409)
+        }
+        throw error
+    }
 }

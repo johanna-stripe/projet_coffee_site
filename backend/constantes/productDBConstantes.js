@@ -113,6 +113,31 @@ export const PUT_PRODUCT = `
     WHERE product_id = ?
 `
 
+export const UPDATE_COFFEE_TEA_INFUSION = `
+    UPDATE coffee_tea_infusion
+    SET origin = ?,
+        roast = ?,
+        intensity = ?,
+        weight = ?
+    WHERE product_id = ?
+`
+
+export const UPDATE_MACHINE = `
+    UPDATE machines
+    SET pressure_power = ?,
+        tank_capacity = ?,
+        grinder = ?
+    WHERE product_id = ?
+`
+
+export const UPDATE_ACCESSORY = `
+    UPDATE accessories
+    SET material = ?,
+        capacity = ?,
+        color = ?
+    WHERE product_id = ?
+`
+
 //==========================PATCH PRODUCT============================
 export const PATCH_PRODUCT = (fields) => {
     //Fonction exportée qui prend fields (le tableau des noms de colonnes à modifier) et retourne une chaîne de requête SQL.
@@ -136,3 +161,10 @@ export const DELETE_PRODUCT_BY_ID = `
     FROM product
     WHERE product_id = ?
 `
+
+// Les tables liées sont vidées avant le produit (même si la base n'a pas de ON DELETE CASCADE).
+// order_item n'est volontairement PAS vidée : un produit déjà commandé ne doit pas être supprimé (historique).
+export const DELETE_COFFEE_TEA_INFUSION_BY_PRODUCT_ID = `DELETE FROM coffee_tea_infusion WHERE product_id = ?`
+export const DELETE_MACHINE_BY_PRODUCT_ID = `DELETE FROM machines WHERE product_id = ?`
+export const DELETE_ACCESSORY_BY_PRODUCT_ID = `DELETE FROM accessories WHERE product_id = ?`
+export const DELETE_CART_ITEMS_BY_PRODUCT_ID = `DELETE FROM cart_item WHERE product_id = ?`
