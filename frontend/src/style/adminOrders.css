@@ -8,6 +8,33 @@
     margin-top: 0;              /* retire la marge par défaut du titre, qui s'ajoutait au padding */
 }
 
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.admin-toolbar .admin-status-select {
+    padding: 10px 14px;
+}
+
+.admin-search {
+    box-sizing: border-box;
+    flex: 1 1 280px;
+    max-width: 420px;
+    padding: 10px 14px;
+    font: inherit;
+    color: var(--color-secondary);
+    background: white;
+    border: 1px solid #e0d6cc;
+}
+
+.admin-search:focus {
+    outline: none;
+    border-color: var(--color-tertiary);
+}
+
 .admin-table-wrapper {
     overflow-x: auto;           /* petit écran : le tableau défile au lieu de déborder */
     background: white;
