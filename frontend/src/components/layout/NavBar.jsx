@@ -11,8 +11,10 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import UserAccount from "../user/UserAccount.jsx";
 import SubMenu from "./SubMenu.jsx";
 import {Link, useLocation, useNavigate} from "react-router-dom";
-import {CLIENT_PATHS} from "../../routes/paths.js";
+import {CLIENT_PATHS, productPath} from "../../routes/paths.js";
 import {useCart} from "../../context/CartContext.jsx";
+import api from "../../axios/axiosConfig.js";
+import {searchProducts} from "../../helper/search.js";
 
 const NavBar = () => {
     const navRef = useRef(null)
@@ -21,10 +23,13 @@ const NavBar = () => {
     const [subMenuPos, setSubMenuPos] = useState({top: 0, gap: 0})
     const [activeCategory, setActiveCategory] = useState(null)
     const [searchQuery, setSearchQuery] = useState("")
+    const [suggestionsOpen, setSuggestionsOpen] = useState(false) // liste de suggestions ouverte ou fermée
+    const searchRef = useRef(null) // le formulaire de recherche : sert à savoir si un clic est dedans ou dehors
     const [menuOpen, setMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
     const [navHeight, setNavHeight] = useState(0) // hauteur de la barre complète, gardée en réserve quand elle passe en fixed
     const [isHovered, setIsHovered] = useState(false) // survol de la barre : elle se redéplie (menu + sous-menus visibles)
+    const [products, setProducts] = useState([])
     const scrolledRef = useRef(false)
     // Sous 900px : menu burger, sous-menus en accordéon au clic (pas de survol sur écran tactile)
     const isMobile = useMediaQuery("(max-width: 900px)")
@@ -87,6 +92,17 @@ const NavBar = () => {
         }
     }
 
+    // Envoi de la recherche : on va sur /recherche?q=... (la page filtre les produits), puis on vide le champ
+    const handleSearch = (e) => {
+        e.preventDefault()
+        const query = searchQuery.trim()
+        if (!query) return
+        navigate(`${CLIENT_PATHS.search}?q=${encodeURIComponent(query)}`)
+        setSearchQuery("")
+        setSuggestionsOpen(false)
+        closeMenu()
+    }
+
     const scrollToSection = (id) => {
         document.getElementById(id)?.scrollIntoView({behavior: "smooth", block: "start"})
         //?. optional chaining --> si ce qui est à gauche existe, continue ; sinon, arrête-toi sans erreur
@@ -104,6 +120,35 @@ const NavBar = () => {
     // fixée en haut dès qu'on a scrollé (même dépliée au survol), réduite seulement si on ne la survole pas
     const isFixed = isScrolled && !isMobile
     const isCompact = isFixed && !isHovered
+
+    useEffect(() => {
+        const loadSuggestions = async () => {
+            try {
+                const response = await api.get('/products')
+                setProducts(response.data)
+            } catch (err) {
+                // pas de message d'erreur : les suggestions sont un bonus, la recherche marche sans
+            }
+        }
+        loadSuggestions()
+    }, [])
+
+    // clic en dehors de la barre de recherche : on ferme la liste
+    // (mousedown et pas onBlur : le blur arrive avant le clic et ferait perdre le clic sur un lien de la liste)
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (searchRef.current && !searchRef.current.contains(e.target)) {
+                setSuggestionsOpen(false)
+            }
+        }
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => document.removeEventListener("mousedown", handleClickOutside)
+    }, [])
+
+    //Avant 2 lettres, on ne propose rien
+    const suggestions = searchQuery.trim().length >= 2
+        ? searchProducts(products, searchQuery) // tous les résultats : la liste défile au-delà de 5 lignes (CSS)
+        : []
 
     return (
         <>
@@ -134,18 +179,46 @@ const NavBar = () => {
                     </Link>
                 </div>
 
-                <form className="searchBar" role="search" onSubmit={(e) => e.preventDefault()}>
+                <form ref={searchRef} className="searchBar" role="search" onSubmit={handleSearch}>
                     <input
                         type="search"
                         className="searchBar-input"
                         placeholder="Rechercher..."
                         aria-label="Rechercher un produit"
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value)
+                            setSuggestionsOpen(true)
+                        }}
+                        onFocus={() => setSuggestionsOpen(true)}
+                        onKeyDown={(e) => {
+                            if (e.key === "Escape") setSuggestionsOpen(false)
+                        }}
                     />
                     <button type="submit" className="searchBar-btn" aria-label="Lancer la recherche">
                         <IoSearch size={21} className="icon"/>
                     </button>
+                    {suggestionsOpen && suggestions.length > 0 && (
+                        <ul className="searchBar-suggestions">
+                            {suggestions.map((product) => (
+                                <li key={product.product_id}>
+                                    <Link to={productPath(product.product_id)} className="searchBar-suggestion"
+                                          onClick={() => setSuggestionsOpen(false)}>
+                                        <img className="searchBar-suggestion__image" src={product.product_image_url} alt=""/>
+                                        <span className="searchBar-suggestion__text">
+                                            {product.origin && <span className="searchBar-suggestion__origin">{product.origin}</span>}
+                                            <span className="searchBar-suggestion__name">{product.product_name}</span>
+                                            <span className="searchBar-suggestion__meta">
+                                                {product.category_name && <span className="searchBar-suggestion__category">{product.category_name}</span>}
+                                                {product.roast && <span className="searchBar-suggestion__roast">{product.roast}</span>}
+                                            </span>
+                                            <span className="searchBar-suggestion__price">{product.price} €</span>
+                                        </span>
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </form>
 
                 <div className={`menu align-self-center ${menuOpen ? "menu--open" : ""}`}>

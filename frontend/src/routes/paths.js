@@ -8,6 +8,7 @@ export const CLIENT_PATHS = {
     infusion: '/collection-infusion',
     accessoires: '/collection-accessoires',
     machines: '/collection-machines',
+    search: '/recherche',
     product: '/produit/:id', // pattern de la route (App.jsx)
     quiSommesNous: '/qui-sommes-nous',
     mentionsLegales: '/mentions-legales',
