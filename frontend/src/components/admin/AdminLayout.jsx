@@ -10,6 +10,8 @@ export default function AdminLayout() {
                 <h2 className="admin-title">Administration</h2>
                 <nav className="admin-nav">
                     {/* NavLink ajoute automatiquement la classe "active" sur le lien de la page courante */}
+                    {/* end : sans ça « Tableau de bord » (/admin) resterait actif sur toutes les pages /admin/... */}
+                    <NavLink to={CLIENT_PATHS.admin} end>Tableau de bord</NavLink>
                     <NavLink to={CLIENT_PATHS.adminProducts}>Produits</NavLink>
                     <NavLink to={CLIENT_PATHS.adminCategories}>Catégories</NavLink>
                     <NavLink to={CLIENT_PATHS.adminBrands}>Marques</NavLink>

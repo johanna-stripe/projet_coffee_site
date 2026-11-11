@@ -1,4 +1,4 @@
-import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Accueil from "./pages/Accueil.jsx";
 import NavBar from "./components/layout/NavBar.jsx";
 import Footer from "./components/layout/Footer.jsx";
@@ -22,6 +22,7 @@ import CheckoutPage from "./pages/CheckoutPage.jsx";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import AdminUsers from "./components/admin/AdminUsers.jsx";
+import AdminDashboard from "./components/admin/AdminDashboard.jsx";
 import AdminProducts from "./components/admin/AdminProducts.jsx";
 import AdminCategories from "./components/admin/AdminCategories.jsx";
 import AdminBrands from "./components/admin/AdminBrands.jsx";
@@ -39,7 +40,7 @@ export default function App() {
                     <Routes>
                         <Route element={<AdminRoute/>}>           {/* garde : qui peut entrer */}
                             <Route element={<AdminLayout/>}>      {/* cadre : menu + Outlet */}
-                                <Route path={CLIENT_PATHS.admin} element={<Navigate to={CLIENT_PATHS.adminProducts} replace/>}/>
+                                <Route path={CLIENT_PATHS.admin} element={<AdminDashboard/>}/>
                                 <Route path={CLIENT_PATHS.adminProducts} element={<AdminProducts/>}/>
                                 <Route path={CLIENT_PATHS.adminCategories} element={<AdminCategories/>}/>
                                 <Route path={CLIENT_PATHS.adminBrands} element={<AdminBrands/>}/>

@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {useSearchParams} from "react-router-dom";
 import api from "../../axios/axiosConfig.js";
 import ConfirmModal from "./ConfirmModal.jsx";
 import "../../style/adminOrders.css";   // classes communes : toolbar, recherche, tableau, pagination, panneau détail
@@ -48,7 +49,10 @@ const AdminProducts = () => {
     const [search, setSearch] = useState('');
     const [typeFilter, setTypeFilter] = useState('all');
     const [categoryFilter, setCategoryFilter] = useState('all');
-    const [stockFilter, setStockFilter] = useState('all');   // 'all', 'low' (stock bas) ou 'out' (rupture)
+    const [searchParams] = useSearchParams();   // ?stock=low|out : liens venant du tableau de bord
+    const [stockFilter, setStockFilter] = useState(
+        ['low', 'out'].includes(searchParams.get('stock')) ? searchParams.get('stock') : 'all'
+    );   // 'all', 'low' (stock bas) ou 'out' (rupture)
     const [sortBy, setSortBy] = useState('name-asc');
     const [page, setPage] = useState(1);
 
@@ -223,6 +227,8 @@ const AdminProducts = () => {
             }
             await loadProducts();
             closePanel();
+            // retour en haut de la page : c'est là que s'affiche le message « Produit mis à jour »
+            window.scrollTo({top: 0, behavior: 'smooth'});
         } catch (err) {
             setFormError(errorText(err, "Impossible d'enregistrer le produit"));
         } finally {

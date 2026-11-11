@@ -1,4 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
+import {useSearchParams} from "react-router-dom";
 import api from "../../axios/axiosConfig.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import ConfirmModal from "./ConfirmModal.jsx";
@@ -7,6 +8,7 @@ import "../../style/adminUsers.css";
 import "../../style/adminProducts.css";   // champs de formulaire (admin-products-field / -grid) réutilisés pour la création
 
 const PAGE_SIZE = 10;   // utilisateurs affichés par page
+const RECENT_DAYS = 30;   // « inscrits récemment » = sur les 30 derniers jours (même durée que le tableau de bord)
 
 const ROLE_LABELS = {ADMIN: 'Admin', USER: 'Client'};
 
@@ -33,6 +35,8 @@ const AdminUsers = () => {
     const [search, setSearch] = useState('');   // texte tapé dans la recherche
     const [roleFilter, setRoleFilter] = useState('all');       // 'all' ou 'ADMIN' / 'USER'
     const [statusFilter, setStatusFilter] = useState('all');   // 'all', 'active' ou 'inactive'
+    const [searchParams] = useSearchParams();   // ?inscrits=30 : lien venant du tableau de bord
+    const [periodFilter, setPeriodFilter] = useState(searchParams.get('inscrits') === String(RECENT_DAYS) ? 'recent' : 'all');   // 'all' ou 'recent'
     const [sortBy, setSortBy] = useState('date-desc');         // tri sur la date d'inscription
     const [page, setPage] = useState(1);        // page affichée (1 = la première)
     const [selectedUser, setSelectedUser] = useState(null);   // le détail de l'utilisateur ouvert
@@ -60,6 +64,7 @@ const AdminUsers = () => {
     })
         .filter(user => roleFilter === 'all' || user.role === roleFilter)
         .filter(user => statusFilter === 'all' || (statusFilter === 'active') === !!user.is_active)
+        .filter(user => periodFilter === 'all' || new Date(user.created_at) >= new Date(Date.now() - RECENT_DAYS * 24 * 60 * 60 * 1000))
         // filter() renvoie un nouveau tableau : sort() ne modifie donc pas l'état `users`
         .sort((a, b) => sortBy === 'date-asc'
             ? new Date(a.created_at) - new Date(b.created_at)
@@ -236,6 +241,12 @@ const AdminUsers = () => {
                         <option value="all">Tous les statuts</option>
                         <option value="active">Actifs</option>
                         <option value="inactive">Désactivés</option>
+                    </select>
+
+                    <select className="admin-status-select" aria-label="Filtrer par date d'inscription"
+                            value={periodFilter} onChange={(e) => {setPeriodFilter(e.target.value); setPage(1)}}>
+                        <option value="all">Toutes les inscriptions</option>
+                        <option value="recent">Inscrits ces {RECENT_DAYS} derniers jours</option>
                     </select>
 
                     <select className="admin-status-select" aria-label="Trier par date d'inscription"
