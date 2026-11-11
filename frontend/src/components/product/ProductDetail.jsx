@@ -133,7 +133,7 @@ const ProductDetail = ({product, onAddToCart}) => {
                         }}>
                         Ajouter au panier
                     </button>
-                    <p className="product-detail__reassurance">Livraison offerte dès 35 € · paiement sécurisé</p>
+                    <p className="product-detail__reassurance">Livraison standard offerte dès 35 € · paiement sécurisé</p>
 
                     {product.brew && (
                         <dl className="product-detail__brew">
@@ -167,7 +167,7 @@ const ProductDetail = ({product, onAddToCart}) => {
                     <details className="product-detail__accordion" open>
                         <summary>Livraison &amp; retours</summary>
                         <p>
-                            Expédition sous 48 heures. Livraison offerte en France métropolitaine dès 35 € et retours
+                            Expédition sous 48 heures. Livraison standard offerte en France métropolitaine dès 35 € et retours
                             possibles sous 14 jours.
                         </p>
                     </details>

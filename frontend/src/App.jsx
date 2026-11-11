@@ -20,6 +20,7 @@ import CookieBanner from "./components/layout/CookieBanner.jsx";
 import AdminOrders from "./components/admin/AdminOrders.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
+import SearchPage from "./pages/SearchPage.jsx";
 
 
 export default function App() {
@@ -49,6 +50,7 @@ export default function App() {
                                 element={<ProductPage key={cat.id} categoryId={cat.id} title={cat.title}/>}
                             />
                         )))}
+                        <Route path={CLIENT_PATHS.search} element={<SearchPage/>}/>
                         <Route path={CLIENT_PATHS.product} element={<ProductDetailPage/>}/>
                         <Route path={CLIENT_PATHS.mentionsLegales} element={<MentionsLegales/>}/>
                         <Route path={CLIENT_PATHS.cgv} element={<Cgv/>}/>

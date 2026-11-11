@@ -39,3 +39,53 @@ h3 {font-size: 1.25em}
 h4 {font-size: 1em}
 h5 {font-size: 0.75em}
 h6 {font-size: 0.5em}
+
+/* ===== Bandeau de réassurance (TrustBadges) : les blocs se partagent la largeur, titres sur une seule ligne ===== */
+.trust-badge {
+    flex: 1;
+    max-width: 420px;
+    padding: 0 12px;
+}
+
+.trust-badge__text {
+    max-width: 300px;   /* le texte est resserré : il tient sur 2 lignes, même si le bloc est plus large que lui */
+}
+
+@media (min-width: 1200px) {
+    .trust-badge__title {
+        white-space: nowrap;   /* « Livraison standard offerte dès 35 € » reste sur une ligne */
+    }
+}
+
+/* ===== Footer : champ email et bouton « S'abonner » de même largeur et de même hauteur ===== */
+.newsletter-input,
+.newsletter-submit {
+    box-sizing: border-box;   /* le padding et la bordure comptent dans la largeur : 100 % = exactement la même largeur */
+    width: 100%;
+    height: 38px;
+    margin: 0;
+    padding: 0 14px;
+    font: inherit;
+    font-size: 1em;
+}
+
+/* 2 classes : plus prioritaire que .c-white posé sur le champ, pour que le texte tapé soit marron foncé */
+.newsletter-form .newsletter-input {
+    color: var(--color-secondary);
+}
+
+/* au clic dans le champ : aucune autre bordure que celle qui existe déjà (ni contour du navigateur, ni ombre) */
+.newsletter-form .newsletter-input:focus,
+.newsletter-form .newsletter-input:focus-visible {
+    outline: none;
+    box-shadow: none;
+}
+
+/* moins d'espace entre le texte « Nouveaux arrivages… » et le champ (écrase m-top-20px) */
+.footer-newsletter .newsletter-form {
+    margin-top: 8px;
+}
+
+.newsletter-submit {
+    border: 1px solid transparent;   /* même épaisseur de bordure que le champ */
+}

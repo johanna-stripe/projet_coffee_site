@@ -43,6 +43,7 @@
 .navBar .menu ul { padding: 0; margin: 0; } /* le padding par défaut du ul décalerait le centrage */
 
 .searchBar {
+    position: relative; /* repère pour la liste de suggestions en absolute */
     display: flex;
     align-items: center;
     background-color: rgba(51, 27, 10, 0.08);
@@ -62,13 +63,122 @@
     font-size: 1em;
     font-family: inherit;
     color: var(--color-secondary);
-    text-align: center;
+    text-align: left;
+}
+
+/* petite croix d'effacement du champ de recherche (native, bleue par défaut) : redessinée en marron */
+.searchBar-input::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 14px;
+    width: 14px;
+    margin-left: 8px;
+    cursor: pointer;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cpath d='M2 2l10 10M12 2L2 12' stroke='%23331b0a' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .searchBar-input::placeholder {
     color: var(--color-tertiary);
     opacity: 0.8;
     text-align: left;
+}
+
+/* menu déroulant : sorti du flux, il se place par-dessus la page juste sous la barre */
+.searchBar-suggestions {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0; /* même largeur que la barre */
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    background-color: var(--color-primary);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(51, 27, 10, 0.15);
+    z-index: 10;
+    /* environ 5 lignes visibles (104px chacune), au-delà la liste défile */
+    max-height: calc(5 * 104px + 16px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-tertiary) transparent;
+}
+
+/* une ligne = miniature + texte (même esprit que la fiche produit) */
+.searchBar-suggestion {
+    display: flex; /* toute la ligne est cliquable, pas seulement le texte */
+    align-items: center;
+    gap: 14px;
+    padding: 10px 20px;
+    color: var(--color-secondary);
+    text-decoration: none;
+    text-align: left;
+}
+
+.searchBar-suggestion__image {
+    width: 84px;
+    height: 84px;
+    flex-shrink: 0;
+    object-fit: cover;
+    background-color: rgba(51, 27, 10, 0.08);
+}
+
+.searchBar-suggestion__text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+/* origine : petit, majuscules espacées, marron clair */
+.searchBar-suggestion__origin {
+    font-size: 0.75em;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+/* nom : police des titres */
+.searchBar-suggestion__name {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1.15em;
+    line-height: 1.2;
+}
+
+/* prix : tout en bas, sous la catégorie, police des titres comme sur la fiche produit */
+.searchBar-suggestion__price {
+    font-family: "Playfair Display", Georgia, serif;
+    font-size: 1em;
+    white-space: nowrap;
+}
+
+.searchBar-suggestion__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.searchBar-suggestion__category {
+    font-size: 0.75em;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+/* torréfaction : pastille crème comme « MOYENNE » sur la fiche produit */
+.searchBar-suggestion__roast {
+    padding: 3px 8px;
+    font-size: 0.7em;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-quaternary);
+    background-color: var(--color-primary);
+    border: 1px solid rgba(51, 27, 10, 0.15);
+}
+
+.searchBar-suggestion:hover {
+    background-color: rgba(51, 27, 10, 0.08);
 }
 
 .searchBar-btn {
@@ -78,6 +188,7 @@
     cursor: pointer;
     display: flex;
     padding: 0;
+    margin-left: 14px; /* espace entre la croix d'effacement et la loupe */
 }
 
 .menu li::after {

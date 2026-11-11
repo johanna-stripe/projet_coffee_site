@@ -1,6 +1,6 @@
 // Mêmes règles que le backend (backend/services/orderService.js) : le serveur recalcule toujours le vrai montant,
 // ici c'est seulement pour l'affichage.
-export const FREE_SHIPPING_THRESHOLD = 35   // livraison standard gratuite à partir de 35 € d'achats
+export const FREE_SHIPPING_THRESHOLD = 35   // livraison standard offerte à partir de 35 € d'achats
 export const SHIPPING_FEE = 4.90
 export const EXPRESS_SHIPPING_FEE = 8.90    // express : toujours payante, même au-dessus de 35 €
 

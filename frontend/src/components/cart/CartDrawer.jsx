@@ -6,7 +6,7 @@ import {useAuth} from "../../context/AuthContext.jsx";
 import {CLIENT_PATHS, productPath} from "../../routes/paths.js";
 import "../../style/cartDrawer.css";
 
-const FREE_SHIPPING_THRESHOLD = 35 // livraison offerte dès 35 € (cf. fiche produit)
+const FREE_SHIPPING_THRESHOLD = 35 // livraison standard offerte dès 35 € (cf. fiche produit)
 
 const formatPrice = (price) =>
     Number(price).toLocaleString('fr-FR', {style: 'currency', currency: 'EUR'})
@@ -72,8 +72,12 @@ const CartDrawer = () => {
                         <PiBasket size={56} className="cart-drawer__empty-icon" aria-hidden="true"/>
                         <p>Votre panier est vide.</p>
                         <p className="c-secondary">Découvrez notre sélection et trouvez votre prochaine pause préférée.</p>
-                        {/* le panneau est par-dessus la page : le fermer ramène l'utilisateur là où il était */}
-                        <button type="button" className="cart-drawer__checkout" onClick={closeCart}>
+                        {/* on ferme le panneau puis on va à l'accueil (fermer seul laissait l'utilisateur sur la page en cours) */}
+                        <button type="button" className="cart-drawer__checkout"
+                                onClick={() => {
+                                    closeCart()
+                                    navigate(CLIENT_PATHS.home)
+                                }}>
                             Découvrez la boutique
                         </button>
                     </div>
@@ -82,8 +86,8 @@ const CartDrawer = () => {
                         <div className="cart-shipping">
                             <p>
                                 {remaining > 0
-                                    ? <>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison offerte</>
-                                    : "Livraison offerte !"}
+                                    ? <>Plus que <strong>{formatPrice(remaining)}</strong> pour la livraison standard offerte</>
+                                    : "Livraison standard offerte !"}
                             </p>
                             <div
                                 className="cart-shipping__bar"

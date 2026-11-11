@@ -15,6 +15,61 @@
     margin-bottom: 16px;
 }
 
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;   /* barre centrée sous le tableau */
+    flex-wrap: wrap;
+    gap: 28px;
+    margin: 36px auto 24px;    /* de l'air au-dessus et en dessous */
+    padding-top: 24px;
+    border-top: 1px solid #e0d6cc;
+}
+
+.admin-pagination-info {
+    min-width: 220px;
+    text-align: center;
+    font-size: 0.85em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-tertiary);
+}
+
+.admin-pagination-btn {
+    padding: 12px 28px;
+    font: inherit;
+    font-size: 0.85em;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-secondary);
+    background: transparent;
+    border: 1px solid var(--color-secondary);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.admin-pagination-btn:hover:not(:disabled) {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.admin-pagination-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .admin-pagination {
+        gap: 14px;
+    }
+
+    .admin-pagination-info {
+        order: -1;             /* le « Page x / y » passe au-dessus des deux boutons */
+        flex-basis: 100%;
+        min-width: 0;
+    }
+}
+
 .admin-toolbar .admin-status-select {
     padding: 10px 14px;
 }

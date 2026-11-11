@@ -13,7 +13,7 @@ const trustBadges = [
     {
         img: delivery,
         alt: "delivery-truck-icon",
-        title : "Livraison gratuite dès 35 €",
+        title : "Livraison standard offerte dès 35 €",
         text: "Expédition offerte en France métropolitaine. Colissimo 48h."
     },
     {
@@ -31,11 +31,11 @@ const TrustBadges = () => {
                 <React.Fragment key={index}>
                 {/*React.Fragment (ou Fragment) est un composant "invisible" qui sert à grouper plusieurs éléments sans ajouter de balise HTML supplémentaire dans le DOM.*/}
                     <div
-                        className="flex flex-direction-column align-items-center text-align-center w-300px">
+                        className="trust-badge flex flex-direction-column align-items-center text-align-center">
                         <img src={item.img}
                              alt={item.alt}/>
-                        <p className="font-size-150em c-primary">{item.title}</p>
-                        <p className="c-primary">{item.text}</p>
+                        <p className="trust-badge__title font-size-150em c-primary">{item.title}</p>
+                        <p className="trust-badge__text c-primary">{item.text}</p>
                     </div>
                     {index < trustBadges.length - 1 && (
                     //condition (si la chose à gauche de && est vraie alors la chose à droite d'execute) qui exclut le dernier item (index 2 sur 3), donc tu obtiens bien 2 traits pour 3 blocs

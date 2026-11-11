@@ -15,6 +15,8 @@ const STATUS = {
 
 const STATUS_OPTIONS = Object.keys(STATUS);
 
+const PAGE_SIZE = 10;   // commandes affichées par page
+
 const SHIPPING_METHOD_LABELS = {standard: 'Standard', express: 'Express'};
 
 const formatPrice = (value) =>
@@ -31,6 +33,7 @@ const AdminOrders = () => {
 
     const [statusFilter, setStatusFilter] = useState('all');     // 'all' ou une clé de STATUS
     const [sortBy, setSortBy] = useState('date-desc');           // critère de tri choisi
+    const [page, setPage] = useState(1);                         // page affichée (1 = la première)
 
     // Minuscules + sans accents : "Éloïse" et "eloise" se trouvent mutuellement
     const normalize = (text) => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -59,6 +62,12 @@ const AdminOrders = () => {
                     return new Date(b.order_date) - new Date(a.order_date);
             }
         });
+
+    // Pagination : on découpe la liste déjà filtrée et triée.
+    // Math.min : si un filtre réduit la liste, on ne reste pas sur une page qui n'existe plus.
+    const totalPages = Math.max(1, Math.ceil(visibleOrders.length / PAGE_SIZE));
+    const currentPage = Math.min(page, totalPages);
+    const pageOrders = visibleOrders.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -126,10 +135,10 @@ const AdminOrders = () => {
                 <div className="admin-toolbar">
                     <input type="search" className="admin-search" placeholder="Rechercher un n° de commande ou un client"
                            aria-label="Rechercher une commande par numéro ou par client"
-                           value={search} onChange={(e) => setSearch(e.target.value)}/>
+                           value={search} onChange={(e) => {setSearch(e.target.value); setPage(1)}}/>
 
                     <select className="admin-status-select" aria-label="Filtrer par statut"
-                            value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                            value={statusFilter} onChange={(e) => {setStatusFilter(e.target.value); setPage(1)}}>
                         <option value="all">Tous les statuts</option>
                         {STATUS_OPTIONS.map(key => (
                             <option key={key} value={key}>{STATUS[key].label}</option>
@@ -137,7 +146,7 @@ const AdminOrders = () => {
                     </select>
 
                     <select className="admin-status-select" aria-label="Trier les commandes"
-                            value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                            value={sortBy} onChange={(e) => {setSortBy(e.target.value); setPage(1)}}>
                         <option value="date-desc">Plus récentes d'abord</option>
                         <option value="date-asc">Plus anciennes d'abord</option>
                         <option value="total-desc">Total décroissant</option>
@@ -165,7 +174,7 @@ const AdminOrders = () => {
                     </tr>
                     </thead>
                     <tbody>
-                    {visibleOrders.map(order => {
+                    {pageOrders.map(order => {
                         const status = STATUS[order.order_status] || {label: order.order_status, className: ''};
                         return (
                         <tr key={order.order_id}
@@ -184,6 +193,22 @@ const AdminOrders = () => {
                     </tbody>
                 </table>
                 </div>
+            )}
+
+            {totalPages > 1 && (
+                <nav className="admin-pagination" aria-label="Pagination des commandes">
+                    <button type="button" className="admin-pagination-btn"
+                            disabled={currentPage === 1} onClick={() => setPage(currentPage - 1)}>
+                        ← Précédent
+                    </button>
+                    <span className="admin-pagination-info">
+                        Page {currentPage} / {totalPages} · {visibleOrders.length} commandes
+                    </span>
+                    <button type="button" className="admin-pagination-btn"
+                            disabled={currentPage === totalPages} onClick={() => setPage(currentPage + 1)}>
+                        Suivant →
+                    </button>
+                </nav>
             )}
             {detailError && <p className="purchase-error">{detailError}</p>}
 

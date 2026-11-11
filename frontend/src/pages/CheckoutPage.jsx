@@ -19,7 +19,7 @@ const formatPrice = (price) =>
     Number(price).toLocaleString('fr-FR', {style: 'currency', currency: 'EUR'})
 
 const CheckoutPage = () => {
-    const {authLoading, isAuthenticated} = useAuth()
+    const {authLoading, isAuthenticated, isAccountOpen, openAccount} = useAuth()
     const {items, cartLoading, loadCart, openCart} = useCart()
     const navigate = useNavigate()
     const [step, setStep] = useState(1)   // 1 = livraison, 2 = paiement
@@ -37,6 +37,7 @@ const CheckoutPage = () => {
 
     // Les hooks (useState, useEffect...) passent TOUJOURS avant les "if ... return"
     useEffect(() => {
+        if (isAccountOpen) return   // la fenêtre Mon compte est ouverte : on recharge les adresses à sa fermeture
         // useEffect n'accepte pas une fonction async directement : on en déclare une dedans, puis on l'appelle
         const fetchAddresses = async () => {
             try {
@@ -45,10 +46,11 @@ const CheckoutPage = () => {
                 setCustomerId(response.data.customer.customer_id)
                 setAddresses(list)
                 const defaultAddress = list.find(a => a.is_default) || list[0]
-                if (defaultAddress) {
-                    setShippingAddressId(defaultAddress.address_id)
-                    setBillingAddressId(defaultAddress.address_id)   // présélection si la case est décochée plus tard
-                }
+                // on garde le choix déjà fait s'il existe encore (adresse modifiée), sinon l'adresse par défaut
+                const keepOrDefault = (previousId) =>
+                    list.some(a => a.address_id === previousId) ? previousId : (defaultAddress ? defaultAddress.address_id : null)
+                setShippingAddressId(keepOrDefault)
+                setBillingAddressId(keepOrDefault)   // présélection si la case est décochée plus tard
                 setError('')
             } catch (err) {
                 setError(err.response?.data?.error || 'Impossible de charger vos adresses');
@@ -57,7 +59,7 @@ const CheckoutPage = () => {
             }
         }
         fetchAddresses()
-    }, []);
+    }, [isAccountOpen]);
 
     if (authLoading || cartLoading) return <p>Chargement...</p>
     if (!isAuthenticated) return <Navigate to={CLIENT_PATHS.home} replace/>
@@ -163,6 +165,11 @@ const CheckoutPage = () => {
                                     <div className="checkout-rows">
                                         {renderAddressRows('shipping', shippingAddressId, setShippingAddressId)}
                                     </div>
+                                    {/* ouvre la fenêtre Mon compte directement sur l'onglet « Mes adresses » */}
+                                    <button type="button" className="checkout-edit-addresses"
+                                            onClick={() => openAccount('UserAddresses')}>
+                                        Modifier mes adresses
+                                    </button>
                                 </section>
 
                                 <section className="checkout-card">

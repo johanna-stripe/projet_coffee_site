@@ -162,8 +162,11 @@
 
 
 /*******************History*****************/
-.history { height: 800px; }
+.history { height: 740px; }
+.history-image { height: 600px; align-self: center; margin-left: 50px; }
 .history-text { margin-right: 220px; }
+.history-stats { gap: 60px; }
+.history-stat-value { font-size: 1.8em; font-weight: 700; color: var(--color-quaternary); line-height: 1.1; }
 .history-accent { font-family: "Playfair Display", serif; font-style: italic; font-weight: 400; }
 
 .foundedIn{
