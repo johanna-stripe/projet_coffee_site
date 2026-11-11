@@ -2,6 +2,7 @@ import {useEffect, useState} from "react";
 import api from "../../axios/axiosConfig.js";
 import "../../style/userPurchases.css";   // réutilise les badges de statut (purchase-status-*)
 import "../../style/adminOrders.css";
+import ConfirmModal from "./ConfirmModal.jsx";
 
 // Libellé + couleur du badge selon order_status (même logique que "Mes achats")
 const STATUS = {
@@ -23,6 +24,7 @@ const AdminOrders = () => {
     const [error, setError] = useState('');
     const [selectedOrder, setSelectedOrder] = useState(null);   // le détail de la commande ouverte
     const [detailError, setDetailError] = useState('');
+    const [confirmCancel, setConfirmCancel] = useState(false);   // fenêtre « annuler la commande ? » ouverte ou non
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -52,6 +54,15 @@ const AdminOrders = () => {
     };
 
     // Change le statut de la commande ouverte puis met à jour le panneau ET le tableau
+    // Choix dans le select : l'annulation passe d'abord par la fenêtre de confirmation
+    const handleStatusSelect = (newStatus) => {
+        if (newStatus === 'cancelled') {
+            setConfirmCancel(true)   // le select est contrôlé : il reste sur l'ancien statut tant qu'on n'a pas confirmé
+        } else {
+            changeStatus(newStatus)
+        }
+    };
+
     const changeStatus = async (newStatus) => {
         try {
             await api.patch(`/order/${selectedOrder.order_id}`, {order_status: newStatus})
@@ -133,9 +144,12 @@ const AdminOrders = () => {
                             <dt>Statut</dt>
                             <dd>
                                 <select className="admin-status-select" value={selectedOrder.order_status}
-                                        onChange={(e) => changeStatus(e.target.value)}>
+                                        onChange={(e) => handleStatusSelect(e.target.value)}>
                                     {STATUS_OPTIONS.map(key => (
-                                        <option key={key} value={key}>{STATUS[key].label}</option>
+                                        <option key={key} value={key}
+                                                disabled={selectedOrder.order_status === 'cancelled' && key !== 'cancelled'}>
+                                            {STATUS[key].label}
+                                        </option>
                                     ))}
                                 </select>
                             </dd>
@@ -175,6 +189,22 @@ const AdminOrders = () => {
                 </div>
                 )
             })()}
+
+            <ConfirmModal
+                isOpen={confirmCancel && !!selectedOrder}
+                title="Annuler la commande"
+                message={<>
+                    Êtes-vous sûr de vouloir annuler <strong>la commande {selectedOrder?.order_number}</strong> ?
+                    Cette action est <strong>irréversible</strong> : le stock des articles sera remis en vente et la commande ne pourra plus être modifiée.
+                </>}
+                confirmLabel="Annuler la commande"
+                cancelLabel="Retour"
+                onCancel={() => setConfirmCancel(false)}
+                onConfirm={() => {
+                    setConfirmCancel(false)
+                    changeStatus('cancelled')
+                }}
+            />
         </div>
     )
 
