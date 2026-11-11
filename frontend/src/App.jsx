@@ -19,6 +19,7 @@ import Cgv from "./pages/Cgv.jsx";
 import CookieBanner from "./components/layout/CookieBanner.jsx";
 import AdminOrders from "./components/admin/AdminOrders.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage.jsx";
 
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
                         <Route path={CLIENT_PATHS.mentionsLegales} element={<MentionsLegales/>}/>
                         <Route path={CLIENT_PATHS.cgv} element={<Cgv/>}/>
                         <Route path={CLIENT_PATHS.checkout} element={<CheckoutPage/>}/>
+                        <Route path={CLIENT_PATHS.orderConfirmation} element={<OrderConfirmationPage/>}/>
                     </Routes>
                     <TrustBadges/>
                     <Footer/>
