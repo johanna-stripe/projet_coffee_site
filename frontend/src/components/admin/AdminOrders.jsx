@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import api from "../../axios/axiosConfig.js";
 import "../../style/userPurchases.css";   // réutilise les badges de statut (purchase-status-*)
 import "../../style/adminOrders.css";
@@ -34,6 +34,7 @@ const AdminOrders = () => {
     const [statusFilter, setStatusFilter] = useState('all');     // 'all' ou une clé de STATUS
     const [sortBy, setSortBy] = useState('date-desc');           // critère de tri choisi
     const [page, setPage] = useState(1);                         // page affichée (1 = la première)
+    const detailRef = useRef(null);                              // panneau de détail, pour y descendre au clic
 
     // Minuscules + sans accents : "Éloïse" et "eloise" se trouvent mutuellement
     const normalize = (text) => (text || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
@@ -85,6 +86,13 @@ const AdminOrders = () => {
         }
         fetchOrders()
     }, []);
+
+    // Dès qu'une commande est ouverte (ou qu'on en ouvre une autre), on descend sur son détail
+    useEffect(() => {
+        if (selectedOrder) {
+            detailRef.current?.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    }, [selectedOrder?.order_id]);
 
     const openOrder = async (orderId) => {
         try {
@@ -216,7 +224,7 @@ const AdminOrders = () => {
                 const detailStatus = STATUS[selectedOrder.order_status] || {label: selectedOrder.order_status, className: ''};
                 const itemsTotal = selectedOrder.items.reduce((sum, item) => sum + item.quantity * Number(item.unit_price), 0);
                 return (
-                <div className="admin-order-detail">
+                <div className="admin-order-detail" ref={detailRef}>
                     <div className="admin-order-detail-head">
                         <div>
                             <h4 className="admin-order-detail-title">Commande {selectedOrder.order_number}</h4>
