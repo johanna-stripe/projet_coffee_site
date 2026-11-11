@@ -18,7 +18,6 @@ const NavBar = () => {
     const navRef = useRef(null)
     const [subMenuPos, setSubMenuPos] = useState({top: 0, gap: 0})
     const [activeCategory, setActiveCategory] = useState(null)
-    const [modifyUserAccount, setModifyUserAccount] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const [menuOpen, setMenuOpen] = useState(false)
     const [isScrolled, setIsScrolled] = useState(false)
@@ -27,7 +26,7 @@ const NavBar = () => {
     const scrolledRef = useRef(false)
     // Sous 900px : menu burger, sous-menus en accordéon au clic (pas de survol sur écran tactile)
     const isMobile = useMediaQuery("(max-width: 900px)")
-    const {user, isAuthenticated, logout, isAuthModalOpen, openAuthModal, closeAuthModal} = useAuth()
+    const {user, isAuthenticated, logout, isAuthModalOpen, openAuthModal, closeAuthModal, isAccountOpen, accountTab, openAccount, closeAccount} = useAuth()
     const {items, openCart} = useCart()
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -170,7 +169,7 @@ const NavBar = () => {
                             className={"icon cursor-pointer"}
                             alt={"user-icon"}
                             onClick={() => {
-                                isAuthenticated ? setModifyUserAccount(true) : openAuthModal()
+                                isAuthenticated ? openAccount() : openAuthModal()
                             }}
                         />
                         <span className="navBar-basket cursor-pointer" onClick={openCart}>
@@ -190,8 +189,9 @@ const NavBar = () => {
                         onClose={closeAuthModal}
                     />
                     <UserAccount
-                        isOpen={modifyUserAccount}
-                        onClose={() => setModifyUserAccount(false)}
+                        isOpen={isAccountOpen}
+                        initialMode={accountTab}
+                        onClose={closeAccount}
                         onLogout={logout}
                     />
                 </div>

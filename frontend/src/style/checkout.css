@@ -236,6 +236,26 @@
     margin-bottom: 0;
 }
 
+/* ----- « Modifier mes adresses » ----- */
+.checkout-edit-addresses {
+    margin-top: 18px;
+    padding: 12px 22px;
+    border: 1px solid var(--color-secondary);
+    background: transparent;
+    color: var(--color-secondary);
+    font-family: "Lato", sans-serif;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.checkout-edit-addresses:hover {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
 /* ----- Bouton principal (marron foncé, pleine largeur) ----- */
 .checkout-submit {
     display: block;

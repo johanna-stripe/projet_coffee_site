@@ -18,12 +18,12 @@ import UserSecurity from "./UserSecurity.jsx";
 import {CLIENT_PATHS} from "../../routes/paths.js";
 
 
-const UserAccount = ({isOpen, onClose}) => {
+const UserAccount = ({isOpen, onClose, initialMode = "UserInformation"}) => {
 
     if (!isOpen) return null;
 
     const {user, logout, isAdmin} = useAuth()
-    const [mode, setMode] = useState("UserInformation")
+    const [mode, setMode] = useState(initialMode)   // onglet affiché à l'ouverture
     const [userAccount, setUserAccount] = useState(user)
     const navigate = useNavigate()
 

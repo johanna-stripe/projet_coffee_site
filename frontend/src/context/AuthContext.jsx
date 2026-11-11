@@ -87,6 +87,16 @@ export const AuthProvider = ({children}) => {
     const openAuthModal = () => setIsAuthModalOpen(true)
     const closeAuthModal = () => setIsAuthModalOpen(false)
 
+    // Fenêtre « Mon compte » : dans le contexte pour qu'on puisse l'ouvrir depuis n'importe quelle page
+    // (icône utilisateur de la NavBar, bouton « Modifier mes adresses » de la page Commande...), sur l'onglet voulu
+    const [isAccountOpen, setIsAccountOpen] = useState(false)
+    const [accountTab, setAccountTab] = useState("UserInformation")
+    const openAccount = (tab = "UserInformation") => {
+        setAccountTab(tab)
+        setIsAccountOpen(true)
+    }
+    const closeAccount = () => setIsAccountOpen(false)
+
     const updateUser = (updatedFields) => {
         setUser(prev => ({ ...prev, ...updatedFields }))
     }
@@ -103,6 +113,10 @@ export const AuthProvider = ({children}) => {
                 isAuthModalOpen,    // la modale de connexion est-elle ouverte ?
                 openAuthModal,
                 closeAuthModal,
+                isAccountOpen,
+                accountTab,
+                openAccount,
+                closeAccount,
                 isAuthenticated: Boolean(user), // true si user existe, false si null
                 isAdmin: user?.role === 'ADMIN' // true si user est admin
             }}
