@@ -6,11 +6,11 @@ const History = () => {
         <section className="flex history"
         id="brulerie"
         >
-            <div className="flex-1 flex position-relative m-right-20px justify-content-right">
+            <div className="flex-1 flex position-relative m-right-20px justify-content-right history-image">
                 <img
                     src={torrefaction}
                     alt="torréfaction artisanale"
-                    className="h-100 w-80 object-fit-cover block"
+                    className="h-100 w-100 object-fit-cover block"
                 />
                 <div className="position-absolute foundedIn c-secondary b-primary text-align-center p-20px">
                     <span className="font-size-2em block">1998</span>

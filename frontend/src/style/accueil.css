@@ -162,7 +162,8 @@
 
 
 /*******************History*****************/
-.history { height: 800px; }
+.history { height: 680px; }
+.history-image { height: 600px; align-self: center; margin-left: 50px; }
 .history-text { margin-right: 220px; }
 .history-accent { font-family: "Playfair Display", serif; font-style: italic; font-weight: 400; }
 
