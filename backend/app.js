@@ -17,6 +17,7 @@ import brandRoutes from "./routes/brandRoutes.js";
 import authRoutes from "./security/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 //=============DEMARRAGE DU SERVEUR===============
 const app = express();
@@ -65,6 +66,7 @@ app.get('/', (req, res) => {
 })
 
 //=============DEFINITION DES ROUTERS===============
+app.use('/api/v1/products/:productId/reviews', reviewRoutes) //avis clients, stockés dans MongoDB
 app.use('/api/v1/products', productRoutes) //baseUrl http://localhost:8800/api/v1/products/
 app.use('/api/v1/categories', categoriesRoutes)
 app.use('/api/v1/cart', cartRoutes)

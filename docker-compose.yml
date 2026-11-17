@@ -38,6 +38,29 @@ services:
       retries: 10
 
 
+
+    #=====================================
+    #               MongoDB
+    #=====================================
+  mongo:
+      image: mongo:7
+      container_name: coffee-site-mongo
+      restart: unless-stopped
+
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+        MONGO_INITDB_DATABASE: ${MONGO_DATABASE}
+
+      volumes:
+        - mongo_data:/data/db
+
+      networks:
+        - project_coffee_site_network
+
+      ports:
+        - '27017:27017'
+
   #=====================================
   #               BACKEND
   #=====================================
@@ -54,6 +77,8 @@ services:
     depends_on:
       mysql:
         condition: service_started
+      mongo:
+        condition: service_started
 
     environment:
       PORT: '8800'
@@ -66,6 +91,7 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
       CLIENT_URL: ${CLIENT_URL}
+      MONGO_URL: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongo:27017/${MONGO_DATABASE}?authSource=admin
 
 
     ports:
@@ -109,6 +135,7 @@ services:
 #ici c'est l'appel
 volumes:
   mysql_data:
+  mongo_data:
 
 networks:
   project_coffee_site_network:
