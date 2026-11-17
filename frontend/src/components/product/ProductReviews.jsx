@@ -73,17 +73,17 @@ const ProductReviews = ({productId}) => {
 
     return (
         <section className="product-reviews" aria-labelledby="product-reviews-title">
-            <h2 id="product-reviews-title" className="product-reviews__title">Avis clients</h2>
-
-            {reviews.length > 0 && (
-                <p className="product-reviews__summary" aria-label={`Note moyenne : ${average.toFixed(1)} sur 5`}>
-                    <Stars value={Math.round(average)}/>
-                    <span>{average.toFixed(1).replace('.', ',')} / 5 · {reviews.length} avis</span>
-                </p>
-            )}
-
             <div className="product-reviews__layout">
                 <div className="product-reviews__list">
+                    <h2 id="product-reviews-title" className="product-reviews__title">Avis clients</h2>
+
+                    {reviews.length > 0 && (
+                        <p className="product-reviews__summary" aria-label={`Note moyenne : ${average.toFixed(1)} sur 5`}>
+                            <Stars value={Math.round(average)}/>
+                            <span>{average.toFixed(1).replace('.', ',')} / 5 · {reviews.length} avis</span>
+                        </p>
+                    )}
+
                     {loading && <p>Chargement des avis...</p>}
                     {loadError && <p>{loadError}</p>}
                     {!loading && !loadError && reviews.length === 0 && (
