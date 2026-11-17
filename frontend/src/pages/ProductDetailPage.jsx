@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from "react-router-dom";
 import api from "../axios/axiosConfig.js";
 import ProductDetail from "../components/product/ProductDetail.jsx";
+import ProductReviews from "../components/product/ProductReviews.jsx";
 import {useCart} from "../context/CartContext.jsx";
 
 const ProductDetailPage = () => {
@@ -36,11 +37,15 @@ const ProductDetailPage = () => {
     // key : quand on change de produit, React recrée le composant (la quantité repart à 1)
     // ProductDetail renvoie (product, quantity) alors que addToCart attend (product_id, quantity)
     return (
-        <ProductDetail
-            key={product.product_id}
-            product={product}
-            onAddToCart={(product, quantity) => addToCart(product.product_id, quantity)}
-        />
+        <>
+            <ProductDetail
+                key={product.product_id}
+                product={product}
+                onAddToCart={(product, quantity) => addToCart(product.product_id, quantity)}
+            />
+            {/* avis clients, stockés dans MongoDB */}
+            <ProductReviews key={`reviews-${product.product_id}`} productId={product.product_id}/>
+        </>
     )
 };
 
